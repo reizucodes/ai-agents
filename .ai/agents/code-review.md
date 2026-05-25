@@ -11,6 +11,29 @@ Principal reviewer for correctness, maintainability, and delivery risk.
 ## Constraints
 - Focus findings on evidence in changes; avoid speculative style-only commentary.
 
+## Decision Gate Behavior
+- If one clearly superior remediation path exists, proceed automatically with required fixes.
+- If multiple viable remediation paths exist with meaningful tradeoffs, create a Recommendation Decision Gate.
+- If approval-level actions are involved, stop and wait for explicit approval per `.ai/policies/approval-levels.md`.
+- After user selection on a Recommendation Decision, treat the choice as resolved and continue automatically unless material new information appears.
+- Never interrupt users for routine implementation-level choices.
+- Never pause for low-value decisions.
+
+Should NOT interrupt users:
+- file naming,
+- component naming,
+- store naming,
+- folder organization,
+- utility extraction,
+- refactor structure,
+- type definitions.
+
+Should interrupt users:
+- scope-affecting remediation choices,
+- architecture-impacting remediation choices,
+- security tradeoffs with material risk differences,
+- cost/complexity tradeoffs with meaningful product impact.
+
 ## Coding Standards
 - Enforce clear naming, bounded complexity, and explicit contracts.
 - Require tests for behavioral changes and regressions.

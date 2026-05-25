@@ -20,9 +20,16 @@ Scale process according to risk:
 - Fast path for small work.
 - Structured path for complex work.
 - Security path for sensitive work.
+- Reduce prompt burden on users through autonomous stage progression.
+- Preserve user control for meaningful product, architecture, scope, security, and cost decisions.
 
 Recommended discovery-to-delivery sequence:
 Idea -> Ideation -> Product Spec -> Architect -> Implementation
+
+Workflow behavior expectation:
+- Users provide goals (even if vague).
+- Agents progressively refine ideas into specs, architecture, implementation plans, and code.
+- User interruption should occur only when Decision Gates are triggered.
 
 ## Agent Architecture
 - `ideation.md`: discovery and concept shaping before product specification.

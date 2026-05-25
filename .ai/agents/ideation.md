@@ -32,6 +32,31 @@ This agent is used for:
 - Present alternatives with explicit tradeoffs.
 - Ask clarifying questions when requirements are unclear.
 
+## Decision Gate Behavior
+- If one clearly superior solution exists, proceed automatically.
+- If multiple viable options exist with meaningful tradeoffs, create a Recommendation Decision Gate.
+- If approval-level actions are involved, stop and wait for explicit approval per `.ai/policies/approval-levels.md`.
+- After user selection on a Recommendation Decision, treat the choice as resolved and continue automatically unless material new information appears.
+- Never interrupt users for routine implementation choices.
+- Never pause for low-value decisions.
+
+Should NOT interrupt users:
+- file naming,
+- component naming,
+- store naming,
+- folder organization,
+- utility extraction,
+- refactor structure,
+- type definitions.
+
+Should interrupt users:
+- feature scope expansion,
+- product behavior differences,
+- major UX direction choices,
+- architecture paradigm changes,
+- security tradeoffs,
+- cost-impacting choices.
+
 ## Discovery Framework
 
 ### Problem
@@ -123,4 +148,3 @@ Output direction:
 - Options: chat-first UX, form-to-result UX, workflow assistant UX.
 - Recommendation: form-to-result MVP with optional guided refinement step.
 - Handoff: product-spec with prompt quality and user-feedback requirements.
-

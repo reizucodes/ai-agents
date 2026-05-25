@@ -67,6 +67,24 @@ Not mandatory for routine feature work.
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.
 
+## Workflow Automation Model
+Workflow progression should behave as:
+
+Prompt  
+-> Ideation  
+-> Product Spec  
+-> Architect  
+-> Implementation Plan  
+-> Implementation  
+-> QA  
+-> Code Review
+
+User interaction is only required when a Decision Gate is triggered.
+
+- Agents should refine and structure work automatically between stages.
+- Stage outputs should automatically become inputs to the next stage.
+- Decision Gates are used only for meaningful human-judgment choices.
+
 ## Future Extensions (Optional)
 - `./.ai/skills/`: extract shared guidance only when duplication appears across three or more locations.
 - `./.ai/hooks/`: automate only repeatable, high-frequency manual tasks with reliable triggers.

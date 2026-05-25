@@ -17,6 +17,13 @@ Use the risk paths below to choose the right depth. The sequence below reflects 
 4. Execute staged deployment strategy.
 5. Monitor, verify, and close release.
 
+## Stage Progression Rules
+- Stages should continue automatically whenever no Decision Gate is triggered.
+- Stage outputs automatically become inputs to the next stage.
+- Do not pause only because a stage completed.
+- Only Recommendation Decisions and Approval Decisions may pause execution.
+- Approval Decisions must follow `.ai/policies/approval-levels.md`.
+
 ## Deliverables
 - Release checklist
 - Rollback plan
