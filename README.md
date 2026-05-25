@@ -4,9 +4,56 @@
 This library provides reusable, production-oriented workflow agents for coding assistants (Codex, Claude Code, Cursor, Cline, Roo Code). It is designed to be copied into software projects and used immediately for implementation, review, testing, and release workflows.
 
 ## Installation
-1. Copy `ai-agents/` into your project root.
-2. Keep structure unchanged for predictable agent discovery.
-3. Point your coding assistant to `ai-agents/AGENTS.md` as the root instruction context.
+Bootstrap a new project from this framework repository:
+
+```bash
+git clone <repo-url> <project-folder>
+cd <project-folder>
+
+rm -rf .git
+git init
+```
+
+This workflow treats the framework repository as a bootstrap scaffold only.
+After bootstrap, the project owns its own Git history and is independent from the original framework repository.
+
+Retain the workflow runtime files in the new project:
+
+```txt
+.ai/
+AGENTS.md
+INDEX.md
+```
+
+The framework `README.md` is intended for the standalone framework repository.
+After bootstrap, it may be deleted to avoid conflicts with the project’s own documentation.
+A project-specific `README.md` should be created instead.
+
+Example project structure:
+
+```txt
+profile-dashboard/
+├── .ai/
+├── AGENTS.md
+├── INDEX.md
+├── README.md
+├── src/
+├── package.json
+└── ...
+```
+
+### First Steps
+1. Read `INDEX.md`.
+2. Provide a project goal or idea.
+3. Allow workflow progression through:
+   - Ideation
+   - Product Specification
+   - Architecture
+   - Implementation Planning
+   - Implementation
+4. Only intervene when:
+   - Decision Gates are triggered
+   - Approval Decisions are required
 
 ## Usage
 1. Pick the relevant role file in `.ai/agents/`.
