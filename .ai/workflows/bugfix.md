@@ -11,6 +11,10 @@ Participation scales by risk path below; not all agents are used for every chang
 ## Execution Order
 Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used when bug impact is beyond low risk.
 
+Implementation planning ownership:
+- `architect` owns technical implementation planning for non-trivial/boundary-impacting fixes.
+- stack agent owns stack-specific implementation steps and execution details.
+
 1. Reproduce issue and gather failing evidence.
 2. Identify root cause and affected surfaces.
 3. Implement minimal safe fix.
@@ -23,6 +27,7 @@ Use the risk paths below to choose the right depth. The sequence below reflects 
 - Do not pause only because a stage completed.
 - Only Recommendation Decisions and Approval Decisions may pause execution.
 - Approval Decisions must follow `.ai/policies/approval-levels.md`.
+- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
 
 ## Deliverables
 - Root cause analysis
@@ -67,6 +72,7 @@ Use for production incidents, QA-found defects, and contract-breaking bugs.
 
 ## Agent Handoffs
 - QA -> Stack: deterministic repro and expected behavior.
+- Security -> Stack/QA (conditional): security findings, risk impact, required validation checks.
 - Stack -> Code-review: diff rationale + test proof.
 
 ## Gate Selection
@@ -89,6 +95,7 @@ See Low/Medium/High risk paths above.
 
 ## Handoff Requirements
 - QA -> Stack: repro steps, expected/actual behavior, severity/priority.
+- Security -> Stack/QA (conditional): risk findings, required mitigations, validation scope.
 - Stack -> QA: root cause, fix scope, regression tests.
 - QA -> Code-review: verification results + residual risks.
 

@@ -28,6 +28,9 @@ Senior Laravel engineer for PHP 8.2+ backend design and implementation.
   - `.ai/policies/definition-of-done.md`
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. API/Domain Contract
 3. Implementation Plan

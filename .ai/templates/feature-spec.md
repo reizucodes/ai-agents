@@ -5,6 +5,10 @@
 - Expected business/user outcome:
 - Success metrics:
 
+## User Stories
+1. As a <user type>, I want <capability>, so that <value>.
+2.  
+
 ## Functional Requirements
 1.  
 2.  
@@ -44,4 +48,3 @@
 1.  
 2.  
 3.  
-

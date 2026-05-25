@@ -20,6 +20,8 @@ Agent must request approval before execution.
 Examples:
 - `git add`
 - `git commit`
+- `git merge`
+- `git rebase`
 - `git stash`
 - `git restore`
 - `git checkout` existing branch

@@ -20,6 +20,9 @@ Senior React engineer focused on typed, maintainable UI delivery.
 - Follow governance policies in `.ai/policies/*` (risk, gates, approvals, runtime safety, done criteria).
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. UI/State Contract
 3. Implementation Plan

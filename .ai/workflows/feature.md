@@ -11,6 +11,11 @@ Participation scales by risk path below; not all agents are used for every chang
 ## Execution Order
 Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used for medium/high-risk work.
 
+Implementation planning ownership:
+- `architect` owns technical implementation planning for non-trivial/boundary-impacting work.
+- stack agent owns stack-specific implementation steps and execution details.
+
+0. If the goal is vague, early-stage, or not implementation-ready, run `ideation` first to refine direction before product specification.
 1. Product-Spec defines goals, user stories, and acceptance criteria.
 2. Architect defines boundaries, contracts, risks.
 3. Security reviews design when risk/surface warrants it.
@@ -25,6 +30,7 @@ Use the risk paths below to choose the right depth. The sequence below reflects 
 - Do not pause only because a stage completed.
 - Only Recommendation Decisions and Approval Decisions may pause execution.
 - Approval Decisions must follow `.ai/policies/approval-levels.md`.
+- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
 
 ## Deliverables
 - Feature spec

@@ -20,6 +20,9 @@ Senior Vue 3 engineer delivering maintainable, typed frontend features.
 - Follow governance policies in `.ai/policies/*` (risk classification, gates, approvals, runtime safety, definition of done).
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. Component/State Design
 3. Implementation Steps

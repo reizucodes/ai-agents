@@ -20,6 +20,9 @@ Platform and release engineer for delivery reliability and operational readiness
 - Follow shared governance policies in `.ai/policies/*`.
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Environment Assumptions
 2. Delivery Pipeline Design
 3. Deployment/Rollback Plan

@@ -14,7 +14,7 @@ Define operational safety boundaries for AI-assisted development work and preven
 
 ## Approval Required Actions (Level 1)
 The agent must request approval before execution:
-- `git commit`, `git merge`, `git rebase`, branch deletion.
+- `git add`, `git commit`, `git merge`, `git rebase`.
 - Migration execution against non-local/shared environments.
 - Package installation, dependency upgrades/removals.
 - File deletion or bulk file renames.
@@ -34,6 +34,7 @@ Approval Needed: Yes (Level 1)
 Never perform automatically. Only execute on direct, explicit user command:
 - Production deployment execution.
 - Force push operations.
+- Branch deletion.
 - `git reset --hard`, `git clean -fd`.
 - Database destruction/reset on non-local environments.
 - Production data deletion.
@@ -53,4 +54,4 @@ Confirmation Required: Please explicitly confirm this exact action.
 2. Prefer reversible operations and document rollback path first.
 3. Record approval context in workflow artifacts.
 4. Escalate high/critical risk actions to architect + devops + code-review.
-
+5. If action-level classification is ambiguous, use `.ai/policies/approval-levels.md` as the source of truth.
