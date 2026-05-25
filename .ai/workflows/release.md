@@ -11,6 +11,10 @@ Participation scales by risk path below; not all agents are used for every relea
 ## Execution Order
 Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used for medium/high-risk release work.
 
+Implementation planning ownership:
+- `architect` owns technical implementation planning when release scope includes non-trivial boundary/contract changes.
+- stack agent owns stack-specific implementation/release execution steps.
+
 1. Confirm scope, changes, and compatibility impacts.
 2. Validate test suite and regression pass.
 3. Run release readiness review (security/performance/observability).
@@ -23,6 +27,7 @@ Use the risk paths below to choose the right depth. The sequence below reflects 
 - Do not pause only because a stage completed.
 - Only Recommendation Decisions and Approval Decisions may pause execution.
 - Approval Decisions must follow `.ai/policies/approval-levels.md`.
+- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
 
 ## Deliverables
 - Release checklist

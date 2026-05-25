@@ -20,6 +20,9 @@ Senior Python 3.12+ engineer for services, automation, and CLI tooling.
 - Follow shared governance policies in `.ai/policies/*`.
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. Module/Contract Design
 3. Implementation Plan

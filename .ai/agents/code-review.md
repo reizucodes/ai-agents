@@ -56,6 +56,9 @@ Each finding must include:
 5. Required Fix
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Findings (Severity-tagged with file-level references)
 2. Open Questions / Assumptions
 3. Required Changes Before Approval

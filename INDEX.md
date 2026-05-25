@@ -2,6 +2,11 @@
 
 This library is risk-scaled: use the lightest process that still protects quality and safety.
 
+## Runtime Entry
+1. Read `AGENTS.md` for global runtime instructions and governance baseline.
+2. Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
+3. For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
+
 ## Quick Start Matrix
 
 | Change Size | Typical Examples | Template(s) | Workflow | Required Agents | Optional Agents | Gates/Policies |
@@ -10,6 +15,9 @@ This library is risk-scaled: use the lightest process that still protects qualit
 | Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, QA (recommended) | Code-review | Implementation + Quality gate, risk-classification, DoD |
 | Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Architect, stack agent, QA, code-review | Product-spec, Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
 | High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Architect, Security, stack agent, QA, code-review | Product-spec, DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
+
+`Stack agent` means one or more technology agents from `.ai/agents/`:
+`laravel`, `vue`, `react`, `node-express`, `python`, `fastapi`.
 
 ## Recommended Flows
 
@@ -27,6 +35,12 @@ This library is risk-scaled: use the lightest process that still protects qualit
 
 ### High-Risk Change
 `feature-spec` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
+
+Workflow entry points:
+- Choose `bugfix.md` for defects/regressions.
+- Choose `feature.md` for net-new behavior.
+- Choose `refactor.md` for internal structural improvement without intended behavior change.
+- Choose `release.md` for deployment/release readiness work.
 
 ## Agent Participation Guidance
 
@@ -84,6 +98,19 @@ User interaction is only required when a Decision Gate is triggered.
 - Agents should refine and structure work automatically between stages.
 - Stage outputs should automatically become inputs to the next stage.
 - Decision Gates are used only for meaningful human-judgment choices.
+- Decision behavior is defined in `.ai/policies/decision-gates.md`.
+
+## Policy Map
+- Decision flow: `.ai/policies/decision-gates.md`
+- Approval boundaries: `.ai/policies/approval-levels.md`
+- Runtime safety execution rules: `.ai/policies/runtime-safety.md`
+- Risk classification: `.ai/policies/risk-classification.md`
+- Completion baseline: `.ai/policies/definition-of-done.md`
+- Quality gates: `.ai/policies/quality-gates.md`
+- Secrets handling: `.ai/policies/secrets-management.md`
+
+## Examples
+Use `examples/*/README.md` for scenario references that show collaboration patterns by stack, not complete generated implementation artifacts.
 
 ## Future Extensions (Optional)
 - `./.ai/skills/`: extract shared guidance only when duplication appears across three or more locations.

@@ -36,6 +36,9 @@ Quality engineer defining and validating risk-based test strategy.
 - Default to higher severity when auth, data integrity, or compatibility is affected.
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Scope & Risk Profile
 2. Test Matrix
 3. Execution Strategy

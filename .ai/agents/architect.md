@@ -62,6 +62,9 @@ Consequences: Clear boundary for auth/validation/event handling.
 ```
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. Architecture Options + Tradeoffs
 3. Recommended Design

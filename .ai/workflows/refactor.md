@@ -11,6 +11,10 @@ Participation scales by risk path below; not all agents are used for every chang
 ## Execution Order
 Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used when refactor scope is beyond low risk.
 
+Implementation planning ownership:
+- `architect` owns technical implementation planning for non-trivial/boundary-impacting refactors.
+- stack agent owns stack-specific implementation steps and execution details.
+
 1. Define refactor scope and protected behavior.
 2. Baseline tests and key metrics.
 3. Refactor incrementally behind passing tests.
@@ -23,6 +27,7 @@ Use the risk paths below to choose the right depth. The sequence below reflects 
 - Do not pause only because a stage completed.
 - Only Recommendation Decisions and Approval Decisions may pause execution.
 - Approval Decisions must follow `.ai/policies/approval-levels.md`.
+- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
 
 ## Deliverables
 - Refactor scope statement
@@ -81,6 +86,12 @@ See Low/Medium/High risk paths above.
 ## Risk Assessment
 - Classify risk before refactor starts and after major structural changes.
 - Use `.ai/policies/risk-classification.md`.
+- Include `security` review when any of the following apply:
+  - authentication or authorization surfaces are touched,
+  - sensitive data handling changes,
+  - public API behavior changes,
+  - file upload behavior changes,
+  - risk classification is Medium or higher.
 
 ## Approval Requirements
 - Level 1 approval required for destructive operations (file deletions/major moves/dependency changes).

@@ -74,6 +74,9 @@ Should interrupt users:
 - **Critical:** active exploit path, credential exposure, severe data risk.
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. Security Surface Summary
 3. Findings (Severity + Impact + Recommendation)

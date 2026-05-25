@@ -1,7 +1,10 @@
 # Quality Gates Policy
 
 ## Purpose
-Prevent unsafe workflow progression by enforcing mandatory completion gates.
+Prevent unsafe workflow progression with mandatory gate validation for the gates selected by workflow and risk path.
+
+Workflow files determine gate depth/applicability by risk level (low/medium/high). Once a gate is selected, its requirements are mandatory.
+For low-risk work, evidence may be lightweight (for example: focused checks, targeted tests, concise validation notes) while still meeting Definition of Done and applicable safety policies.
 
 ## Architecture Gate
 ### Requirements
@@ -57,4 +60,3 @@ Block release readiness status.
 
 ### Example
 No rollback for schema migration is documented. Release gate fails.
-

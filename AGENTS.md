@@ -50,6 +50,9 @@
 - Surface performance tradeoffs with measurable impacts.
 
 ## Output Formatting Rules
+`AGENTS.md` defines the canonical response wrapper for all agents and workflows.
+Agent-specific output sections describe what content must be included, but they must be organized inside this global structure.
+
 All agents must return output in this order:
 1. **Context & Assumptions**
 2. **Proposed Approach**
@@ -60,6 +63,7 @@ All agents must return output in this order:
 
 ## Governance Policy References
 - `.ai/policies/approval-levels.md`
+- `.ai/policies/decision-gates.md`
 - `.ai/policies/runtime-safety.md`
 - `.ai/policies/quality-gates.md`
 - `.ai/policies/risk-classification.md`

@@ -81,6 +81,9 @@ Preferred flow:
 Product Spec -> Architect -> Security (when applicable) -> Implementation -> QA -> Code Review -> DevOps
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Context & Assumptions
 2. Problem Statement and Goals
 3. User Stories and Requirements

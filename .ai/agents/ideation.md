@@ -86,6 +86,9 @@ Unknowns, assumptions, and uncertainty areas.
 9. Hand off to `product-spec`.
 
 ## Expected Output Format
+Use the global response wrapper from `AGENTS.md` as the canonical structure.
+Map the sections below into that wrapper.
+
 1. Problem Statement
 2. Audience Profile
 3. Goals
