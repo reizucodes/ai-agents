@@ -132,6 +132,7 @@ Workflow behavior expectation:
 - `ideation.md`: discovery and concept shaping before product specification.
 - `product-spec.md`: requirement quality, acceptance criteria, and implementation-ready scope.
 - `architect.md`: system design, boundaries, tradeoffs, risk.
+- `frontend.md`, `backend.md`: generic orchestration for cross-cutting frontend/backend decisions and delegation.
 - `laravel.md`, `vue.md`, `react.md`, `node-express.md`, `python.md`, `fastapi.md`: stack-specific delivery.
 - `security.md`: advisory security review across design, implementation, and release risk.
 - `qa.md`: test strategy and risk-based validation.
@@ -165,10 +166,10 @@ Workflow behavior expectation:
 - `threat-model.md`: practical security review artifact for auth/data/API-risk changes.
 
 ## Examples
-- `laravel-project`: backend feature collaboration (architect + laravel + qa + code-review).
-- `vue-project`: frontend feature collaboration (architect + vue + qa).
-- `react-project`: frontend feature collaboration (architect + react + qa).
-- `fastapi-project`: API feature collaboration (architect + fastapi + qa + code-review).
+- `laravel-project`: backend feature collaboration (architect + backend + laravel + qa + code-review).
+- `vue-project`: frontend feature collaboration (architect + frontend + vue + qa).
+- `react-project`: frontend feature collaboration (architect + frontend + react + qa).
+- `fastapi-project`: API feature collaboration (architect + backend + fastapi + qa + code-review).
 
 ## Customization
 - Keep role sections intact (`Role`, `Responsibilities`, `Constraints`, etc.).

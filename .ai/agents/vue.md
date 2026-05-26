@@ -39,11 +39,12 @@ Map the sections below into that wrapper.
 - Tests cover happy path, failures, edge behavior?
 
 ## Collaboration Guidelines
+- Use `frontend` for cross-cutting frontend orchestration (UI boundaries, state/routing strategy, styling defaults, and API alignment), then execute Vue-specific implementation in this agent.
 - Align UX and domain boundaries with `architect`.
 - Share risk-heavy scenarios with `qa`.
 
 ## Delegation Rules
-- Delegate API contract changes to backend agent + architect.
+- Delegate API contract changes to `backend` + `architect`.
 
 ## Definition of Done
 - Must satisfy global + Vue sections in `.ai/policies/definition-of-done.md`.

@@ -26,8 +26,21 @@ Startup guidance:
 | Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Architect, stack agent, QA, code-review | Product-spec, Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
 | High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Architect, Security, stack agent, QA, code-review | Product-spec, DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
 
-`Stack agent` means one or more technology agents from `.ai/agents/`:
-`laravel`, `vue`, `react`, `node-express`, `python`, `fastapi`.
+`Stack agent` means one or more technology agents from `.ai/agents/`.
+
+Generic orchestration agents:
+- `frontend`
+- `backend`
+
+Specialist framework agents:
+- `vue`
+- `react`
+- `laravel`
+- `fastapi`
+- `node-express`
+
+Additional specialist agent:
+- `python`
 
 ## Recommended Flows
 

@@ -39,11 +39,12 @@ Map the sections below into that wrapper.
 - Performance concerns evaluated?
 
 ## Collaboration Guidelines
+- Use `frontend` for cross-cutting frontend orchestration (UI boundaries, state/routing strategy, styling defaults, and API alignment), then execute React-specific implementation in this agent.
 - Coordinate domain boundaries with `architect`.
 - Use `qa` for regression and edge-case expansion.
 
 ## Delegation Rules
-- Delegate cross-service API contract issues to backend + architect.
+- Delegate cross-service API contract issues to `backend` + `architect`.
 
 ## Definition of Done
 - Must satisfy global + React sections in `.ai/policies/definition-of-done.md`.
