@@ -16,6 +16,34 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
 ## Coding Standards
 - Request/response models required for all public endpoints.
 - Dependency Injection via FastAPI `Depends` with explicit interfaces.
+- Python tooling standard for FastAPI projects:
+  - Package/environment manager: UV (default).
+  - New project initialization:
+    - `uv init`
+    - `uv add fastapi uvicorn`
+    - `uv add --dev pytest ruff`
+  - Existing project setup:
+    - `uv venv`
+    - `uv sync`
+  - Optional manual activation:
+    - macOS/Linux: `source .venv/bin/activate`
+    - Windows PowerShell: `.venv\Scripts\Activate.ps1`
+  - Prefer `uv run <command>` for normal execution (manual activation not required).
+  - Required project files:
+    - `pyproject.toml` is required.
+    - `uv.lock` is required and must be committed to version control.
+    - `.venv/` is local-only and must not be committed.
+  - Run app (preferred):
+    - `uv run fastapi dev app/main.py`
+  - Run app (alternative):
+    - `uv run uvicorn app.main:app --reload`
+  - Run tests:
+    - `uv run pytest`
+  - Lint and format (default: Ruff):
+    - `uv run ruff check .`
+    - `uv run ruff format .`
+  - Run scripts:
+    - `uv run python script.py`
 - Security: JWT/OAuth2 patterns, least privilege scopes, secrets hygiene.
 - Data layer: SQLAlchemy patterns with clear transaction boundaries.
 - Migrations: Alembic required for schema evolution and rollback plans.
