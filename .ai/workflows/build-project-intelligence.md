@@ -15,6 +15,7 @@ This workflow is language/framework/runtime agnostic and designed as a repositor
   - `.ai/context/integrations.md`
   - `.ai/context/testing-strategy.md`
   - `.ai/context/technical-debt.md`
+  - `.ai/context/confidence-gates.md`
 - Perform evidence-based repository analysis only.
 - Do not modify application source code.
 
@@ -122,6 +123,7 @@ Classify major findings with one of the following confidence levels where approp
 - Include evidence index entries that map claims to repository files.
 - Include confidence calibration for major sections.
 - Generate specialized artifacts only when sufficient repository complexity justifies separation.
+- Generate `.ai/context/confidence-gates.md` when meaningful risk differences exist across change types, domains, modules, integrations, or operational surfaces.
 - Avoid fragmentation for small repositories and keep `project-intelligence.md` as the authoritative summary.
 
 ### 9) Review Checklist
@@ -179,6 +181,56 @@ The `AI Implementation Guidance` section must include:
 
 This guidance should explicitly optimize future coding-agent behavior.
 
+## Confidence Gates Artifact (Optional Specialized Artifact)
+Generate `.ai/context/confidence-gates.md` when the repository has meaningful risk differences between change types, domains, modules, integrations, or operational surfaces.
+
+Confidence gates are pre-implementation guidance only. They do not replace source-code verification, test execution, or evidence-based repository inspection. Their purpose is to reduce blind discovery and guide targeted inspection before coding.
+
+Use this exact structure:
+
+```md
+# Confidence Gates
+
+## Purpose
+
+## Confidence Scale
+
+## Change Type Confidence Matrix
+
+## Required Pre-Implementation Checks
+
+## High-Risk Change Gates
+
+## Files to Inspect by Change Type
+
+## Approval Gate Recommendations
+
+## Notes for Future Agents
+```
+
+The `Change Type Confidence Matrix` must remain language/framework/runtime agnostic and include, at minimum, these generic change categories:
+- Standard feature change
+- Bug fix
+- Refactor
+- Data model or persistence change
+- Authentication/authorization change
+- External integration change
+- Public API or interface contract change
+- Background job / queue / scheduled task change
+- Configuration or environment change
+- Testing-only change
+- Deployment/release change
+- Security-sensitive change
+
+For each change type, include:
+- Confidence level: `High`, `Medium`, `Low`, or `Unconfirmed`
+- Why
+- Required files or areas to inspect
+- Required tests/checks
+- Approval gate recommendation
+
+Refresh `confidence-gates.md` when new risk areas, integrations, architectural changes, testing gaps, operational concerns, or domain boundaries are discovered.
+
 ## Usage Example
 Run `.ai/workflows/build-project-intelligence.md` and generate `.ai/context/project-intelligence.md` for this repository. Infer architecture and conventions from repository evidence and mark uncertain findings as `Unconfirmed`.
 
@@ -199,4 +251,5 @@ Regenerate or refresh intelligence files after:
   - `.ai/context/integrations.md`
   - `.ai/context/testing-strategy.md`
   - `.ai/context/technical-debt.md`
+  - `.ai/context/confidence-gates.md`
 - Evidence-backed repository intelligence suitable for future AI sessions across Codex, Claude Code, Cursor, Roo Code, Cline, and future runtimes.

@@ -149,6 +149,17 @@ Guidance:
 - Repository source code remains the ultimate source of truth.
 - When conflicts occur, prefer current repository evidence.
 - Knowledge files should be updated after significant repository changes.
+- Before implementation, if `.ai/context/confidence-gates.md` exists, use it to classify the requested change and determine required pre-implementation checks.
+- Confidence gates are especially important for:
+  - authentication/authorization
+  - sensitive data handling
+  - public APIs or external contracts
+  - data model or persistence changes
+  - external integrations
+  - background jobs, queues, or scheduled tasks
+  - configuration/environment changes
+  - deployment/release changes
+  - security-sensitive changes
 
 Knowledge precedence:
 1. Current repository source code
@@ -178,7 +189,8 @@ Example structure:
 ├── coding-patterns.md
 ├── integrations.md
 ├── testing-strategy.md
-└── technical-debt.md
+├── technical-debt.md
+└── confidence-gates.md
 ```
 
 ## Examples
