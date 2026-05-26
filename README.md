@@ -4,7 +4,8 @@
 This library provides reusable, production-oriented workflow agents for coding assistants (Codex, Claude Code, Cursor, Cline, Roo Code). It is designed to be copied into software projects and used immediately for implementation, review, testing, and release workflows.
 
 ## Installation
-Bootstrap a new project from this framework repository:
+## Option 1: Bootstrap a New Project
+Use this when starting a brand-new project from the framework.
 
 ```bash
 git clone <repo-url> <project-folder>
@@ -14,26 +15,27 @@ rm -rf .git
 git init
 ```
 
-This workflow treats the framework repository as a bootstrap scaffold only.
-After bootstrap, the project owns its own Git history and is independent from the original framework repository.
+This workflow treats the framework repository as a bootstrap scaffold.
+After initialization, the new project owns its own Git history.
+The framework repository is no longer required after bootstrap.
 
-Retain the workflow runtime files in the new project:
+The runtime assets retained in the project are:
 
 ```txt
-.ai/
 AGENTS.md
 INDEX.md
+.ai/
+examples/
 ```
 
-The framework `README.md` is intended for the standalone framework repository.
-After bootstrap, it may be deleted to avoid conflicts with the project’s own documentation.
-A project-specific `README.md` should be created instead.
+The framework `README.md` may be replaced with project-specific documentation.
 
 Example project structure:
 
 ```txt
 profile-dashboard/
 ├── .ai/
+├── examples/
 ├── AGENTS.md
 ├── INDEX.md
 ├── README.md
@@ -41,6 +43,54 @@ profile-dashboard/
 ├── package.json
 └── ...
 ```
+
+## Option 2: Install Into an Existing Repository
+Use this when integrating the framework into an already-existing codebase.
+
+Preview first:
+
+```bash
+rsync -avh --dry-run --itemize-changes \
+  --exclude='.DS_Store' \
+  AGENTS.md INDEX.md .ai examples \
+  /path/to/existing-project/
+```
+
+Then perform the sync:
+
+```bash
+rsync -avh \
+  --exclude='.DS_Store' \
+  AGENTS.md INDEX.md .ai examples \
+  /path/to/existing-project/
+```
+
+Always run the dry-run command first.
+`.ai` and `examples` intentionally do not use trailing slashes.
+In `rsync`, a trailing slash copies directory contents, while no trailing slash copies the directory itself. See: https://stackoverflow.com/questions/20300971/rsync-copy-directory-contents-but-not-directory-itself
+
+The goal is to preserve:
+
+```txt
+AGENTS.md
+INDEX.md
+.ai/
+examples/
+```
+
+inside the destination repository.
+
+The following are not part of the runtime installation payload:
+
+```txt
+README.md
+docs/
+```
+
+Existing source code remains untouched.
+Existing Git history remains untouched.
+Existing CI/CD remains untouched.
+Existing project documentation remains untouched.
 
 ### First Steps
 1. Read `INDEX.md`.

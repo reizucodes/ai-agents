@@ -3,9 +3,19 @@
 This library is risk-scaled: use the lightest process that still protects quality and safety.
 
 ## Runtime Entry
-1. Read `AGENTS.md` for global runtime instructions and governance baseline.
-2. Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
-3. For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
+Preferred initialization order:
+1. `AGENTS.md`
+2. `.ai/context/project-intelligence.md` (if present)
+3. Other relevant `.ai/context/*` files
+4. Relevant policies
+5. Relevant workflow
+6. Relevant agent
+7. Repository inspection as needed
+
+Startup guidance:
+- Read `AGENTS.md` for global runtime instructions and governance baseline.
+- Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
+- For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
 
 ## Quick Start Matrix
 
@@ -108,6 +118,80 @@ User interaction is only required when a Decision Gate is triggered.
 - Completion baseline: `.ai/policies/definition-of-done.md`
 - Quality gates: `.ai/policies/quality-gates.md`
 - Secrets handling: `.ai/policies/secrets-management.md`
+
+## Project Knowledge Base
+`.ai/context/*` acts as a repository-specific knowledge layer that:
+- reduces repeated repository discovery
+- preserves architectural understanding
+- captures project conventions
+- accelerates onboarding for AI runtimes
+- improves implementation consistency across sessions
+
+If `.ai/context/` exists, treat all files inside it as repository-specific knowledge artifacts.
+
+Consult these files before:
+- architecture work
+- implementation work
+- refactoring
+- testing
+- security reviews
+- release activities
+
+Knowledge files help:
+- reduce repeated repository discovery
+- preserve architectural context
+- preserve project conventions
+- improve implementation consistency
+- accelerate onboarding for AI runtimes
+
+Guidance:
+- Knowledge files are accelerators, not absolute truth.
+- Repository source code remains the ultimate source of truth.
+- When conflicts occur, prefer current repository evidence.
+- Knowledge files should be updated after significant repository changes.
+- Before implementation, if `.ai/context/confidence-gates.md` exists, use it to classify the requested change and determine required pre-implementation checks.
+- Confidence gates are especially important for:
+  - authentication/authorization
+  - sensitive data handling
+  - public APIs or external contracts
+  - data model or persistence changes
+  - external integrations
+  - background jobs, queues, or scheduled tasks
+  - configuration/environment changes
+  - deployment/release changes
+  - security-sensitive changes
+
+Knowledge precedence:
+1. Current repository source code
+2. Repository configuration and manifests
+3. Repository intelligence files
+4. Generated assumptions
+
+If conflicts exist:
+- Prefer repository evidence.
+- Update intelligence files accordingly.
+
+Refresh knowledge artifacts after:
+- architectural changes
+- major dependency changes
+- integration changes
+- domain-model changes
+- large refactors
+- release process changes
+
+Example structure:
+
+```txt
+.ai/context/
+├── project-intelligence.md
+├── architecture.md
+├── domain-model.md
+├── coding-patterns.md
+├── integrations.md
+├── testing-strategy.md
+├── technical-debt.md
+└── confidence-gates.md
+```
 
 ## Examples
 Use `examples/*/README.md` for scenario references that show collaboration patterns by stack, not complete generated implementation artifacts.
