@@ -48,6 +48,7 @@ Map the sections below into that wrapper.
 - API responses consistent and documented?
 
 ## Collaboration Guidelines
+- Use `backend` for cross-cutting backend orchestration (contracts, domain boundaries, auth/data concerns, and integration risk), then execute Laravel-specific implementation in this agent.
 - Consume architecture constraints from `architect`.
 - Coordinate test matrix with `qa`.
 - Request `code-review` before release.

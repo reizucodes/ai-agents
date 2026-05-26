@@ -75,15 +75,18 @@ Implement `/api/v1/api-keys` create/list/revoke endpoints with strict response s
 1. **architect**
    - Defines domain boundaries: key lifecycle service, audit service, auth boundary.
    - Specifies versioned contract and non-breaking error schema.
-2. **fastapi**
+2. **backend**
+   - Coordinates generic backend concerns: API/auth/data boundaries, migration/transaction risk, and integration expectations.
+   - Delegates framework execution details to FastAPI once stack context is explicit.
+3. **fastapi**
    - Uses APIRouter per domain and Pydantic v2 request/response models.
    - Applies `Depends` for auth scope checks and DB session injection.
    - Adds SQLAlchemy persistence + Alembic migration for key metadata.
    - Ensures consistent envelope: `{data, error, meta}`.
-3. **qa**
+4. **qa**
    - Tests create/list/revoke success, unauthorized scope, malformed payload, revoked-key behavior.
    - Adds backward compatibility contract tests from OpenAPI snapshots.
-4. **code-review**
+5. **code-review**
    - Requests explicit pagination metadata and deterministic error codes.
    - Approves after schema and tests are updated.
 

@@ -40,6 +40,7 @@ Map the sections below into that wrapper.
 - Contract tests and edge tests included?
 
 ## Collaboration Guidelines
+- Use `backend` for cross-cutting backend orchestration (contracts, domain boundaries, auth/data concerns, and integration risk), then execute Node/Express-specific implementation in this agent.
 - Align architecture and boundaries with `architect`.
 - Coordinate rollout with `devops` for release-sensitive changes.
 
