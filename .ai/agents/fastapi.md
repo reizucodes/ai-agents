@@ -17,7 +17,7 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
 - Request/response models required for all public endpoints.
 - Dependency Injection via FastAPI `Depends` with explicit interfaces.
 - Python tooling standard for FastAPI projects:
-  - Package/environment manager: UV (default).
+  - Package/environment manager: UV (required).
   - New project initialization:
     - `uv init`
     - `uv add fastapi uvicorn`
@@ -44,6 +44,7 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
     - `uv run ruff format .`
   - Run scripts:
     - `uv run python script.py`
+  - `pip` + `requirements.txt` workflows are not allowed for FastAPI projects.
 - Security: JWT/OAuth2 patterns, least privilege scopes, secrets hygiene.
 - Data layer: SQLAlchemy patterns with clear transaction boundaries.
 - Migrations: Alembic required for schema evolution and rollback plans.
