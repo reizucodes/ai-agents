@@ -26,6 +26,9 @@ Behavior:
 - proceed without user interruption,
 - carry outputs directly into the next stage.
 
+Boundary:
+- inferable implementation detail -> Auto Decision.
+
 ## Recommendation Decisions
 Agent pauses and requests user input.
 
@@ -70,6 +73,44 @@ Behavior:
 - pause workflow until user responds,
 - resume automatically after selection.
 
+Boundary:
+- tradeoff choice with multiple viable outcomes -> Recommendation Decision.
+
+## Requirement Clarification Gate
+Agent pauses and requests targeted clarification when requirements are not sufficiently defined to continue safely.
+
+Trigger:
+- missing requirements block safe progress,
+- requirements conflict,
+- acceptance criteria cannot be made testable,
+- multiple materially different product behaviors are valid,
+- business/security/compliance rules are undefined.
+
+Behavior:
+- pause execution,
+- ask targeted clarification,
+- identify blocking agent,
+- identify blocking reason,
+- do not invent requirements,
+- do not continue past the blocking ambiguity.
+
+Required format:
+```text
+Clarification Required
+Blocking agent: <agent>
+Blocking reason: <reason>
+Question:
+<single targeted question>
+
+If helpful, include concise options:
+1)
+2)
+```
+
+Resume:
+- continue automatically after the user answers,
+- re-open the gate only if new material ambiguity appears.
+
 ## Approval Decisions
 Agent must stop and wait for explicit approval.
 
@@ -97,6 +138,13 @@ Behavior:
 Rule:
 - security design choices -> Recommendation Decision.
 - security-affecting operations requiring approval-level actions -> Approval Decision.
+- risky/destructive operation -> Approval Decision.
+
+Decision-type map:
+- inferable implementation detail -> Auto Decision.
+- tradeoff choice -> Recommendation Decision.
+- blocking missing requirement -> Requirement Clarification Gate.
+- risky/destructive operation -> Approval Decision.
 
 ## Decision Resolution Rule
 When a user selects an option from a Recommendation Decision:

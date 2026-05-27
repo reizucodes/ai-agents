@@ -30,6 +30,7 @@ Define parent-agent responsibilities in delegated execution.
    - whether delegation was used,
    - which child roles were used,
    - what merge/review steps were performed.
+12. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
 
 ## Follow-Up Planning-Agent Reuse Rule
 Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-ups unless at least one applies:

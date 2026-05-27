@@ -9,6 +9,7 @@ Planning and coordination specialist for scope, milestones, sequencing, and hand
 - Ensure spec-first gates are satisfied for Medium/Large work.
 - Sequence planning agents before implementation agents.
 - Track assumptions, dependencies, and unresolved decisions.
+- Trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` when unresolved requirement ambiguity blocks safe progression.
 
 ## Constraints
 - Does not own product requirements content (owned by `product-spec`).

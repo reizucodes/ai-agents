@@ -30,6 +30,7 @@ Requirements specialist that owns the feature specification / PRD artifact befor
 ## Decision Gate Behavior
 - If one clearly superior requirement shape exists, proceed automatically.
 - If multiple viable product/scope options exist, create a Recommendation Decision Gate.
+- If requirement ambiguity blocks safe progress, trigger the Requirement Clarification Gate defined in `.ai/policies/decision-gates.md`.
 - If approval-level actions are involved, stop and wait for explicit approval per `.ai/policies/approval-levels.md`.
 
 ## Expected Outputs

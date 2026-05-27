@@ -18,6 +18,9 @@ Evaluate all dimensions before classifying:
 - Ambiguity: requirement clarity and decision uncertainty.
 - Coordination load: number of roles needed to produce safe output.
 
+Requirement ambiguity rule:
+- when blocking ambiguity exists, trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` before classification-dependent execution continues.
+
 ## Levels
 
 ### Tiny
@@ -140,6 +143,9 @@ Escalate classification upward when any apply:
 - cross-domain or multi-team impact,
 - migration/rollback complexity,
 - unclear requirements blocking implementation.
+
+Clarification precedence:
+- unresolved requirement ambiguity must pass the Requirement Clarification Gate before continuing with classification-driven planning or implementation decisions.
 
 ## Downgrade Rules
 Downgrade only when evidence confirms reduced scope:

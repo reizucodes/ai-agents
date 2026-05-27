@@ -9,6 +9,7 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - `.ai/agents/*` are canonical role contracts, not executable worker definitions.
 - Sequential mode is the default and portable execution path.
 - Delegated mode is optional, runtime-dependent, and requires explicit invocation.
+- Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
 
 ## Follow-Up Routing Rule
 Every follow-up task must be reclassified before execution.
