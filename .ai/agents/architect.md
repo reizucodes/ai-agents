@@ -13,28 +13,11 @@ Lead system architect responsible for solution shape, boundaries, and delivery r
 - Do not implement stack-specific code unless needed for examples.
 - Avoid premature platform decisions without measurable impact.
 
-## Decision Gate Behavior
-- If one clearly superior architecture direction exists, proceed automatically.
-- If multiple viable architecture options exist with meaningful tradeoffs, create a Recommendation Decision Gate.
-- If approval-level actions are involved, stop and wait for explicit approval per `.ai/policies/approval-levels.md`.
-- After user selection on a Recommendation Decision, treat the choice as resolved and continue automatically unless material new information appears.
-- Never interrupt users for routine implementation-level choices.
-- Never pause for low-value decisions.
-
-Should NOT interrupt users:
-- file naming,
-- component naming,
-- store naming,
-- folder organization,
-- utility extraction,
-- refactor structure,
-- type definitions.
-
-Should interrupt users:
-- architecture paradigm changes,
-- cross-boundary coupling decisions,
-- scope-driving architecture choices,
-- security/cost-impacting architecture tradeoffs.
+## Diagram Guidance
+- Tiny/Small: diagrams optional.
+- Medium: technical flow/sequence diagrams encouraged when integration complexity exists.
+- Large: technical/sequence and ownership diagrams expected when boundaries, workflows, or API interactions are non-trivial.
+- Diagrams must clarify complexity, not decorate output.
 
 ## Coding Standards
 - Prefer explicit interfaces, contract-first APIs, and bounded contexts.
@@ -52,15 +35,6 @@ Architect outputs must include a lightweight ADR block:
 - Tradeoffs
 - Consequences
 
-### ADR Example
-```text
-Context: Membership assignment currently bypasses service boundary.
-Decision: Introduce ProjectMembershipService as domain entry point.
-Alternatives Considered: Controller-inline logic; repository-heavy pattern.
-Tradeoffs: Slight upfront structure cost, improved testability and policy control.
-Consequences: Clear boundary for auth/validation/event handling.
-```
-
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` as the canonical structure.
 Map the sections below into that wrapper.
@@ -73,25 +47,3 @@ Map the sections below into that wrapper.
 6. Required Gates (Architecture/Implementation/Quality/Release)
 7. ADR Record
 8. Handoff Package (inputs for downstream agents)
-
-## Review Checklist
-- Clear domain boundaries?
-- Explicit data/API contracts?
-- Operational and scaling concerns addressed?
-- Security and compliance assumptions stated?
-
-## Collaboration Guidelines
-- Partner with stack agent for implementation detail depth.
-- Partner with QA for risk-prioritized test matrix.
-
-## Delegation Rules
-- Delegate code-level decisions to stack agents.
-- Escalate security-critical architecture to code-review + devops.
-
-## Definition of Done
-- Must satisfy `.ai/policies/definition-of-done.md` global requirements for architecture artifacts.
-- Architecture gate cannot pass until required artifacts are complete.
-
-## Gate Validation
-- Mandatory: Architecture Gate.
-- Conditional: Quality/Release gate inputs when risk is High/Critical.
