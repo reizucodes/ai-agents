@@ -18,6 +18,13 @@ Before spawning children, parent must define:
 ## Coordination Rules
 - Children treat the target codebase as shared and must not revert unrelated edits.
 - Parent resolves boundary violations by reassigning or folding task back into sequential mode.
+- Parent active-child registry entries must include at least:
+  - canonical role,
+  - ownership scope identifier,
+  - runtime child/session identifier (if available),
+  - display label metadata (optional).
+- Registry keys should prevent duplicate active children for the same role+scope.
+- Parent must remove registry entries immediately when a child exits, fails, or is explicitly stopped.
 
 ## Minimum Handoff Data
 Each child returns:

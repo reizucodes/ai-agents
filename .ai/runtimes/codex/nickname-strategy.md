@@ -16,6 +16,9 @@ Define optional nickname metadata behavior for Codex custom-agent adapters.
 - Nicknames must not be used as canonical role names.
 - Do not depend on nicknames for orchestration, validation, reporting, or handoffs.
 - Include `nickname_candidates` only for forward compatibility when supported by Codex.
+- When runtime supports display labels, prefer role-tag format:
+  - `<nickname> [<canonical-role>]`
+  - Example: `Marcus [frontend]`.
 
 ## Recommended Candidates
 | Adapter | nickname_candidates |
@@ -34,6 +37,7 @@ Define optional nickname metadata behavior for Codex custom-agent adapters.
 
 ## Collision and Quality Rules
 - Duplicate nickname within one generated adapter set is disallowed.
+- Duplicate display label within one active spawned-child set is disallowed.
 - If collision occurs, replace with role-distinct alternatives.
 - Nicknames may be stable across regenerations, but runtime display names are not guaranteed.
 - Weak nickname quality (ambiguous, role-confusing, duplicate-prone) should trigger replacement.

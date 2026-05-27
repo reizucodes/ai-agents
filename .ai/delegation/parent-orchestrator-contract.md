@@ -32,6 +32,21 @@ Define parent-agent responsibilities in delegated execution.
    - what merge/review steps were performed.
 12. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
 
+## Spawn Idempotency Rule
+- Parent must treat child spawn/invocation as idempotent per active role assignment.
+- Before spawning a child, parent must check whether the same child role is already active for the same ownership scope.
+- If same-role child is already active in that scope:
+  - do not spawn a duplicate child,
+  - route follow-up instructions to the active child, or
+  - explicitly terminate/reassign before replacement.
+- Parent must maintain an active-child registry for the duration of delegated execution and clear entries on child completion/failure.
+
+## Display Label Rule
+- When reporting spawned children, parent should format display labels as:
+  - `<display-name> [<canonical-role>]`
+- Example: `Marcus [frontend]`.
+- Canonical role remains authoritative for routing/reporting; display label is readability metadata only.
+
 ## Follow-Up Planning-Agent Reuse Rule
 Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-ups unless at least one applies:
 - scope changes,
