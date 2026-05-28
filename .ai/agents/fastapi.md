@@ -36,14 +36,89 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
   - `app/dependencies/database.py`, `app/dependencies/services.py`
   - `app/core/config.py`, `app/core/exceptions.py`
   - `migrations/versions/` and `alembic.ini`
+- FastAPI DI and router pattern:
+  - Use function-based route handlers; do not treat routers as class controllers.
+  - Route function signatures are the request-binding and dependency declaration surface.
+  - Inject services through `Depends()` in route parameters; do not manually construct services per route call.
+  - Avoid service-method wrapper dependencies as a default pattern.
+  - Preferred route pattern:
+    - ```python
+      @router.get("/inventory-ledger")
+      def get_inventory_ledger(
+          service: InventoryService = Depends(get_inventory_service),
+      ) -> JSONResponse:
+          items = service.get_ledger_items()
+          return success(items)
+      ```
+- Service provider function pattern:
+  - Use one provider function per service, not one wrapper per service method.
+  - Preferred provider:
+    - ```python
+      def get_inventory_service(
+          db: Session = Depends(get_db),
+      ) -> InventoryService:
+          return InventoryService(db)
+      ```
+  - Routes should call multiple service methods from the injected service instance (for example, `service.get_ledger_items(...)`, `service.get_summary(...)`).
+  - Avoid method-level wrappers for new code (acceptable only as transitional legacy refactor support):
+    - ```python
+      def get_inventory_ledger_items(db: Session, ...):
+          return InventoryService(db).get_ledger_items(...)
+      ```
+- Service constructor pattern:
+  - Services should receive dependencies through `__init__`.
+  - Acceptable direct form:
+    - ```python
+      class InventoryService:
+          def __init__(self, session: Session) -> None:
+              self.repository = InventoryRepository(session)
+      ```
+  - Preferred contract-based form:
+    - ```python
+      class InventoryService:
+          def __init__(
+              self,
+              repository: InventoryRepositoryContract,
+          ) -> None:
+              self.repository = repository
+      ```
+  - Provider wiring for contract-based service construction:
+    - ```python
+      def get_inventory_service(
+          db: Session = Depends(get_db),
+      ) -> InventoryService:
+          repository = InventoryRepository(db)
+          return InventoryService(repository)
+      ```
+  - Router modules should not rely on class `__init__` injection patterns; FastAPI DI happens in route/provider functions via `Depends()`.
+  - Provider functions act as lightweight service-container bindings.
 - Repository pattern guidance:
   - Implement shared CRUD behavior in `base_repository.py` behind `base_repository_contract.py`.
   - Define module-specific repository contracts and concrete repositories in each module.
   - Keep service/repository separation strict for DI-friendly and testable services.
+  - Required repository contract inheritance/implementation pattern:
+    - `BaseRepositoryContract` is implemented by `BaseRepository`.
+    - Domain repository contracts define domain-specific query/behavior methods.
+    - Domain repositories must extend `BaseRepository` and implement their domain repository contract.
+    - Example:
+      - ```python
+        class InventoryRepository(
+            BaseRepository[LedgerEntry],
+            InventoryRepositoryContract,
+        ):
+            ...
+        ```
+  - This pattern keeps common CRUD centralized, domain-specific queries explicit, service dependencies testable, and repository implementations swappable.
 - Routing guidance:
   - Register routers centrally in `routers/index.py`.
   - Keep versioned route modules under `routers/v1/`.
-  - Routers must not contain direct query/persistence logic.
+  - Routers should only bind request/query/body/header/path params, declare dependencies, run simple route-level auth checks when appropriate, call service methods, and map service results to response helpers/schemas.
+  - Routers must not contain direct SQLAlchemy query/persistence logic.
+  - Routers must not instantiate repositories directly.
+  - Routers must not contain business rules or repeated service construction logic.
+- Dependency location guidance:
+  - Prefer centralized service providers in `app/dependencies/services.py` (for example, `get_inventory_service()`, `get_purchase_order_service()`, `get_receiving_service()`).
+  - Use module-local providers only for small projects or transitional refactors.
 - Database and migration guidance:
   - Use SQLAlchemy for ORM/data access.
   - Use Alembic for schema changes with forward/rollback-safe migrations.
