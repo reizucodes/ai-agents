@@ -37,6 +37,7 @@ Startup guidance:
 - If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
 - Use execution-mode input header when provided:
   - `Execution mode: auto|sequential|targeted|delegated`
+  - preferred source is runtime/launcher metadata; prompt-body header is fallback only.
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts
@@ -158,6 +159,18 @@ Not mandatory for routine feature work.
 
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.
+
+## Execution Mode UX
+Preferred:
+- Keep the user prompt natural and task-focused.
+- Select execution mode in runtime/launcher/session metadata.
+
+Example:
+- Natural prompt: `Review the full PIPS test project.`
+- Runtime-selected mode: `targeted`
+
+Fallback only when runtime metadata cannot be provided:
+- Add `Execution mode: <auto|sequential|targeted|delegated>` in prompt body.
 
 ## Classification Rule
 - Classify work first using `.ai/execution/task-classification.md`.

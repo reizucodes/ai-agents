@@ -132,6 +132,9 @@ Runtime-specific summary requirements (keep concise):
 Runtime orchestration bootstrap minimum routing rules:
 - execution-mode input header support:
   - `Execution mode: auto|sequential|targeted|delegated`.
+- execution mode should be consumed from runtime/launcher metadata first.
+- prompt-body `Execution mode: ...` is fallback only.
+- when no mode is provided, default to `auto`.
 - full-project review with artifact output -> `reviewer` -> `docs`.
 - review + validation -> `reviewer` -> `tester` (as needed) -> `docs`.
 - Tiny/Small frontend code change -> `frontend`/specialist (`vue`/`react`) -> audit report.

@@ -29,6 +29,10 @@ Accepted input values:
 - `targeted`
 - `delegated`
 
+Input-source preference:
+- Prefer runtime/launcher metadata or injected context/header values.
+- Prompt-body `Execution mode: ...` is fallback only when runtime metadata is unavailable.
+
 Runtime preflight before `targeted`/`delegated`:
 - Check runtime delegation capability gates.
 - Check Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.

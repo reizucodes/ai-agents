@@ -13,6 +13,9 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 ## Main-Session Routing Rules
 - Honor execution-mode input from `.ai/execution/execution-mode-input.md`:
   - `auto` | `sequential` | `targeted` | `delegated`.
+- Read execution mode from runtime/launcher metadata first.
+- Use prompt-body `Execution mode: ...` only as fallback when runtime metadata is unavailable.
+- If no mode is provided, default to `auto`.
 - Classify task before execution using `.ai/execution/task-classification.md`.
 - Choose execution mode automatically from classification + capability + delegation eligibility gates.
 - User does not need to explicitly request "delegated mode" for eligible tasks.

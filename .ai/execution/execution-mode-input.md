@@ -3,6 +3,9 @@
 ## Purpose
 Define a runtime-facing execution-mode input model with capability-aware fallback behavior.
 
+Preferred UX:
+- Execution mode is runtime metadata selected by launcher/session context, not required inside every user task prompt body.
+
 ## Supported Modes
 - `auto`:
   - default mode.
@@ -18,18 +21,30 @@ Define a runtime-facing execution-mode input model with capability-aware fallbac
   - full orchestration mode.
   - required subagent spawning based on workflow contracts.
 
-## Input Header Convention
-Use a lightweight header before execution:
+## Preferred Input Sources
+Use execution mode from runtime metadata in this priority order:
+1. Launcher-selected value.
+2. Runtime/session header/context value injected before task execution.
+3. Prompt-body header fallback.
+
+If no value is provided by runtime metadata, default to `auto`.
+
+Runtime metadata/header examples:
 
 ```md
-Execution mode: <auto|sequential|targeted|delegated>
+Execution mode (runtime): auto|sequential|targeted|delegated
 ```
-
-Optional runtime context header:
 
 ```md
 Runtime capability: <available|unavailable|unknown>
 Codex adapters: <present|missing|unknown>
+```
+
+## Prompt-Body Fallback (Allowed, Not Preferred)
+Fallback only when runtime metadata/header injection is unavailable:
+
+```md
+Execution mode: <auto|sequential|targeted|delegated>
 ```
 
 ## Capability-Aware Preconditions
