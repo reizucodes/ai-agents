@@ -99,6 +99,13 @@ Additional specialist agent:
 ### High-Risk Change
 `feature-spec` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
 
+### Full-Project Technical Review (Artifact Output)
+`reviewer` -> `docs`
+
+Notes:
+- Add `qa` (`tester`) when validation status, test result interpretation, or coverage verification is requested.
+- Keep `backend`/`frontend` out of review-only runs unless remediation is explicitly requested.
+
 Workflow entry points:
 - Choose `bugfix.md` for defects/regressions.
 - Choose `feature.md` for net-new behavior.

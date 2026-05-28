@@ -28,6 +28,8 @@ Define parent-agent responsibilities in delegated execution.
    - `docs` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
    - parent final validation.
    - when `docs` is invoked, require `/artifacts/docs/<run-id>-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
+   - for review artifact-generating tasks, automatically route to `reviewer`; require `docs` when run report/audit/final report artifact is created.
+   - include `tester` when validation, test interpretation, or coverage verification is requested.
 10. Collect child outputs and integrate deterministically.
 11. Enforce policy gates, quality checks, and final validation.
 12. Produce final answer with clear execution disclosure:
@@ -79,6 +81,11 @@ Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-
 Planning bypass rule for Tiny/Small:
 - Do not require full PM/product-spec/architect pipeline by default.
 - Use targeted delegation unless ambiguity, product behavior changes, architecture changes, multi-module impact, or risk escalation requires planning roles.
+
+Review-only routing constraints:
+- Pure review/analysis with no file changes may remain parent-only.
+- Review artifact-generating tasks must not be parent-only when delegated capability is available.
+- Do not require `backend`/`frontend`/`project-manager`/`product-spec`/`architect` for review-only tasks unless remediation/planning/architecture work is explicitly requested.
 
 ## Skip-Delegation Explanation Requirement
 If parent handles a small multi-surface follow-up directly, parent must include:

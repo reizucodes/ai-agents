@@ -21,6 +21,7 @@ Every follow-up task must be reclassified before execution.
 
 Definition:
 - Targeted delegation: spawn only the minimal relevant implementation role(s) needed for the changed surface, without forcing full Medium/Large planning pipeline.
+- Review artifact-generating tasks: review/report/audit/final-report producing tasks that must route to `reviewer` and `docs` (when run-report/audit/final-report artifacts are produced).
 
 ## Follow-Up Delegation Thresholds
 
@@ -70,6 +71,11 @@ Delegated mode is preferred when all apply:
 - For Medium/Large:
   - approved consolidated spec exists, or spec gate is actively unresolved and implementation is paused.
   - architecture handoff exists before spawning `backend`/`frontend`.
+- For review artifact-generating tasks:
+  - delegated mode should be selected automatically when runtime capability gates pass.
+  - `reviewer` is required.
+  - `docs` is required when run report/audit/final report artifact is created.
+  - `tester` is required when validation/coverage/test-result verification is in scope.
 
 ## Ineligible Cases (Reject Delegation)
 Reject delegated mode when any apply:
@@ -83,6 +89,10 @@ Reject delegated mode when any apply:
 - Medium/Large task without architecture handoff before executor spawn.
 - Auditability requires single-thread deterministic trace.
 - A fallback audit report cannot be produced for a code-changing run.
+
+Review-only sequential exception:
+- Parent-only sequential execution is allowed for pure review/analysis only when no artifacts are created/updated.
+- Parent-only sequential execution is not allowed for review artifact-generating tasks when runtime delegation is available.
 
 ## Skip-Delegation Explanation Rule
 When parent handles a small multi-surface follow-up directly, parent must include:

@@ -26,6 +26,27 @@ Code-changing run rule:
 Requirement ambiguity rule:
 - when blocking ambiguity exists, trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` before classification-dependent execution continues.
 
+Review-only task types:
+- Pure review / analysis only:
+  - No repository file changes.
+  - Parent/main allowed.
+  - `reviewer` optional.
+  - No audit artifact required.
+- Review artifact-generating:
+  - Creates/updates review/report/audit/final-report artifacts.
+  - Requires targeted delegation to `reviewer`.
+  - Requires `docs` when run report/audit/final report artifact is created.
+  - Requires `/artifacts/docs/<run-id>-run-report.md`.
+- Review + validation:
+  - Review task that also verifies test results, coverage, or validation status.
+  - Requires `reviewer`.
+  - `tester` is required when test interpretation/coverage/validation verification is requested.
+  - `docs` required when artifacts change.
+- Review + remediation:
+  - Review task that includes requested fixes/remediation work.
+  - Route to remediation flow and relevant implementation agents.
+  - Rerun `tester` -> `reviewer` -> `docs`.
+
 ## Levels
 
 ### Tiny
@@ -152,6 +173,7 @@ Escalate classification upward when any apply:
 - cross-domain or multi-team impact,
 - migration/rollback complexity,
 - unclear requirements blocking implementation.
+- review-only task expands into remediation implementation across code surfaces.
 
 Clarification precedence:
 - unresolved requirement ambiguity must pass the Requirement Clarification Gate before continuing with classification-driven planning or implementation decisions.

@@ -41,6 +41,7 @@ Requirements:
 - All policy and quality gates still apply.
 - No delegated/parallel claims unless runtime subagents were actually spawned.
 - For code-changing Tiny/Small runs in sequential mode, use targeted delegation to relevant implementation role(s) rather than full planning pipeline.
+- For review-only tasks, parent-only sequential execution is allowed only for pure non-mutating analysis with no artifact output.
 
 ### Mode B: Delegated (Optional)
 Use only when:
@@ -74,6 +75,7 @@ Requirements:
 - Child execution/concurrency depends on runtime capability.
 - Parent remains accountable for final merge and gate compliance.
 - User does not need to explicitly request delegated mode; parent selection is automatic when gating conditions match.
+- For review artifact-generating tasks, parent automatically routes to `reviewer` and `docs` when delegation capability is available.
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
   - architecture handoff.
@@ -93,6 +95,12 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Docs if docs/API/setup changed
 - Parent final validation
 - If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/<run-id>-run-report.md`.
+
+Review-only routing rule:
+- Pure review/analysis only (no file changes): parent/main allowed; `reviewer` optional.
+- Review artifact-generating: `reviewer` required; `docs` required for run report/audit/final report artifacts.
+- Review + validation: `reviewer` required; `tester` required when validation/coverage/test interpretation is requested; `docs` required if artifacts change.
+- Review + remediation: route to remediation flow with relevant implementation agents and rerun `tester` -> `reviewer` -> `docs`.
 
 Follow-up docs rule:
 - For remediation runs and final reruns where docs is in scope, `docs` still runs last and writes a run-specific report artifact.
@@ -143,6 +151,11 @@ Examples:
   - use reviewer/docs as appropriate,
   - required `/artifacts/docs/<run-id>-run-report.md`,
   - regenerate adapters when canonical contracts affecting mappings/instructions change.
+- Full-project technical review with artifact output:
+  - `reviewer` -> `docs`,
+  - `tester` optional/required when validation or coverage verification is requested,
+  - no `backend`/`frontend` unless remediation is requested,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
 - Medium/Large feature:
   - `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
   - required `/artifacts/docs/<run-id>-run-report.md`.
