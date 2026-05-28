@@ -20,6 +20,7 @@ Adapter-contract routing rule:
 - Do not load `.ai/runtimes/codex/adapter-schema.md` during normal startup.
 - Do not load `.ai/runtimes/codex/nickname-strategy.md` during normal startup.
 - Do not load `.ai/workflows/build-codex-agents.md` during normal startup.
+- Load `.ai/runtimes/codex/orchestration-bootstrap.md` during Codex main-session startup when present.
 - Load adapter contracts only when the user explicitly asks to:
   - build Codex agents,
   - generate `.codex/agents/*.toml`,
@@ -33,6 +34,7 @@ Startup guidance:
 - Sequential mode is the default and portable execution mode.
 - Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
 - User does not need to explicitly say "delegated mode" for eligible tasks.
+- If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts

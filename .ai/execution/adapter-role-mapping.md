@@ -6,6 +6,7 @@ Define generation-time mapping from canonical role contracts to runtime adapter 
 ## Scope
 - Applies only to runtime adapter generation and adapter drift validation tasks.
 - Does not apply to normal execution tasks.
+- Includes Codex runtime orchestration bootstrap exposure for main-session routing.
 
 ## Canonical Rule
 - `.ai/agents/*` remains canonical.
@@ -51,6 +52,9 @@ Rationale:
 - Mappings must include explicit source-role pointers.
 - Mappings must preserve policy compatibility and parent gate enforcement.
 - Mapping changes require drift-aware regeneration for affected adapters.
+- Parent/orchestrator runtime exposure rule:
+  - Do not map parent/orchestrator as a normal child implementation adapter role.
+  - Expose parent orchestration behavior through Codex runtime bootstrap artifact `.ai/runtimes/codex/orchestration-bootstrap.md`.
 - Relevant implementation agent requirement for code-changing runs:
   - frontend-only: `frontend` and/or framework specialist (for example `vue`, `react`),
   - backend-only: `backend` and/or framework specialist (for example `fastapi`, `laravel`, `node-express`),

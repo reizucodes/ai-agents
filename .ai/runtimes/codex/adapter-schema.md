@@ -6,9 +6,11 @@ Define Codex-specific adapter schema constraints for derivative agent adapters g
 ## Scope
 - Applies only to runtime adapter tasks in this instruction framework.
 - Does not apply to normal feature, bugfix, refactor, review, or documentation tasks.
+- Applies to child adapter generation and Codex main-session orchestration exposure.
 
 ## Output Path
 - Codex adapter output target: `.codex/agents/*.toml`
+- Codex orchestration bootstrap target: `.ai/runtimes/codex/orchestration-bootstrap.md`
 - This contract defines schema and validation only.
 - This contract does not create adapters by itself.
 
@@ -92,6 +94,8 @@ Preferred:
 ## Invocation Rule
 - Presence of `.codex/agents/*.toml` does not trigger delegated execution by itself.
 - Codex subagents require explicit runtime invocation by the parent runtime agent.
+- When runtime supports a main-session orchestration bootstrap, it should be loaded to expose parent routing behavior.
+- Bootstrap guidance is derivative from canonical `.ai/*` and must not override canonical contracts.
 
 ## Non-goals
 - This contract does not define adapter generation workflow steps.

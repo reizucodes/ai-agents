@@ -43,6 +43,9 @@ Load all of the following before execution:
   - rejection/remediation actions.
 - Optional generated adapter artifacts (only when generation is explicitly requested and allowed).
 - Persistent adapter run report file formatted with `.ai/templates/adapter-run-report.md`.
+- Runtime-facing orchestration bootstrap artifact for Codex main session:
+  - `.ai/runtimes/codex/orchestration-bootstrap.md`
+  - generated/maintained from canonical `.ai/*` contracts.
 
 ## Report Persistence Rule
 - Every `build-codex-agents` run must write a persistent report artifact file.
@@ -60,6 +63,7 @@ Load all of the following before execution:
   4. parent/orchestrator selects delegation for task fit (no user "delegated mode" phrase required),
   5. generation work can be decomposed into independent workstreams.
 - For normal adapter generation, execute sequentially.
+- The Codex main session must still route tasks automatically when runtime delegation capability is available; user must not need to explicitly say "delegated mode."
 
 ## Regeneration Invocation
 Use this runtime command/prompt for regeneration:
@@ -76,6 +80,12 @@ Use this runtime command/prompt for regeneration:
    - delegation notes,
    - optional nickname candidates when allowed.
 4. Exclude opt-in roles unless explicitly requested by user/policy.
+5. Build/update Codex runtime orchestration bootstrap artifact from canonical contracts:
+   - task classification routing,
+   - mode selection,
+   - targeted delegation rules,
+   - Medium/Large delegated flow gates,
+   - docs/audit run-report requirements.
 
 ## Codex TOML Generation Rules
 When generation is requested:
@@ -117,6 +127,15 @@ Runtime-specific summary requirements (keep concise):
   - test-only: `tester`.
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 
+Runtime orchestration bootstrap minimum routing rules:
+- full-project review with artifact output -> `reviewer` -> `docs`.
+- review + validation -> `reviewer` -> `tester` (as needed) -> `docs`.
+- Tiny/Small frontend code change -> `frontend`/specialist (`vue`/`react`) -> audit report.
+- Tiny/Small backend code change -> `backend`/specialist (`fastapi`/`laravel`/`node-express`) -> audit report.
+- Medium/Large feature -> `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
+- remediation/final-rerun flows -> targeted agents, then `tester` -> `reviewer` -> `docs` when in scope.
+- sequential fallback is allowed only when subagent capability gates fail, and fallback must be disclosed.
+
 4. Include required generated metadata header from runtime/schema contracts.
 5. Include canonical source pointer and drift metadata.
 6. Keep adapter content minimal and scoped.
@@ -137,6 +156,10 @@ Run validation using `.ai/execution/adapter-drift-validation.md` and `.ai/runtim
 9. Codex schema validation.
 10. Reserved-name/collision validation when known names are available.
 11. Nickname quality/collision validation when `nickname_candidates` are provided.
+12. Orchestration bootstrap presence/content validation:
+   - file exists at `.ai/runtimes/codex/orchestration-bootstrap.md`,
+   - routes are derived from canonical `.ai/*` contracts,
+   - required routing rules above are present.
 
 ## Drift-Check Steps
 1. Compute canonical source fingerprint/checksum for each mapped role.
@@ -157,6 +180,7 @@ Reject generation or validation when any apply:
 - request attempts to overwrite canonical source,
 - unsafe duplication of full canonical contracts,
 - policy/quality gate bypass attempts.
+- required Codex orchestration bootstrap cannot be produced from canonical contracts.
 
 ## Safety Rules
 - Do not treat generated adapters as canonical source.
@@ -180,3 +204,4 @@ Each run must use `.ai/templates/adapter-run-report.md` and report:
    - remediation action(s).
 6. Generated outputs (if any) and unresolved risks.
 7. Report artifact path written to disk.
+8. Orchestration bootstrap artifact path written to disk.
