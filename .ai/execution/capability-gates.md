@@ -5,6 +5,15 @@ Define hard capability checks required before using delegated execution.
 
 ## Gate Categories
 
+### Gate 0: Runtime Adapter Discovery (Codex)
+For Codex runtime task routing that expects generated adapters:
+- Check whether `.codex/agents/*.toml` exists.
+- Record discovery as `present` or `missing`.
+
+If missing for a run that requests/needs `targeted` or `delegated` adapter-based routing:
+- Fall back to `sequential` mode.
+- State fallback reason explicitly.
+
 ### Gate 1: Runtime Capability
 All must be true:
 - Runtime can spawn subagents/children explicitly.
@@ -54,7 +63,8 @@ If false:
 - Do not start delegated implementation roles.
 
 ## Capability Decision
-Delegated mode is allowed only when all required gates pass.
+`targeted` and `delegated` modes are allowed only when all required gates pass.
+When an explicit execution-mode input is provided, enforce `.ai/execution/execution-mode-input.md`.
 
 ## Non-claims
 - Presence of `.ai/agents/*` does not imply runtime delegation capability.

@@ -11,10 +11,15 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - If this file conflicts with canonical `.ai/*` contracts, follow canonical contracts.
 
 ## Main-Session Routing Rules
+- Honor execution-mode input from `.ai/execution/execution-mode-input.md`:
+  - `auto` | `sequential` | `targeted` | `delegated`.
 - Classify task before execution using `.ai/execution/task-classification.md`.
 - Choose execution mode automatically from classification + capability + delegation eligibility gates.
 - User does not need to explicitly request "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, use sequential fallback and state fallback explicitly.
+- Before `targeted`/`delegated`, check:
+  - runtime delegation capability,
+  - Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.
 
 ## Required Routing
 - Full-project review with artifact output:

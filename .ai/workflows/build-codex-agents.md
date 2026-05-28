@@ -19,12 +19,13 @@ This workflow is a contract only. It does not generate files by itself.
 
 ## Required Loaded Contracts
 Load all of the following before execution:
-1. `.ai/execution/runtime-adapter-contract.md`
-2. `.ai/execution/adapter-role-mapping.md`
-3. `.ai/execution/adapter-drift-validation.md`
-4. `.ai/runtimes/codex/adapter-schema.md`
-5. `.ai/runtimes/codex/nickname-strategy.md`
-6. Canonical role source files from `.ai/agents/*` referenced by role mapping
+1. `.ai/execution/execution-mode-input.md`
+2. `.ai/execution/runtime-adapter-contract.md`
+3. `.ai/execution/adapter-role-mapping.md`
+4. `.ai/execution/adapter-drift-validation.md`
+5. `.ai/runtimes/codex/adapter-schema.md`
+6. `.ai/runtimes/codex/nickname-strategy.md`
+7. Canonical role source files from `.ai/agents/*` referenced by role mapping
 
 ## Inputs
 - Explicit user request to build Codex adapters.
@@ -81,6 +82,7 @@ Use this runtime command/prompt for regeneration:
    - optional nickname candidates when allowed.
 4. Exclude opt-in roles unless explicitly requested by user/policy.
 5. Build/update Codex runtime orchestration bootstrap artifact from canonical contracts:
+   - execution-mode input model (`auto|sequential|targeted|delegated`),
    - task classification routing,
    - mode selection,
    - targeted delegation rules,
@@ -128,6 +130,8 @@ Runtime-specific summary requirements (keep concise):
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 
 Runtime orchestration bootstrap minimum routing rules:
+- execution-mode input header support:
+  - `Execution mode: auto|sequential|targeted|delegated`.
 - full-project review with artifact output -> `reviewer` -> `docs`.
 - review + validation -> `reviewer` -> `tester` (as needed) -> `docs`.
 - Tiny/Small frontend code change -> `frontend`/specialist (`vue`/`react`) -> audit report.
@@ -135,6 +139,7 @@ Runtime orchestration bootstrap minimum routing rules:
 - Medium/Large feature -> `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
 - remediation/final-rerun flows -> targeted agents, then `tester` -> `reviewer` -> `docs` when in scope.
 - sequential fallback is allowed only when subagent capability gates fail, and fallback must be disclosed.
+- for `targeted`/`delegated`, fallback to `sequential` when runtime delegation capability or Codex adapter discovery is unavailable; fallback reason must be disclosed.
 
 4. Include required generated metadata header from runtime/schema contracts.
 5. Include canonical source pointer and drift metadata.

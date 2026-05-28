@@ -96,6 +96,7 @@ Preferred:
 - Codex subagents require explicit runtime invocation by the parent runtime agent.
 - When runtime supports a main-session orchestration bootstrap, it should be loaded to expose parent routing behavior.
 - Bootstrap guidance is derivative from canonical `.ai/*` and must not override canonical contracts.
+- Bootstrap should include execution-mode input handling from `.ai/execution/execution-mode-input.md`.
 
 ## Non-goals
 - This contract does not define adapter generation workflow steps.

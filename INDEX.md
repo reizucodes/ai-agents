@@ -35,10 +35,13 @@ Startup guidance:
 - Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
 - User does not need to explicitly say "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
+- Use execution-mode input header when provided:
+  - `Execution mode: auto|sequential|targeted|delegated`
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts
 Execution contracts are runtime-consumable instructions in:
+- `.ai/execution/execution-mode-input.md`
 - `.ai/execution/modes.md`
 - `.ai/execution/capability-gates.md`
 - `.ai/execution/delegation-eligibility.md`

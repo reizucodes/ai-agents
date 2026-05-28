@@ -13,6 +13,7 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
 - Every code-changing run must persist `/artifacts/docs/<run-id>-run-report.md`.
 - Pure Q&A, explanation-only, search-only, and planning-only runs with no file changes are not code-changing runs.
+- Execution-mode input handling is defined in `.ai/execution/execution-mode-input.md`.
 
 ## Follow-Up Routing Rule
 Every follow-up task must be reclassified before execution.
@@ -20,6 +21,18 @@ Every follow-up task must be reclassified before execution.
 - Follow-up tasks inherit current feature context.
 - Follow-up tasks do not inherit previous delegation decisions.
 - Delegation must be decided from current classification and risk.
+
+## Execution Mode Input Model
+Accepted input values:
+- `auto` (default)
+- `sequential`
+- `targeted`
+- `delegated`
+
+Runtime preflight before `targeted`/`delegated`:
+- Check runtime delegation capability gates.
+- Check Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.
+- If unavailable, fall back to `sequential` and state fallback reason explicitly.
 
 ## Modes
 
