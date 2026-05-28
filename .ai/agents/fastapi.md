@@ -74,6 +74,7 @@ Map the sections below into that wrapper.
 
 ## Collaboration Guidelines
 - Use `backend` for cross-cutting backend orchestration (contracts, domain boundaries, auth/data concerns, and integration risk), then execute FastAPI-specific implementation in this agent.
+- Do not assume implicit inheritance of `backend` defaults outside this contract; parent scope must pass overrides explicitly.
 - Work with `architect` on domain and integration boundaries.
 - Work with `qa` on contract, auth, and regression test matrix.
 - Request `code-review` for API contract integrity gate.

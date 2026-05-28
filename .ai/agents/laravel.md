@@ -49,6 +49,7 @@ Map the sections below into that wrapper.
 
 ## Collaboration Guidelines
 - Use `backend` for cross-cutting backend orchestration (contracts, domain boundaries, auth/data concerns, and integration risk), then execute Laravel-specific implementation in this agent.
+- Do not assume implicit inheritance of `backend` defaults outside this contract; parent scope must pass overrides explicitly.
 - Consume architecture constraints from `architect`.
 - Coordinate test matrix with `qa`.
 - Request `code-review` before release.

@@ -12,6 +12,7 @@ Define parent-agent responsibilities in delegated execution.
    - `.ai/execution/*` and `.ai/delegation/*`
 2. Reclassify every follow-up task with `.ai/execution/task-classification.md` before execution.
 3. Decide mode using capability/eligibility contracts.
+   - Do not require user to explicitly request delegated mode; choose automatically when classification + gate conditions match.
 4. For Medium/Large tasks, complete planning outputs before implementation delegation:
    - `project-manager` (first)
    - `product-spec` (second)
@@ -33,6 +34,7 @@ Define parent-agent responsibilities in delegated execution.
    - whether delegation was used,
    - which child roles were used,
    - what merge/review steps were performed.
+   - report path for `/artifacts/docs/<run-id>-run-report.md` when run is code-changing.
 13. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
 14. Maintain explicit delegated workflow state:
    - `DISCOVERY`
@@ -49,6 +51,7 @@ Define parent-agent responsibilities in delegated execution.
    - detect whether the run is code-changing (any repository file changed: source/tests/configs/docs/workflow contracts/generated artifacts),
    - ensure `/artifacts/docs/<run-id>-run-report.md` exists before completion,
    - for Tiny/Small efficiency cases where `docs` is not invoked, parent/main must write the run report and mark producer as `parent/main`.
+   - if runtime trace export/update is requested, maintain it as a separate artifact from run report output.
 
 ## Spawn Idempotency Rule
 - Parent must treat child spawn/invocation as idempotent per active role assignment.

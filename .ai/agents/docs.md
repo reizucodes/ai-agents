@@ -36,13 +36,16 @@ Documentation specialist responsible for feature documentation and handoff clari
 - Create the resolved docs artifact directory when missing before writing the report.
 - The report must summarize:
   - run type (`initial` | `remediation` | `final-rerun`)
+  - classification
+  - execution mode
   - task summary
   - files changed
   - agents used
   - tests run
+  - artifacts produced
   - run status (`merge-ready` | `non-merge-ready`)
   - result/status
-  - remaining risks or skipped validations
+  - remaining risks/blockers or skipped validations
   - report producer (`docs` or `parent/main`)
   - documentation updates made (or explicitly none)
   - unresolved documentation gaps and required follow-ups

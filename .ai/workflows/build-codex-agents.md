@@ -57,7 +57,7 @@ Load all of the following before execution:
   1. consuming runtime supports subagents,
   2. capability gates pass,
   3. delegation eligibility passes,
-  4. user explicitly requests delegated execution,
+  4. parent/orchestrator selects delegation for task fit (no user "delegated mode" phrase required),
   5. generation work can be decomposed into independent workstreams.
 - For normal adapter generation, execute sequentially.
 
@@ -170,7 +170,7 @@ Reject generation or validation when any apply:
 Each run must use `.ai/templates/adapter-run-report.md` and report:
 1. Mode used:
    - `sequential`
-   - `delegated` (only when allowed and explicitly requested)
+   - `delegated` (only when allowed and selected by parent/orchestrator)
 2. Loaded contracts.
 3. Adapter targets considered (canonical adapter `name` + canonical role path).
 4. Mapping decisions and excluded roles.

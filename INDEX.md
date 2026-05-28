@@ -31,7 +31,8 @@ Startup guidance:
 - Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
 - For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
 - Sequential mode is the default and portable execution mode.
-- Delegated mode is optional and runtime-dependent; it requires explicit runtime subagent support and explicit invocation.
+- Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
+- User does not need to explicitly say "delegated mode" for eligible tasks.
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts

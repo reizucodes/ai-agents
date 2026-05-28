@@ -8,7 +8,7 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - Markdown files do not spawn agents.
 - `.ai/agents/*` are canonical role contracts, not executable worker definitions.
 - Sequential mode is the default and portable execution path.
-- Delegated mode is optional, runtime-dependent, and requires explicit invocation.
+- Delegated mode is optional and runtime-dependent; when capability and eligibility gates pass, parent should invoke it automatically based on classification/scope (no user "delegated mode" prompt required).
 - Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
 - Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
 - Every code-changing run must persist `/artifacts/docs/<run-id>-run-report.md`.
@@ -46,7 +46,7 @@ Requirements:
 Use only when:
 - runtime explicitly supports subagents,
 - runtime can isolate child context safely,
-- parent agent explicitly invokes delegation,
+- parent agent decides delegation from classification + eligibility gates and invokes it explicitly at runtime,
 - task decomposition can be assigned to disjoint ownership boundaries,
 - classification and eligibility contracts allow delegation.
 
@@ -73,14 +73,17 @@ Requirements:
 - Delegated mode is never assumed implicitly.
 - Child execution/concurrency depends on runtime capability.
 - Parent remains accountable for final merge and gate compliance.
+- User does not need to explicitly request delegated mode; parent selection is automatic when gating conditions match.
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
   - architecture handoff.
 - For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/<run-id>-run-report.md`.
+- For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/<run-id>-run-report.md` with blockers and next steps.
 
 ### Mode C: Autonomous (Future Extension)
 - Not implemented in this instruction framework.
 - Any future autonomous mode must be explicitly versioned and policy-gated.
+- Note: automatic delegation selection by the parent (within Mode A/B contracts) is already supported and is distinct from a separate future autonomous runtime mode.
 
 ## Targeted Follow-Up Delegation Mode
 For follow-up tasks that do not require full planning rerun, use targeted delegation:
@@ -108,8 +111,52 @@ Examples:
 ## Mode Selection Priority
 1. Prefer sequential by default.
 2. Use task classification before selecting planning depth and delegation.
-3. Escalate to delegated only when capability and task fit are both true.
+3. Escalate to delegated automatically when capability and task fit are both true.
 4. Reject delegated when eligibility checks fail.
+
+## Scenario Regression Matrix
+- Pure Q&A / explanation:
+  - no delegation required,
+  - no audit report artifact.
+- Planning-only prompt:
+  - planning agents may be used when useful,
+  - no audit report unless repository files are changed.
+- Tiny frontend-only code change:
+  - targeted delegation to `frontend` and/or relevant specialist,
+  - targeted validation,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Tiny backend-only code change:
+  - targeted delegation to `backend` and/or relevant specialist,
+  - targeted validation,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Tiny cross-layer code change:
+  - targeted delegation to both `backend` and `frontend` (or mapped specialists),
+  - targeted validation,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Docs-only change:
+  - use `docs`,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Test-only change:
+  - use `tester`,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Workflow/framework change:
+  - use reviewer/docs as appropriate,
+  - required `/artifacts/docs/<run-id>-run-report.md`,
+  - regenerate adapters when canonical contracts affecting mappings/instructions change.
+- Medium/Large feature:
+  - `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
+  - required `/artifacts/docs/<run-id>-run-report.md`.
+- Remediation pass:
+  - start from tester/reviewer blockers,
+  - use targeted agents,
+  - rerun `tester` -> `reviewer` -> `docs`,
+  - required remediation run report.
+- Final rerun:
+  - use relevant targeted agent(s),
+  - rerun `tester` -> `reviewer` -> `docs`,
+  - required final-rerun report.
+- Failed/non-merge-ready delegated run:
+  - `docs` still runs last and captures status, blockers, changed files, tests, and next steps.
 
 ## Planning and Diagram Guidance
 - Tiny/Small: planning agents are optional; diagrams optional.

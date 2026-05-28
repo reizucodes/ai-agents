@@ -9,7 +9,19 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
   - Pure Q&A, explanation-only, search-only, and planning-only runs with no repository file changes are not code-changing runs.
 - Audit report artifact:
   - Required per code-changing run at `/artifacts/docs/<run-id>-run-report.md`.
-  - Must include run type, task summary, files changed, agents used, tests run, result/status, remaining risks or skipped validations, and whether `docs` produced the report or parent/main produced it.
+  - Must include:
+    - task summary,
+    - run type,
+    - classification,
+    - execution mode,
+    - agents used,
+    - files changed,
+    - tests run,
+    - artifacts produced,
+    - final result/status,
+    - unresolved risks/blockers or skipped validations,
+    - whether `docs` produced the report or parent/main produced it.
+  - Runtime trace exports/updates are separate artifacts and must not replace this run report.
 
 ## Canonical Rule
 - `.ai/*` remains canonical for process and role contracts.

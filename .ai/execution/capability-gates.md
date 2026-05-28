@@ -18,7 +18,7 @@ If any is unknown:
 
 ### Gate 2: Invocation Integrity
 All must be true:
-- Parent explicitly chooses delegated mode.
+- Parent chooses execution mode from classification + eligibility (no user "delegated mode" request required).
 - Parent explicitly requests/spawns child agents.
 - Parent does not claim delegation if no child agents were spawned.
 
