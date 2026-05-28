@@ -77,4 +77,4 @@ Rationale:
 - `reviewer` runs after tester.
 - `docs` runs last before parent final validation.
 - When `docs` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).
-- For Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main must still persist `/artifacts/docs/<run-id>-run-report.md`.
+- For Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main must still persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.

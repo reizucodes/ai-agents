@@ -39,8 +39,8 @@ Map canonical role contracts to delegated child responsibilities during delegate
   - `tester` validates against approved consolidated spec and acceptance criteria.
   - `reviewer` runs after tester output is available.
   - `docs` runs last, before parent final validation.
-  - when `docs` is assigned, it must write `/artifacts/docs/<run-id>-run-report.md`.
-  - for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/<run-id>-run-report.md`.
+  - when `docs` is assigned, it must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+  - for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 ## Child Scope Rules
 - Each child receives explicit goals, scope boundaries, and handoff requirements.

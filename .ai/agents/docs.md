@@ -5,7 +5,7 @@ Documentation specialist responsible for feature documentation and handoff clari
 
 ## Responsibilities
 - Run only after implementation, testing, and review outputs are available.
-- Produce `/artifacts/docs/<run-id>-run-report.md` for every docs run, not only README/changelog edits.
+- Produce `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` for every docs run, not only README/changelog edits.
 - Update feature documentation from final verified behavior and approved outputs.
 - Update setup notes and usage notes when behavior or configuration changes.
 - Prepare handoff notes for operators, reviewers, and maintainers.
@@ -30,7 +30,7 @@ Documentation specialist responsible for feature documentation and handoff clari
 - Medium/Large: required when feature behavior, setup, API, workflow, or decisions changed.
 
 ## Required Artifacts
-- Required artifact path: `/artifacts/docs/<run-id>-run-report.md`.
+- Required artifact path: `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - If `/artifacts/docs/` is missing, infer the artifact root from existing phase folders (`/artifacts/specs/`, `/artifacts/architecture/`, `/artifacts/tests/`, `/artifacts/reviews/`) and write the report under `<inferred-artifact-root>/docs/`.
 - If no artifact root can be inferred from existing phase folders, default to `/artifacts/docs/`.
 - Create the resolved docs artifact directory when missing before writing the report.

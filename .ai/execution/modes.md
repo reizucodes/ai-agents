@@ -11,7 +11,7 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - Delegated mode is optional and runtime-dependent; when capability and eligibility gates pass, parent should invoke it automatically based on classification/scope (no user "delegated mode" prompt required).
 - Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
 - Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
-- Every code-changing run must persist `/artifacts/docs/<run-id>-run-report.md`.
+- Every code-changing run must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Pure Q&A, explanation-only, search-only, and planning-only runs with no file changes are not code-changing runs.
 - Execution-mode input handling is defined in `.ai/execution/execution-mode-input.md`.
 
@@ -84,7 +84,7 @@ Flow:
    - `tester`,
    - `reviewer`,
    - `docs`.
-   - when `docs` is in scope, it must run last and persist `/artifacts/docs/<run-id>-run-report.md` before parent final validation.
+   - when `docs` is in scope, it must run last and persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before parent final validation.
 11. Parent merges, validates, and returns final output.
 
 Requirements:
@@ -96,8 +96,8 @@ Requirements:
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
   - architecture handoff.
-- For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/<run-id>-run-report.md`.
-- For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/<run-id>-run-report.md` with blockers and next steps.
+- For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` with blockers and next steps.
 
 ### Mode C: Autonomous (Future Extension)
 - Not implemented in this instruction framework.
@@ -111,7 +111,7 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Reviewer if behavior changed
 - Docs if docs/API/setup changed
 - Parent final validation
-- If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/<run-id>-run-report.md`.
+- If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 Review-only routing rule:
 - Pure review/analysis only (no file changes): parent/main allowed; `reviewer` optional.
@@ -149,33 +149,33 @@ Examples:
 - Tiny frontend-only code change:
   - targeted delegation to `frontend` and/or relevant specialist,
   - targeted validation,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Tiny backend-only code change:
   - targeted delegation to `backend` and/or relevant specialist,
   - targeted validation,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Tiny cross-layer code change:
   - targeted delegation to both `backend` and `frontend` (or mapped specialists),
   - targeted validation,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Docs-only change:
   - use `docs`,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Test-only change:
   - use `tester`,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Workflow/framework change:
   - use reviewer/docs as appropriate,
-  - required `/artifacts/docs/<run-id>-run-report.md`,
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`,
   - regenerate adapters when canonical contracts affecting mappings/instructions change.
 - Full-project technical review with artifact output:
   - `reviewer` -> `docs`,
   - `tester` optional/required when validation or coverage verification is requested,
   - no `backend`/`frontend` unless remediation is requested,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Medium/Large feature:
   - `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
-  - required `/artifacts/docs/<run-id>-run-report.md`.
+  - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Remediation pass:
   - start from tester/reviewer blockers,
   - use targeted agents,

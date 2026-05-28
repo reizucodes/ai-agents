@@ -8,7 +8,7 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
   - Any run that changes repository files, including source code, tests, configs, docs, workflow contracts, or generated artifacts.
   - Pure Q&A, explanation-only, search-only, and planning-only runs with no repository file changes are not code-changing runs.
 - Audit report artifact:
-  - Required per code-changing run at `/artifacts/docs/<run-id>-run-report.md`.
+  - Required per code-changing run at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
   - Must include:
     - task summary,
     - run type,
@@ -22,6 +22,29 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
     - unresolved risks/blockers or skipped validations,
     - whether `docs` produced the report or parent/main produced it.
   - Runtime trace exports/updates are separate artifacts and must not replace this run report.
+
+## Filename Convention
+- New artifact filenames must use timestamp-first naming for chronological sortability and run traceability:
+  - `YYYYMMDD-HHMMSS-<artifact-name>.<ext>`
+- Timestamp requirements:
+  - filename-safe numeric UTC/local runtime timestamp with no separators beyond the single `-` between date and time,
+  - generated at artifact creation time,
+  - placed before the descriptive artifact name.
+- This applies to artifacts under `specs`, `architecture`, `tests`, `reviews`, `docs`, and `reports`, including remediation and final-rerun artifacts.
+- Historical artifacts do not require renaming.
+- Rationale:
+  - improves auditability by making creation order explicit,
+  - improves chronological trace readability across repeated runs,
+  - clarifies remediation/final-rerun sequencing without relying on content inspection.
+- Examples:
+  - `/artifacts/specs/20260528-221530-backend-refactor-phase-0-spec.md`
+  - `/artifacts/architecture/20260528-221545-backend-refactor-phase-0-architecture.md`
+  - `/artifacts/tests/20260528-221610-backend-refactor-phase-0-test-report.md`
+  - `/artifacts/reviews/20260528-221630-backend-refactor-phase-0-review.md`
+  - `/artifacts/docs/20260528-221700-run-report.md`
+  - `/artifacts/reports/20260528-221715-release-readiness-report.md`
+  - `/artifacts/reviews/20260528-223000-backend-refactor-phase-0-remediation-review.md`
+  - `/artifacts/docs/20260528-223100-final-rerun-run-report.md`
 
 ## Canonical Rule
 - `.ai/*` remains canonical for process and role contracts.
@@ -43,7 +66,7 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
 Directory creation rule:
 - Artifact directories are expected outputs and should be created on demand when a phase runs and the directory is missing.
 - For docs-run artifacts, when `/artifacts/docs/` is missing but sibling phase folders exist, infer `/artifacts/` as the artifact root and write to `/artifacts/docs/`.
-- For any code-changing run, writing `/artifacts/docs/<run-id>-run-report.md` is mandatory even when `docs` is not invoked.
+- For any code-changing run, writing `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` is mandatory even when `docs` is not invoked.
 
 ## Diagram Source Format
 - Mermaid source is canonical for diagrams.

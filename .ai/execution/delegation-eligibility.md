@@ -107,4 +107,4 @@ When parent handles a small multi-surface follow-up directly, parent must includ
 ## Enforcement
 - Default output is `sequential_required` unless delegated conditions are explicitly met.
 - If delegated mode starts and preconditions fail mid-run, parent must fall back to sequential completion.
-- Sequential completion still must satisfy targeted delegation for code-changing Tiny/Small runs (minimal relevant implementation role assignment) and must persist `/artifacts/docs/<run-id>-run-report.md`.
+- Sequential completion still must satisfy targeted delegation for code-changing Tiny/Small runs (minimal relevant implementation role assignment) and must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.

@@ -20,14 +20,14 @@ Define parent-agent responsibilities in delegated execution.
    - `architect` (after consolidated spec)
 5. Select workflow and role mappings.
 6. Assign disjoint ownership boundaries before spawning children.
-7. Define expected artifact outputs and phase ownership before delegation (for example: `/artifacts/specs/final-spec.md`, `/artifacts/specs/payment-flow.mmd`, `/artifacts/architecture/checkout-sequence.mmd`).
+7. Define expected artifact outputs and phase ownership before delegation (for example: `/artifacts/specs/YYYYMMDD-HHMMSS-final-spec.md`, `/artifacts/specs/YYYYMMDD-HHMMSS-payment-flow.mmd`, `/artifacts/architecture/YYYYMMDD-HHMMSS-checkout-sequence.mmd`).
 8. Explicitly spawn/invoke children only when delegated mode is allowed.
 9. Use targeted follow-up delegation when appropriate:
    - relevant implementation agents only,
    - `reviewer` when behavior changed,
    - `docs` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
    - parent final validation.
-   - when `docs` is invoked, require `/artifacts/docs/<run-id>-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
+   - when `docs` is invoked, require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
    - for review artifact-generating tasks, automatically route to `reviewer`; require `docs` when run report/audit/final report artifact is created.
    - include `tester` when validation, test interpretation, or coverage verification is requested.
 10. Collect child outputs and integrate deterministically.
@@ -36,7 +36,7 @@ Define parent-agent responsibilities in delegated execution.
    - whether delegation was used,
    - which child roles were used,
    - what merge/review steps were performed.
-   - report path for `/artifacts/docs/<run-id>-run-report.md` when run is code-changing.
+   - report path for `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` when run is code-changing.
 13. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
 14. Maintain explicit delegated workflow state:
    - `DISCOVERY`
@@ -51,7 +51,7 @@ Define parent-agent responsibilities in delegated execution.
    - `COMPLETE`
 15. Enforce code-changing auditability:
    - detect whether the run is code-changing (any repository file changed: source/tests/configs/docs/workflow contracts/generated artifacts),
-   - ensure `/artifacts/docs/<run-id>-run-report.md` exists before completion,
+   - ensure `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` exists before completion,
    - for Tiny/Small efficiency cases where `docs` is not invoked, parent/main must write the run report and mark producer as `parent/main`.
    - if runtime trace export/update is requested, maintain it as a separate artifact from run report output.
 
@@ -99,7 +99,7 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Must not bypass policy/approval/quality gates.
 - Must not skip mandatory planning gates for Medium/Large work.
 - Must not spawn `backend` or `frontend` before both `SPEC_APPROVED` and `ARCHITECTURE_READY`.
-- Must not complete a code-changing run without `/artifacts/docs/<run-id>-run-report.md`.
+- Must not complete a code-changing run without `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 ## Accountability
 - Parent owns the final merged result.

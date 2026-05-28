@@ -20,7 +20,7 @@ Evaluate all dimensions before classifying:
 
 Code-changing run rule:
 - A run is code-changing when it modifies any repository file (source, tests, configs, docs, workflow contracts, or generated artifacts).
-- Code-changing runs require an audit report artifact at `/artifacts/docs/<run-id>-run-report.md`.
+- Code-changing runs require an audit report artifact at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Non-code-changing runs (pure Q&A/explanation/search/planning-only with no file changes) do not require an audit report artifact.
 
 Requirement ambiguity rule:
@@ -36,7 +36,7 @@ Review-only task types:
   - Creates/updates review/report/audit/final-report artifacts.
   - Requires targeted delegation to `reviewer`.
   - Requires `docs` when run report/audit/final report artifact is created.
-  - Requires `/artifacts/docs/<run-id>-run-report.md`.
+  - Requires `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Review + validation:
   - Review task that also verifies test results, coverage, or validation status.
   - Requires `reviewer`.
@@ -66,7 +66,7 @@ Default behavior:
 - Parent may handle directly.
 - Skip planning agents (`project-manager`, `product-spec`, `architect`).
 - Use targeted delegation to relevant implementation role(s) when files are changed; parent-only is allowed only for non-code-changing tasks.
-- `docs` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/<run-id>-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
+- `docs` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - No diagrams required.
 
 ### Small
@@ -87,7 +87,7 @@ Default behavior:
 - Sequential mode.
 - `architect` only when contract/boundary risk appears.
 - Relevant implementation role(s) are required for code-changing work via targeted delegation.
-- `docs` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/<run-id>-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
+- `docs` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - Diagrams optional.
 
 ### Small Follow-Up Thresholds
@@ -138,7 +138,7 @@ Default behavior:
 - Spec-first planning gates are expected.
 - Backend/frontend/tester may run in parallel only after planning outputs are complete.
 - `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `docs` creates `/artifacts/docs/<run-id>-run-report.md`.
+- `docs` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Diagrams are encouraged.
 
 ### Large
@@ -163,7 +163,7 @@ Default behavior:
 - Spec-first planning gates are mandatory.
 - Delegation may be used after planning artifacts are approved.
 - `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `docs` creates `/artifacts/docs/<run-id>-run-report.md`.
+- `docs` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Diagrams are expected when workflows, boundaries, ownership, or API flows are non-trivial.
 
 ## Escalation Rules
@@ -196,7 +196,7 @@ Downgrade only when evidence confirms reduced scope:
 `docs` may be skipped only when:
 - task is Tiny and not explicitly requested, or
 - task is Small with no behavior/setup/API/workflow/decision changes.
-- When skipped in a code-changing Tiny/Small run, parent/main must still create `/artifacts/docs/<run-id>-run-report.md`.
+- When skipped in a code-changing Tiny/Small run, parent/main must still create `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 ## Planning-Agent Rerun Rules for Follow-Ups
 Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-ups unless at least one applies:

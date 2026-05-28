@@ -120,8 +120,8 @@ Runtime-specific summary requirements (keep concise):
 - `tester` validates against approved consolidated spec and acceptance criteria.
 - `reviewer` runs after tester outputs.
 - `docs` runs last before parent final validation.
-- when `docs` runs, it writes `/artifacts/docs/<run-id>-run-report.md`.
-- for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/<run-id>-run-report.md`.
+- when `docs` runs, it writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - code-changing runs require relevant implementation role usage:
   - frontend-only: `frontend`/framework specialist,
   - backend-only: `backend`/framework specialist,
