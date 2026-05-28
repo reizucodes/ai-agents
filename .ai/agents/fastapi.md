@@ -16,6 +16,41 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
 ## Coding Standards
 - Request/response models required for all public endpoints.
 - Dependency Injection via FastAPI `Depends` with explicit interfaces.
+- Preferred architecture for greenfield FastAPI and new modules:
+  - `router/controller -> service -> repository -> model/schema`
+  - Keep routers/controllers thin: request binding, validation, response mapping only.
+  - Keep business rules in services; avoid business logic in routers.
+  - Keep persistence/query logic in repositories; avoid direct DB access from routers/services.
+  - Keep SQLAlchemy models and Pydantic schemas separate.
+  - Use repository contracts/interfaces to improve testability and abstraction.
+  - Centralize shared dependency wiring under `dependencies/`.
+  - Keep DB/session setup under `database/`.
+  - Keep app config and shared exceptions under `core/`.
+- Preferred project shape when creating new FastAPI services:
+  - `app/main.py`
+  - `app/routers/index.py`, versioned routers in `app/routers/v1/`
+  - `app/modules/<domain>/` with `<domain>_model.py`, `<domain>_schema.py`, `<domain>_service.py`, `<domain>_repository.py`, `<domain>_repository_contract.py`
+  - `app/repositories/base_repository.py`
+  - `app/repositories/contracts/base_repository_contract.py`
+  - `app/database/base.py`, `app/database/session.py`
+  - `app/dependencies/database.py`, `app/dependencies/services.py`
+  - `app/core/config.py`, `app/core/exceptions.py`
+  - `migrations/versions/` and `alembic.ini`
+- Repository pattern guidance:
+  - Implement shared CRUD behavior in `base_repository.py` behind `base_repository_contract.py`.
+  - Define module-specific repository contracts and concrete repositories in each module.
+  - Keep service/repository separation strict for DI-friendly and testable services.
+- Routing guidance:
+  - Register routers centrally in `routers/index.py`.
+  - Keep versioned route modules under `routers/v1/`.
+  - Routers must not contain direct query/persistence logic.
+- Database and migration guidance:
+  - Use SQLAlchemy for ORM/data access.
+  - Use Alembic for schema changes with forward/rollback-safe migrations.
+  - Store migration revisions under `migrations/versions/`.
+- Flexibility rule:
+  - Preserve established architecture in mature codebases; do not force broad restructures.
+  - Apply this structure by default for greenfield projects, new modules, or unstructured FastAPI codebases.
 - Python tooling standard for FastAPI projects:
   - Package/environment manager: UV (required).
   - New project initialization:
