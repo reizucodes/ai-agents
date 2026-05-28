@@ -17,6 +17,12 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
   - Tester outputs, test plans, traceability, and validation evidence.
 - `/artifacts/reviews/`
   - Reviewer findings, approvals, and remediation summaries.
+- `/artifacts/docs/`
+  - Docs run reports and documentation handoff summaries per run (initial/remediation/final-rerun, including non-merge-ready outcomes).
+
+Directory creation rule:
+- Artifact directories are expected outputs and should be created on demand when a phase runs and the directory is missing.
+- For docs-run artifacts, when `/artifacts/docs/` is missing but sibling phase folders exist, infer `/artifacts/` as the artifact root and write to `/artifacts/docs/`.
 
 ## Diagram Source Format
 - Mermaid source is canonical for diagrams.
@@ -41,4 +47,5 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
 - `project-manager`: optional high-level planning/workflow diagrams for Medium/Large only.
 - `product-spec`: user/business/state/edge-case flow diagrams as specification artifacts.
 - `architect`: technical/system/sequence/component/integration diagrams as implementation handoff artifacts.
+- `docs`: run-specific docs report artifacts plus documentation handoff status.
 - Executors consume approved diagrams/specs; they do not redefine business/process flows.

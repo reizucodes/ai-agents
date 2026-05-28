@@ -62,6 +62,7 @@ Flow:
    - `tester`,
    - `reviewer`,
    - `docs`.
+   - when `docs` is in scope, it must run last and persist a run-specific docs report artifact before parent final validation.
 11. Parent merges, validates, and returns final output.
 
 Requirements:
@@ -83,6 +84,10 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Reviewer if behavior changed
 - Docs if docs/API/setup changed
 - Parent final validation
+
+Follow-up docs rule:
+- For remediation runs and final reruns where docs is in scope, `docs` still runs last and writes a run-specific report artifact.
+- For failed/non-merge-ready runs where docs ran, preserve a docs run report artifact that records blockers and remaining documentation gaps.
 
 Notes:
 - Keep sequential mode as the portable default.

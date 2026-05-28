@@ -44,7 +44,7 @@ Rationale:
 | `.ai/agents/frontend.md` | `frontend` | Frontend implementation worker for UI/state/integration tasks under parent constraints. | Frontend modules, UI tests, component state logic. | Backend persistence/migration files, deployment/ops files, unrelated domains. | Runs only after approved consolidated spec + architect handoff; may run in parallel with backend when ownership boundaries are explicit. |
 | `.ai/agents/qa.md` | `tester` | Validation worker focused on test coverage, repro steps, and risk checks against approved spec. | Test files, test fixtures, validation artifacts. | Product logic outside test scope unless parent reassigns. | Runs after implementation outputs are available; validates against approved consolidated spec and acceptance criteria. |
 | `.ai/agents/code-review.md` | `reviewer` | Review worker focused on correctness, maintainability, risk, and regressions. | Review notes and scoped remediation when assigned. | Broad feature implementation ownership by default. | Runs after tester outputs are available. |
-| `.ai/agents/docs.md` | `docs` | Documentation worker for feature docs, setup notes, handoffs, and changelog/readme updates when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation. |
+| `.ai/agents/docs.md` | `docs` | Documentation worker for feature docs, setup notes, handoffs, changelog/readme updates, and run-specific docs report artifacts when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation; writes a run-specific docs report artifact for each docs run. |
 
 ## Mapping Constraints
 - Adapter names must be stable and unique.
@@ -62,3 +62,4 @@ Rationale:
 - `tester` runs after implementation and validates against approved consolidated spec + acceptance criteria.
 - `reviewer` runs after tester.
 - `docs` runs last before parent final validation.
+- When `docs` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).

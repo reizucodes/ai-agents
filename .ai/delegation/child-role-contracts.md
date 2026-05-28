@@ -39,11 +39,13 @@ Map canonical role contracts to delegated child responsibilities during delegate
   - `tester` validates against approved consolidated spec and acceptance criteria.
   - `reviewer` runs after tester output is available.
   - `docs` runs last, before parent final validation.
+  - when `docs` is assigned, it must also write a run-specific docs report artifact for that run.
 
 ## Child Scope Rules
 - Each child receives explicit goals, scope boundaries, and handoff requirements.
 - Planning roles are not broad writers by default.
 - `docs` owns feature documentation, setup notes, handoff notes, and changelog/readme updates when assigned.
+- `docs` report artifacts must cover initial runs, remediation runs, final reruns, and non-merge-ready outcomes when applicable.
 - Children should avoid changing files outside assigned ownership.
 - Children should report assumptions, risks, and incomplete checks.
 - Implementation children (`backend`, `frontend`) must not ask the user directly; requirement questions escalate through parent and `product-spec`.

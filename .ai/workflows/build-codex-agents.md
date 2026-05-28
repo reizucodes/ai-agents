@@ -107,6 +107,7 @@ Runtime-specific summary requirements (keep concise):
 - `tester` validates against approved consolidated spec and acceptance criteria.
 - `reviewer` runs after tester outputs.
 - `docs` runs last before parent final validation.
+- when `docs` runs, it writes a run-specific docs report artifact under `/artifacts/docs/`.
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 
 4. Include required generated metadata header from runtime/schema contracts.

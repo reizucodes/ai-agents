@@ -18,6 +18,7 @@ Generic frontend orchestration agent for UI architecture, state, routing, access
 - Must delegate implementation details to the matching specialist when framework context is known.
 - Preserve existing project styling conventions when already established.
 - Tailwind is the default for new frontend work only when no project-specific styling standard exists.
+- Framework specialists do not inherit frontend styling defaults unless their own contract states it or parent scope explicitly passes it.
 - Follow governance policies in `.ai/policies/*`.
 - Must not ask the user directly for product requirement clarification.
 - If product requirement ambiguity appears, stop implementation and escalate to parent/`product-spec`.

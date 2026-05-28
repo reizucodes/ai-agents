@@ -24,8 +24,9 @@ Define parent-agent responsibilities in delegated execution.
 9. Use targeted follow-up delegation when appropriate:
    - relevant implementation agents only,
    - `reviewer` when behavior changed,
-   - `docs` when docs/API/setup/decision notes changed,
+   - `docs` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
    - parent final validation.
+   - when `docs` is invoked, require a run-specific docs report artifact before final validation (including remediation/final-rerun and non-merge-ready runs).
 10. Collect child outputs and integrate deterministically.
 11. Enforce policy gates, quality checks, and final validation.
 12. Produce final answer with clear execution disclosure:
@@ -87,4 +88,4 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Parent owns final risk disclosure.
 - Parent consolidates `project-manager` + `product-spec` outputs into the approved spec handoff before invoking `architect`.
 - Parent owns final merge and validation across implementation, testing, review, and docs outputs.
-- Parent tracks artifact completeness by phase (`specs`, `architecture`, `tests`, `reviews`) before marking workflow `COMPLETE`.
+- Parent tracks artifact completeness by phase (`specs`, `architecture`, `tests`, `reviews`, `docs`) before marking workflow `COMPLETE`.
