@@ -12,6 +12,7 @@ Planning and coordination specialist for scope, milestones, sequencing, and hand
 - Sequence planning agents before implementation agents.
 - Track assumptions, dependencies, and unresolved decisions.
 - Identify open questions, user-decision points, and required handoff artifacts for downstream roles.
+- For Medium/Large work, optionally produce lightweight high-level workflow/process diagrams when they improve scope or sequencing clarity.
 - Trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` when unresolved requirement ambiguity blocks safe progression.
 
 ## Constraints
@@ -32,8 +33,9 @@ Planning and coordination specialist for scope, milestones, sequencing, and hand
 
 ## Diagram Guidance
 - Tiny/Small: diagrams optional.
-- Medium: diagrams encouraged when flow/handoff ambiguity exists.
-- Large: workflow/ownership diagrams expected for non-trivial boundaries.
+- Medium: lightweight workflow diagrams encouraged when flow/handoff ambiguity exists.
+- Large: lightweight workflow/ownership diagrams expected for non-trivial boundaries.
+- Scope diagrams to high-level process visualization only; do not design detailed product behavior or technical implementation flows here.
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md`.

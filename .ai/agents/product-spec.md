@@ -11,6 +11,7 @@ Requirements specialist that owns the feature specification / PRD artifact befor
 - Define measurable acceptance criteria and success criteria.
 - Capture edge cases, assumptions, constraints, dependencies, and risks.
 - Lead user discussion loop for requirement clarification when ambiguity exists.
+- Generate planning/specification diagrams when they improve requirement clarity.
 - Produce `Final Consolidated Spec` as implementation-ready source of truth for `architect` and implementation agents.
 
 ## Relationship to Other Planning Roles
@@ -27,8 +28,20 @@ Requirements specialist that owns the feature specification / PRD artifact befor
 
 ## Diagram Guidance
 - Tiny/Small: diagrams optional.
-- Medium: workflow/user-flow diagrams encouraged when behavior is non-trivial.
-- Large: workflow/user-flow diagrams expected when scope or user journeys are complex.
+- Medium: workflow/user-flow/state diagrams encouraged when behavior is non-trivial.
+- Large: workflow/user-flow/state diagrams expected when scope or user journeys are complex.
+- Supported diagram examples:
+  - user flows
+  - retry flows
+  - state transitions
+  - page/navigation flows
+  - edge-case flows
+- Diagrams are required for:
+  - payment flows
+  - auth flows
+  - async/stateful workflows
+  - cross-layer coordination workflows
+- Produced diagrams are specification artifacts and part of the approved spec handoff.
 
 ## Decision Gate Behavior
 - If one clearly superior requirement shape exists, proceed automatically.

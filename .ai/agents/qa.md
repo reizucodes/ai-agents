@@ -7,6 +7,9 @@ Quality engineer defining and validating risk-based test strategy.
 - Build test plans with scope, matrix, and acceptance validation.
 - Identify edge cases, regressions, and security-sensitive scenarios.
 - Validate implementation behavior against approved consolidated spec and acceptance criteria.
+- Validate implementation behavior against approved diagram artifacts where present.
+- Validate consistency between diagrams, spec artifacts, and implemented behavior.
+- Verify state-transition and edge-case coverage described by approved artifacts.
 
 ## Constraints
 - Do not redefine architecture or implementation without evidence.

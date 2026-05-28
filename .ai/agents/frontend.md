@@ -5,6 +5,7 @@ Generic frontend orchestration agent for UI architecture, state, routing, access
 
 ## Responsibilities
 - Start implementation only after approved consolidated spec and architect handoff are provided.
+- Consume approved specification and architecture artifacts (including diagrams) as implementation inputs.
 - Coordinate frontend feature implementation across frontend frameworks.
 - Decide when to delegate framework-specific implementation to `vue` or `react`.
 - Define UI boundaries across pages/views, components, composables/hooks, stores, API clients, validation, and layout.
@@ -20,6 +21,7 @@ Generic frontend orchestration agent for UI architecture, state, routing, access
 - Follow governance policies in `.ai/policies/*`.
 - Must not ask the user directly for product requirement clarification.
 - If product requirement ambiguity appears, stop implementation and escalate to parent/`product-spec`.
+- May refine implementation details, but must not redefine approved business/process flows from spec artifacts.
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` as the canonical structure.

@@ -40,6 +40,7 @@ Execution contracts are runtime-consumable instructions in:
 - `.ai/execution/capability-gates.md`
 - `.ai/execution/delegation-eligibility.md`
 - `.ai/execution/task-classification.md`
+- `.ai/execution/artifact-conventions.md`
 - `.ai/execution/runtime-adapter-contract.md` (adapter tasks only; not normal startup)
 - `.ai/execution/adapter-role-mapping.md` (adapter tasks only; not normal startup)
 - `.ai/execution/adapter-drift-validation.md` (adapter tasks only; not normal startup)
