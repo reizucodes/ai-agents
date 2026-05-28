@@ -40,25 +40,57 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
   - Use function-based route handlers; do not treat routers as class controllers.
   - Route function signatures are the request-binding and dependency declaration surface.
   - Inject services through `Depends()` in route parameters; do not manually construct services per route call.
+  - Routers should import provider functions from `app.dependencies.services` and inject with `Depends(get_<domain>_service)`.
   - Avoid service-method wrapper dependencies as a default pattern.
-  - Preferred route pattern:
+  - Preferred router usage:
     - ```python
       @router.get("/inventory-ledger")
       def get_inventory_ledger(
+          warehouse_id: str | None = None,
+          po_id: str | None = None,
           service: InventoryService = Depends(get_inventory_service),
       ) -> JSONResponse:
-          items = service.get_ledger_items()
+          items = service.get_ledger_items(
+              warehouse_id=warehouse_id,
+              po_id=po_id,
+          )
           return success(items)
       ```
+  - Injected service instances should be used to call service methods.
+  - Routers should not instantiate services directly when a provider exists.
 - Service provider function pattern:
   - Use one provider function per service, not one wrapper per service method.
-  - Preferred provider:
+  - `app/dependencies/services.py` is the preferred centralized provider module and acts as a lightweight service-provider registry.
+  - Provider functions should instantiate domain service classes.
+  - Preferred centralized provider pattern:
     - ```python
+      from __future__ import annotations
+
+      from fastapi import Depends
+      from sqlalchemy.orm import Session
+
+      from app.database.session import get_db
+      from app.modules.inventory.inventory_service import InventoryService
+      from app.modules.purchase_orders.purchase_orders_service import PurchaseOrdersService
+      from app.modules.receiving.receiving_service import ReceivingService
+
       def get_inventory_service(
           db: Session = Depends(get_db),
       ) -> InventoryService:
           return InventoryService(db)
+
+      def get_purchase_orders_service(
+          db: Session = Depends(get_db),
+      ) -> PurchaseOrdersService:
+          return PurchaseOrdersService(db)
+
+      def get_receiving_service(
+          db: Session = Depends(get_db),
+      ) -> ReceivingService:
+          return ReceivingService(db)
       ```
+  - Keep provider/wrapper logic out of domain service files.
+  - Domain service files should primarily contain service classes and business logic.
   - Routes should call multiple service methods from the injected service instance (for example, `service.get_ledger_items(...)`, `service.get_summary(...)`).
   - Avoid method-level wrappers for new code (acceptable only as transitional legacy refactor support):
     - ```python
@@ -67,12 +99,37 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
       ```
 - Service constructor pattern:
   - Services should receive dependencies through `__init__`.
-  - Acceptable direct form:
+  - Acceptable incremental form during provider-centralization refactors:
     - ```python
+      from __future__ import annotations
+
+      from sqlalchemy.orm import Session
+
+      from app.modules.inventory.inventory_repository import InventoryRepository
+      from app.schemas import LedgerItem
+
       class InventoryService:
+          """Domain service for inventory read use-cases."""
+
           def __init__(self, session: Session) -> None:
               self.repository = InventoryRepository(session)
+
+          def get_ledger_items(
+              self,
+              warehouse_id: str | None = None,
+              po_id: str | None = None,
+          ) -> list[dict]:
+              rows = self.repository.list_ledger_entries(
+                  warehouse_id=warehouse_id,
+                  po_id=po_id,
+              )
+
+              return [
+                  LedgerItem.model_validate(row, from_attributes=True).model_dump(mode="json")
+                  for row in rows
+              ]
       ```
+  - This incremental constructor pattern is acceptable when the active refactor scope is provider centralization.
   - Preferred contract-based form:
     - ```python
       class InventoryService:
@@ -90,6 +147,7 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
           repository = InventoryRepository(db)
           return InventoryService(repository)
       ```
+  - Long-term preferred form remains repository-contract constructor injection; do not force immediate conversion when current phase is only centralizing providers.
   - Router modules should not rely on class `__init__` injection patterns; FastAPI DI happens in route/provider functions via `Depends()`.
   - Provider functions act as lightweight service-container bindings.
 - Repository pattern guidance:
@@ -117,7 +175,7 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
   - Routers must not instantiate repositories directly.
   - Routers must not contain business rules or repeated service construction logic.
 - Dependency location guidance:
-  - Prefer centralized service providers in `app/dependencies/services.py` (for example, `get_inventory_service()`, `get_purchase_order_service()`, `get_receiving_service()`).
+  - Prefer centralized service providers in `app/dependencies/services.py` (for example, `get_inventory_service()`, `get_purchase_orders_service()`, `get_receiving_service()`).
   - Use module-local providers only for small projects or transitional refactors.
 - Database and migration guidance:
   - Use SQLAlchemy for ORM/data access.
