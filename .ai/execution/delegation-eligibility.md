@@ -17,6 +17,10 @@ Every follow-up task must be reclassified before execution.
 - Risk level and governance requirements.
 - Runtime capability gate result.
 - Availability of disjoint ownership boundaries.
+- Whether the run is code-changing.
+
+Definition:
+- Targeted delegation: spawn only the minimal relevant implementation role(s) needed for the changed surface, without forcing full Medium/Large planning pipeline.
 
 ## Follow-Up Delegation Thresholds
 
@@ -28,7 +32,8 @@ Examples:
 - one-line bug fix
 
 Default:
-- parent may handle directly.
+- parent may handle directly only when non-code-changing.
+- code-changing Tiny work must use targeted delegation to relevant implementation role(s).
 
 ### Small single-surface follow-up
 Examples:
@@ -37,8 +42,8 @@ Examples:
 - docs-only summary
 
 Default:
-- parent may handle directly.
-- delegation optional.
+- non-code-changing work may be parent-direct.
+- code-changing work requires targeted delegation to relevant implementation role(s).
 
 ### Small multi-surface follow-up
 Examples:
@@ -47,8 +52,7 @@ Examples:
 - UI change + docs
 
 Default:
-- parent must consider targeted subagents.
-- if parent does not delegate, parent must state why.
+- code-changing work must use targeted delegation to relevant implementation role(s).
 
 ### Medium/Large follow-up
 Default:
@@ -78,6 +82,7 @@ Reject delegated mode when any apply:
 - Medium/Large task where spec is not approved and no active spec gate is present.
 - Medium/Large task without architecture handoff before executor spawn.
 - Auditability requires single-thread deterministic trace.
+- A fallback audit report cannot be produced for a code-changing run.
 
 ## Skip-Delegation Explanation Rule
 When parent handles a small multi-surface follow-up directly, parent must include:
@@ -92,3 +97,4 @@ When parent handles a small multi-surface follow-up directly, parent must includ
 ## Enforcement
 - Default output is `sequential_required` unless delegated conditions are explicitly met.
 - If delegated mode starts and preconditions fail mid-run, parent must fall back to sequential completion.
+- Sequential completion still must satisfy targeted delegation for code-changing Tiny/Small runs (minimal relevant implementation role assignment) and must persist `/artifacts/docs/<run-id>-run-report.md`.

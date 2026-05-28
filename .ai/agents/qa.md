@@ -10,6 +10,7 @@ Quality engineer defining and validating risk-based test strategy.
 - Validate implementation behavior against approved diagram artifacts where present.
 - Validate consistency between diagrams, spec artifacts, and implemented behavior.
 - Verify state-transition and edge-case coverage described by approved artifacts.
+- For test-only code-changing runs, act as the required implementation role (`tester`) under targeted delegation.
 
 ## Constraints
 - Do not redefine architecture or implementation without evidence.

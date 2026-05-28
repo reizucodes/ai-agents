@@ -26,7 +26,7 @@ Define parent-agent responsibilities in delegated execution.
    - `reviewer` when behavior changed,
    - `docs` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
    - parent final validation.
-   - when `docs` is invoked, require a run-specific docs report artifact before final validation (including remediation/final-rerun and non-merge-ready runs).
+   - when `docs` is invoked, require `/artifacts/docs/<run-id>-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
 10. Collect child outputs and integrate deterministically.
 11. Enforce policy gates, quality checks, and final validation.
 12. Produce final answer with clear execution disclosure:
@@ -45,6 +45,10 @@ Define parent-agent responsibilities in delegated execution.
    - `REVIEW`
    - `DOCUMENTATION`
    - `COMPLETE`
+15. Enforce code-changing auditability:
+   - detect whether the run is code-changing (any repository file changed: source/tests/configs/docs/workflow contracts/generated artifacts),
+   - ensure `/artifacts/docs/<run-id>-run-report.md` exists before completion,
+   - for Tiny/Small efficiency cases where `docs` is not invoked, parent/main must write the run report and mark producer as `parent/main`.
 
 ## Spawn Idempotency Rule
 - Parent must treat child spawn/invocation as idempotent per active role assignment.
@@ -69,6 +73,10 @@ Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-
 - workflow changes significantly,
 - user explicitly asks for re-planning.
 
+Planning bypass rule for Tiny/Small:
+- Do not require full PM/product-spec/architect pipeline by default.
+- Use targeted delegation unless ambiguity, product behavior changes, architecture changes, multi-module impact, or risk escalation requires planning roles.
+
 ## Skip-Delegation Explanation Requirement
 If parent handles a small multi-surface follow-up directly, parent must include:
 - `Classification: Small multi-surface`
@@ -81,6 +89,7 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Must not bypass policy/approval/quality gates.
 - Must not skip mandatory planning gates for Medium/Large work.
 - Must not spawn `backend` or `frontend` before both `SPEC_APPROVED` and `ARCHITECTURE_READY`.
+- Must not complete a code-changing run without `/artifacts/docs/<run-id>-run-report.md`.
 
 ## Accountability
 - Parent owns the final merged result.

@@ -51,6 +51,12 @@ Rationale:
 - Mappings must include explicit source-role pointers.
 - Mappings must preserve policy compatibility and parent gate enforcement.
 - Mapping changes require drift-aware regeneration for affected adapters.
+- Relevant implementation agent requirement for code-changing runs:
+  - frontend-only: `frontend` and/or framework specialist (for example `vue`, `react`),
+  - backend-only: `backend` and/or framework specialist (for example `fastapi`, `laravel`, `node-express`),
+  - cross-layer: both `backend` and `frontend`,
+  - docs-only: `docs`,
+  - test-only: `tester`.
 
 ## Planning and Parallelism Rules
 - Discovery/spec-first order for Medium/Large delegated runs:
@@ -63,3 +69,4 @@ Rationale:
 - `reviewer` runs after tester.
 - `docs` runs last before parent final validation.
 - When `docs` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).
+- For Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main must still persist `/artifacts/docs/<run-id>-run-report.md`.

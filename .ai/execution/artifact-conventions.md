@@ -3,6 +3,14 @@
 ## Purpose
 Define lightweight, runtime-agnostic artifact conventions for planning, architecture, testing, and review outputs.
 
+## Definitions
+- Code-changing run:
+  - Any run that changes repository files, including source code, tests, configs, docs, workflow contracts, or generated artifacts.
+  - Pure Q&A, explanation-only, search-only, and planning-only runs with no repository file changes are not code-changing runs.
+- Audit report artifact:
+  - Required per code-changing run at `/artifacts/docs/<run-id>-run-report.md`.
+  - Must include run type, task summary, files changed, agents used, tests run, result/status, remaining risks or skipped validations, and whether `docs` produced the report or parent/main produced it.
+
 ## Canonical Rule
 - `.ai/*` remains canonical for process and role contracts.
 - Artifacts are versionable execution outputs stored in the repository.
@@ -18,11 +26,12 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
 - `/artifacts/reviews/`
   - Reviewer findings, approvals, and remediation summaries.
 - `/artifacts/docs/`
-  - Docs run reports and documentation handoff summaries per run (initial/remediation/final-rerun, including non-merge-ready outcomes).
+  - Docs run reports, parent fallback audit reports, and documentation handoff summaries per run (initial/remediation/final-rerun, including non-merge-ready outcomes).
 
 Directory creation rule:
 - Artifact directories are expected outputs and should be created on demand when a phase runs and the directory is missing.
 - For docs-run artifacts, when `/artifacts/docs/` is missing but sibling phase folders exist, infer `/artifacts/` as the artifact root and write to `/artifacts/docs/`.
+- For any code-changing run, writing `/artifacts/docs/<run-id>-run-report.md` is mandatory even when `docs` is not invoked.
 
 ## Diagram Source Format
 - Mermaid source is canonical for diagrams.

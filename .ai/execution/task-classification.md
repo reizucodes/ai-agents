@@ -18,6 +18,11 @@ Evaluate all dimensions before classifying:
 - Ambiguity: requirement clarity and decision uncertainty.
 - Coordination load: number of roles needed to produce safe output.
 
+Code-changing run rule:
+- A run is code-changing when it modifies any repository file (source, tests, configs, docs, workflow contracts, or generated artifacts).
+- Code-changing runs require an audit report artifact at `/artifacts/docs/<run-id>-run-report.md`.
+- Non-code-changing runs (pure Q&A/explanation/search/planning-only with no file changes) do not require an audit report artifact.
+
 Requirement ambiguity rule:
 - when blocking ambiguity exists, trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` before classification-dependent execution continues.
 
@@ -39,7 +44,8 @@ Default behavior:
 - Sequential mode.
 - Parent may handle directly.
 - Skip planning agents (`project-manager`, `product-spec`, `architect`).
-- Skip `docs` unless explicitly requested.
+- Use targeted delegation to relevant implementation role(s) when files are changed; parent-only is allowed only for non-code-changing tasks.
+- `docs` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/<run-id>-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - No diagrams required.
 
 ### Small
@@ -59,7 +65,8 @@ Default flow:
 Default behavior:
 - Sequential mode.
 - `architect` only when contract/boundary risk appears.
-- `docs` is optional.
+- Relevant implementation role(s) are required for code-changing work via targeted delegation.
+- `docs` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/<run-id>-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - Diagrams optional.
 
 ### Small Follow-Up Thresholds
@@ -71,8 +78,8 @@ Examples:
 - docs-only summary
 
 Default:
-- parent may handle directly.
-- delegation optional.
+- for code-changing runs, use targeted delegation to the relevant implementation role (`backend` for backend-only, `frontend`/framework specialist for frontend-only, `docs` for docs-only, `tester` for test-only).
+- parent may handle directly only for non-code-changing runs.
 
 #### Small multi-surface follow-up
 Examples:
@@ -82,7 +89,7 @@ Examples:
 
 Default:
 - parent must consider targeted subagents.
-- if parent does not delegate, parent must state why.
+- code-changing runs must use targeted delegation to relevant implementation roles (for example `backend` + `frontend` for cross-layer changes).
 
 Required skip-delegation explanation:
 - `Classification: Small multi-surface`
@@ -110,6 +117,7 @@ Default behavior:
 - Spec-first planning gates are expected.
 - Backend/frontend/tester may run in parallel only after planning outputs are complete.
 - `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
+- `docs` creates `/artifacts/docs/<run-id>-run-report.md`.
 - Diagrams are encouraged.
 
 ### Large
@@ -134,6 +142,7 @@ Default behavior:
 - Spec-first planning gates are mandatory.
 - Delegation may be used after planning artifacts are approved.
 - `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
+- `docs` creates `/artifacts/docs/<run-id>-run-report.md`.
 - Diagrams are expected when workflows, boundaries, ownership, or API flows are non-trivial.
 
 ## Escalation Rules
@@ -165,6 +174,7 @@ Downgrade only when evidence confirms reduced scope:
 `docs` may be skipped only when:
 - task is Tiny and not explicitly requested, or
 - task is Small with no behavior/setup/API/workflow/decision changes.
+- When skipped in a code-changing Tiny/Small run, parent/main must still create `/artifacts/docs/<run-id>-run-report.md`.
 
 ## Planning-Agent Rerun Rules for Follow-Ups
 Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-ups unless at least one applies:

@@ -44,6 +44,7 @@ Map the sections below into that wrapper.
 
 ## Collaboration Guidelines
 - Use `frontend` for cross-cutting frontend orchestration (UI boundaries, state/routing strategy, styling defaults, and API alignment), then execute Vue-specific implementation in this agent.
+- For Tiny/Small frontend code changes, this agent may be used directly as targeted delegation when Vue is the active stack.
 - Do not assume implicit inheritance of styling rules outside this contract; apply the styling default rules above unless parent scope explicitly overrides them.
 - Align UX and domain boundaries with `architect`.
 - Share risk-heavy scenarios with `qa`.

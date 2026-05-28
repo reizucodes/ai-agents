@@ -107,7 +107,14 @@ Runtime-specific summary requirements (keep concise):
 - `tester` validates against approved consolidated spec and acceptance criteria.
 - `reviewer` runs after tester outputs.
 - `docs` runs last before parent final validation.
-- when `docs` runs, it writes a run-specific docs report artifact under `/artifacts/docs/`.
+- when `docs` runs, it writes `/artifacts/docs/<run-id>-run-report.md`.
+- for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/<run-id>-run-report.md`.
+- code-changing runs require relevant implementation role usage:
+  - frontend-only: `frontend`/framework specialist,
+  - backend-only: `backend`/framework specialist,
+  - cross-layer: both `backend` + `frontend`,
+  - docs-only: `docs`,
+  - test-only: `tester`.
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 
 4. Include required generated metadata header from runtime/schema contracts.

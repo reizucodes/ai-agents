@@ -10,6 +10,9 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - Sequential mode is the default and portable execution path.
 - Delegated mode is optional, runtime-dependent, and requires explicit invocation.
 - Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
+- Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
+- Every code-changing run must persist `/artifacts/docs/<run-id>-run-report.md`.
+- Pure Q&A, explanation-only, search-only, and planning-only runs with no file changes are not code-changing runs.
 
 ## Follow-Up Routing Rule
 Every follow-up task must be reclassified before execution.
@@ -37,6 +40,7 @@ Flow:
 Requirements:
 - All policy and quality gates still apply.
 - No delegated/parallel claims unless runtime subagents were actually spawned.
+- For code-changing Tiny/Small runs in sequential mode, use targeted delegation to relevant implementation role(s) rather than full planning pipeline.
 
 ### Mode B: Delegated (Optional)
 Use only when:
@@ -62,7 +66,7 @@ Flow:
    - `tester`,
    - `reviewer`,
    - `docs`.
-   - when `docs` is in scope, it must run last and persist a run-specific docs report artifact before parent final validation.
+   - when `docs` is in scope, it must run last and persist `/artifacts/docs/<run-id>-run-report.md` before parent final validation.
 11. Parent merges, validates, and returns final output.
 
 Requirements:
@@ -72,6 +76,7 @@ Requirements:
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
   - architecture handoff.
+- For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/<run-id>-run-report.md`.
 
 ### Mode C: Autonomous (Future Extension)
 - Not implemented in this instruction framework.
@@ -84,10 +89,12 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Reviewer if behavior changed
 - Docs if docs/API/setup changed
 - Parent final validation
+- If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/<run-id>-run-report.md`.
 
 Follow-up docs rule:
 - For remediation runs and final reruns where docs is in scope, `docs` still runs last and writes a run-specific report artifact.
 - For failed/non-merge-ready runs where docs ran, preserve a docs run report artifact that records blockers and remaining documentation gaps.
+- For code-changing Tiny/Small follow-ups where docs does not run, parent/main still writes the required run report artifact with status and residual risks.
 
 Notes:
 - Keep sequential mode as the portable default.
