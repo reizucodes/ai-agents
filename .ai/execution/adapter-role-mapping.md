@@ -38,13 +38,13 @@ Rationale:
 | Source Role File | Adapter Name | Adapter Description | Default Write Scope | Default Forbidden Scope | Delegation Notes |
 |---|---|---|---|---|---|
 | `.ai/agents/project-manager.md` | `project-manager` | Planning coordinator for classification, milestones, and handoffs before implementation. | Planning artifacts only. | Broad feature implementation ownership by default. | Runs before implementation for Medium/Large tasks. |
-| `.ai/agents/product-spec.md` | `product-spec` | PRD/specification owner for scope, stories, criteria, and constraints. | Spec artifacts only. | Broad feature implementation ownership by default. | Runs before architecture and implementation for Medium/Large tasks. |
-| `.ai/agents/architect.md` | `architect` | Technical design owner for architecture boundaries, contracts, and risks. | Technical-design artifacts only. | Broad feature implementation ownership by default. | Runs after product spec and before implementation. |
-| `.ai/agents/backend.md` | `backend` | Backend implementation worker for API/service/data tasks under parent constraints. | Backend modules, service layer, backend tests. | Frontend UI modules, deployment/ops files, unrelated domains. | Can run in parallel with frontend/tester after planning outputs exist. |
-| `.ai/agents/frontend.md` | `frontend` | Frontend implementation worker for UI/state/integration tasks under parent constraints. | Frontend modules, UI tests, component state logic. | Backend persistence/migration files, deployment/ops files, unrelated domains. | Can run in parallel with backend/tester after planning outputs exist. |
-| `.ai/agents/qa.md` | `tester` | Validation worker focused on test coverage, repro steps, and risk checks. | Test files, test fixtures, validation artifacts. | Product logic outside test scope unless parent reassigns. | Can run in parallel with implementation after planning outputs exist. |
-| `.ai/agents/code-review.md` | `reviewer` | Review worker focused on correctness, maintainability, risk, and regressions. | Review notes and scoped remediation when assigned. | Broad feature implementation ownership by default. | Runs after implementation/test outputs exist. |
-| `.ai/agents/docs.md` | `docs` | Documentation worker for feature docs, setup notes, handoffs, and changelog/readme updates when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs after reviewer and before parent final validation. |
+| `.ai/agents/product-spec.md` | `product-spec` | PRD/specification owner for scope, stories, criteria, constraints, and final consolidated spec. | Spec artifacts only. | Broad feature implementation ownership by default. | Runs after project-manager; drives user clarification loop and consolidated spec approval before architecture/implementation. |
+| `.ai/agents/architect.md` | `architect` | Technical design owner for architecture boundaries, contracts, and executor handoff package. | Technical-design artifacts only. | Broad feature implementation ownership by default. | Runs only after approved consolidated spec and before any implementation executors. |
+| `.ai/agents/backend.md` | `backend` | Backend implementation worker for API/service/data tasks under parent constraints. | Backend modules, service layer, backend tests. | Frontend UI modules, deployment/ops files, unrelated domains. | Runs only after approved consolidated spec + architect handoff; may run in parallel with frontend when ownership boundaries are explicit. |
+| `.ai/agents/frontend.md` | `frontend` | Frontend implementation worker for UI/state/integration tasks under parent constraints. | Frontend modules, UI tests, component state logic. | Backend persistence/migration files, deployment/ops files, unrelated domains. | Runs only after approved consolidated spec + architect handoff; may run in parallel with backend when ownership boundaries are explicit. |
+| `.ai/agents/qa.md` | `tester` | Validation worker focused on test coverage, repro steps, and risk checks against approved spec. | Test files, test fixtures, validation artifacts. | Product logic outside test scope unless parent reassigns. | Runs after implementation outputs are available; validates against approved consolidated spec and acceptance criteria. |
+| `.ai/agents/code-review.md` | `reviewer` | Review worker focused on correctness, maintainability, risk, and regressions. | Review notes and scoped remediation when assigned. | Broad feature implementation ownership by default. | Runs after tester outputs are available. |
+| `.ai/agents/docs.md` | `docs` | Documentation worker for feature docs, setup notes, handoffs, and changelog/readme updates when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation. |
 
 ## Mapping Constraints
 - Adapter names must be stable and unique.
@@ -53,9 +53,12 @@ Rationale:
 - Mapping changes require drift-aware regeneration for affected adapters.
 
 ## Planning and Parallelism Rules
-- `project-manager`, `product-spec`, and `architect` are default planning agents.
+- Discovery/spec-first order for Medium/Large delegated runs:
+  - `project-manager` -> `product-spec` -> approved consolidated spec -> `architect`.
 - Planning agents are not broad writers.
-- Planning agents run before implementation agents for Medium/Large tasks.
-- `backend`, `frontend`, and `tester` may run in parallel only after planning outputs are complete.
-- `reviewer` runs after implementation/test outputs exist.
-- `docs` runs after reviewer and before parent final validation.
+- `backend` and `frontend` must not run before approved consolidated spec and architect handoff.
+- `backend` and `frontend` may run in parallel only after ownership boundaries are explicit.
+- If implementation discovers requirement ambiguity, escalate through parent/`product-spec` (no direct user questioning by implementation children).
+- `tester` runs after implementation and validates against approved consolidated spec + acceptance criteria.
+- `reviewer` runs after tester.
+- `docs` runs last before parent final validation.

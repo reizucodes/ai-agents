@@ -53,6 +53,8 @@ Default:
 ### Medium/Large follow-up
 Default:
 - use delegated flow or planning-gate flow.
+- require finalized spec or active Requirement Clarification Gate before implementation delegation.
+- require architecture handoff before spawning implementation executors.
 
 ## Eligible Cases
 Delegated mode is preferred when all apply:
@@ -61,6 +63,9 @@ Delegated mode is preferred when all apply:
 - Parallel execution reduces critical-path time materially.
 - Parent can still enforce policy gates and final validation.
 - Required planning outputs exist when classification is Medium/Large.
+- For Medium/Large:
+  - approved consolidated spec exists, or spec gate is actively unresolved and implementation is paused.
+  - architecture handoff exists before spawning `backend`/`frontend`.
 
 ## Ineligible Cases (Reject Delegation)
 Reject delegated mode when any apply:
@@ -70,6 +75,8 @@ Reject delegated mode when any apply:
 - Contract/migration/auth changes requiring tightly sequenced edits.
 - Runtime subagent support is unknown/unreliable.
 - Medium/Large task without completed planning outputs.
+- Medium/Large task where spec is not approved and no active spec gate is present.
+- Medium/Large task without architecture handoff before executor spawn.
 - Auditability requires single-thread deterministic trace.
 
 ## Skip-Delegation Explanation Rule

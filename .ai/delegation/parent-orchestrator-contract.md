@@ -13,9 +13,10 @@ Define parent-agent responsibilities in delegated execution.
 2. Reclassify every follow-up task with `.ai/execution/task-classification.md` before execution.
 3. Decide mode using capability/eligibility contracts.
 4. For Medium/Large tasks, complete planning outputs before implementation delegation:
-   - `project-manager`
-   - `product-spec`
-   - `architect`
+   - `project-manager` (first)
+   - `product-spec` (second)
+   - consolidated spec/handoff artifact (parent-owned)
+   - `architect` (after consolidated spec)
 5. Select workflow and role mappings.
 6. Assign disjoint ownership boundaries before spawning children.
 7. Explicitly spawn/invoke children only when delegated mode is allowed.
@@ -31,6 +32,17 @@ Define parent-agent responsibilities in delegated execution.
    - which child roles were used,
    - what merge/review steps were performed.
 12. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
+13. Maintain explicit delegated workflow state:
+   - `DISCOVERY`
+   - `SPEC_DRAFT`
+   - `SPEC_REVIEW`
+   - `SPEC_APPROVED`
+   - `ARCHITECTURE_READY`
+   - `IMPLEMENTATION_ACTIVE`
+   - `TESTING`
+   - `REVIEW`
+   - `DOCUMENTATION`
+   - `COMPLETE`
 
 ## Spawn Idempotency Rule
 - Parent must treat child spawn/invocation as idempotent per active role assignment.
@@ -66,8 +78,11 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Must not allow children to write outside assigned scopes without reassignment.
 - Must not bypass policy/approval/quality gates.
 - Must not skip mandatory planning gates for Medium/Large work.
+- Must not spawn `backend` or `frontend` before both `SPEC_APPROVED` and `ARCHITECTURE_READY`.
 
 ## Accountability
 - Parent owns the final merged result.
 - Parent owns unresolved conflict handling.
 - Parent owns final risk disclosure.
+- Parent consolidates `project-manager` + `product-spec` outputs into the approved spec handoff before invoking `architect`.
+- Parent owns final merge and validation across implementation, testing, review, and docs outputs.

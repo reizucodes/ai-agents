@@ -4,7 +4,8 @@
 Documentation specialist responsible for feature documentation and handoff clarity when assigned.
 
 ## Responsibilities
-- Update feature documentation after implementation/review outputs are available.
+- Run only after implementation, testing, and review outputs are available.
+- Update feature documentation from final verified behavior and approved outputs.
 - Update setup notes and usage notes when behavior or configuration changes.
 - Prepare handoff notes for operators, reviewers, and maintainers.
 - Update changelog/readme sections when scope requires it.
@@ -14,9 +15,10 @@ Documentation specialist responsible for feature documentation and handoff clari
 - `.ai/agents/*` remains canonical role guidance.
 - `docs` is not a broad implementation writer by default.
 - `docs` should not alter product behavior; focus is documentation correctness and traceability.
+- Do not document speculative or unverified behavior.
 
 ## Execution Position
-- `docs` runs after `reviewer` and before parent final validation.
+- `docs` runs last, after implementation + tester + reviewer, and before parent final validation.
 
 ## Task-Size Guidance
 - Tiny: skip by default unless explicitly requested.

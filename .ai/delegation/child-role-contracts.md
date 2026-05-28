@@ -28,10 +28,17 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - stack-specialist children map to relevant framework contracts when decomposition requires it.
 
 ## Planning and Implementation Ordering Rules
-- For Medium/Large tasks, planning roles (`project-manager`, `product-spec`, `architect`) run before implementation roles.
-- Implementation roles (`backend`, `frontend`, `tester`) may run in parallel only after planning outputs exist.
-- `reviewer` runs after implementation/test outputs are available.
-- `docs` runs after `reviewer` and before parent final validation.
+- Discovery/spec roles:
+  - `project-manager` then `product-spec`.
+- Design/handoff role:
+  - `architect` runs only after approved consolidated spec exists.
+- Implementation roles:
+  - `backend` and `frontend` run only after architect handoff exists.
+  - `backend` and `frontend` may run in parallel only when ownership boundaries are explicit.
+- Validation/review/documentation roles:
+  - `tester` validates against approved consolidated spec and acceptance criteria.
+  - `reviewer` runs after tester output is available.
+  - `docs` runs last, before parent final validation.
 
 ## Child Scope Rules
 - Each child receives explicit goals, scope boundaries, and handoff requirements.
@@ -39,6 +46,7 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - `docs` owns feature documentation, setup notes, handoff notes, and changelog/readme updates when assigned.
 - Children should avoid changing files outside assigned ownership.
 - Children should report assumptions, risks, and incomplete checks.
+- Implementation children (`backend`, `frontend`) must not ask the user directly; requirement questions escalate through parent and `product-spec`.
 
 ## Non-goals
 - This file does not create or spawn child agents.

@@ -61,6 +61,10 @@ Load all of the following before execution:
   5. generation work can be decomposed into independent workstreams.
 - For normal adapter generation, execute sequentially.
 
+## Regeneration Invocation
+Use this runtime command/prompt for regeneration:
+- `Run .ai/workflows/build-codex-agents.md and generate .codex/agents/*.toml from canonical .ai/agents/* using .ai/runtimes/codex/adapter-schema.md, then write .ai/reports/codex-adapter-run-report.md.`
+
 ## Source-to-Adapter Mapping Process
 1. Load generation mapping from `.ai/execution/adapter-role-mapping.md`.
 2. Resolve each mapped canonical source path.
@@ -95,6 +99,15 @@ If this adapter conflicts with the canonical role contract, follow the canonical
 <short runtime-specific role summary here>
 """
 ```
+
+Runtime-specific summary requirements (keep concise):
+- Discovery/spec-first role order:
+  - `project-manager` -> `product-spec` -> approved consolidated spec -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
+- `backend`/`frontend` must not execute before approved consolidated spec and architect handoff.
+- `tester` validates against approved consolidated spec and acceptance criteria.
+- `reviewer` runs after tester outputs.
+- `docs` runs last before parent final validation.
+- Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 
 4. Include required generated metadata header from runtime/schema contracts.
 5. Include canonical source pointer and drift metadata.

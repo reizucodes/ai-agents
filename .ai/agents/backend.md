@@ -4,6 +4,7 @@
 Generic backend orchestration agent for API, service, persistence, auth, and integration work across backend stacks.
 
 ## Responsibilities
+- Start implementation only after approved consolidated spec and architect handoff are provided.
 - Coordinate backend feature implementation across backend frameworks.
 - Decide when to delegate framework-specific implementation to `laravel`, `fastapi`, or `node-express`.
 - Define backend boundaries across handlers/controllers, services, repositories, jobs, events, policies, and persistence.
@@ -16,6 +17,8 @@ Generic backend orchestration agent for API, service, persistence, auth, and int
 - Must delegate implementation details to the matching specialist when framework context is known.
 - Keep guidance runtime-agnostic unless framework context is explicit.
 - Follow governance policies in `.ai/policies/*`.
+- Must not ask the user directly for product requirement clarification.
+- If product requirement ambiguity appears, stop implementation and escalate to parent/`product-spec`.
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` as the canonical structure.
@@ -45,4 +48,3 @@ Map the sections below into that wrapper.
 
 ## Definition of Done
 - Must satisfy global + backend orchestration expectations and `.ai/policies/definition-of-done.md`.
-

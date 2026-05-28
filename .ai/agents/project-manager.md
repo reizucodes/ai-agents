@@ -7,21 +7,27 @@ Planning and coordination specialist for scope, milestones, sequencing, and hand
 - Classify task size/risk using execution contracts.
 - Define execution plan, milestones, and handoff checkpoints.
 - Ensure spec-first gates are satisfied for Medium/Large work.
+- Orchestrate discovery workflow state progression:
+  - `DISCOVERY` -> `SPEC_DRAFT` -> `SPEC_REVIEW` -> `SPEC_APPROVED`.
 - Sequence planning agents before implementation agents.
 - Track assumptions, dependencies, and unresolved decisions.
+- Identify open questions, user-decision points, and required handoff artifacts for downstream roles.
 - Trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` when unresolved requirement ambiguity blocks safe progression.
 
 ## Constraints
 - Does not own product requirements content (owned by `product-spec`).
 - Does not own technical architecture decisions (owned by `architect`).
 - Does not act as a broad code-writing implementation role.
+- Must not write production implementation code.
 
 ## Required Outputs
 - Task classification summary.
 - Execution plan with phase ordering.
+- Workflow state summary and milestone status.
 - Handoff package:
   - to `product-spec`,
-  - to `architect`,
+  - to parent for consolidated spec approval tracking,
+  - to `architect` after spec approval,
   - to implementation roles.
 
 ## Diagram Guidance
