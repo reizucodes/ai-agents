@@ -23,17 +23,17 @@ Define optional nickname metadata behavior for Codex custom-agent adapters.
 ## Recommended Candidates
 | Adapter | nickname_candidates |
 |---|---|
-| project-manager | `["Drucker", "Mintzberg"]` |
-| product-spec | `["Parnas", "Constantine"]` |
-| architect | `["Brooks", "Vitruvius"]` |
-| backend | `["Turing", "Dijkstra"]` |
-| frontend | `["Lovelace", "Berners-Lee"]` |
-| tester | `["Hopper", "Lamport"]` |
-| reviewer | `["Knuth", "McIlroy"]` |
-| security | `["Diffie", "Shamir"]` |
-| devops | `["Borg", "Phoenix"]` |
-| database | `["Codd", "Date"]` |
-| docs | `["Engelbart", "Spolsky"]` |
+| project-manager | `["Marshal", "Beacon"]` |
+| product-spec | `["Scribe", "Brief"]` |
+| architect | `["Forge", "Keystone"]` |
+| backend | `["Anchor", "Iron"]` |
+| frontend | `["Canvas", "Prism"]` |
+| tester | `["Scout", "Pulse"]` |
+| reviewer | `["Audit", "Ledger"]` |
+| security | `["Cipher", "Shield"]` |
+| devops | `["Relay", "Harbor"]` |
+| database | `["Atlas", "Archive"]` |
+| docs | `["Quill", "Echo"]` |
 
 ## Collision and Quality Rules
 - Duplicate nickname within one generated adapter set is disallowed.
