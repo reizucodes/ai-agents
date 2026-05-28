@@ -20,6 +20,8 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - Choose execution mode automatically from classification + capability + delegation eligibility gates.
 - User does not need to explicitly request "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, use sequential fallback and state fallback explicitly.
+- For spawned agent display/traces, prefer `<nickname> [<canonical-role>]`.
+- Runtime nickname alone is non-authoritative; canonical role suffix is required in display form.
 - Before `targeted`/`delegated`, check:
   - runtime delegation capability,
   - Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.

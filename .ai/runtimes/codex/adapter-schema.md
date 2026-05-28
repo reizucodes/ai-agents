@@ -27,7 +27,7 @@ Each Codex adapter TOML must include:
 - `developer_instructions`
 
 ## Optional Fields
-- `nickname_candidates` is optional advisory metadata.
+- `nickname_candidates` should be included for mapped adapter roles and must match `.ai/runtimes/codex/nickname-strategy.md`.
 - Runtime may ignore `nickname_candidates` and assign display names independently.
 - Additional optional runtime fields may be included only when required by the consuming runtime or task context.
 - Optional field usage must remain conservative and documented per adapter.
@@ -64,6 +64,9 @@ If this adapter conflicts with the canonical role contract, follow the canonical
 Rules:
 - Keep runtime-specific role summary short and scoped.
 - Do not duplicate full canonical role contracts.
+- Runtime-specific summary should include display/self-identification rule:
+  - use `<nickname> [<canonical-role>]`,
+  - if runtime nickname is different, self-identify as `<runtime-nickname-or-configured-nickname> [<canonical-role>]`.
 
 ## Drift Metadata Requirement
 Adapter metadata must include at least one of:
@@ -86,10 +89,12 @@ Preferred:
 - If target `name` collides with another custom adapter, generation is rejected.
 - If target `name` collides with a known built-in runtime agent name, generation should be rejected by default unless explicit override is requested.
 - If `nickname_candidates` is provided, candidates should be role-distinct and non-duplicative in the generated set.
+- Display labels in generated guidance should always append `[<canonical-role>]`.
 
 ## Routing and Reporting Rule
 - Use canonical adapter `name` as the authoritative routing and reporting identifier.
 - Do not use runtime display nicknames as authoritative identifiers.
+- Generated descriptions/instructions should keep canonical role visible and require display format `<nickname> [<canonical-role>]` in traces/logs.
 
 ## Invocation Rule
 - Presence of `.codex/agents/*.toml` does not trigger delegated execution by itself.

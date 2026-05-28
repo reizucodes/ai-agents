@@ -80,6 +80,7 @@ Use this runtime command/prompt for regeneration:
    - default write/forbidden scopes,
    - delegation notes,
    - optional nickname candidates when allowed.
+   - display-name format expectation: `<nickname> [<canonical-role>]`.
 4. Exclude opt-in roles unless explicitly requested by user/policy.
 5. Build/update Codex runtime orchestration bootstrap artifact from canonical contracts:
    - execution-mode input model (`auto|sequential|targeted|delegated`),
@@ -128,6 +129,9 @@ Runtime-specific summary requirements (keep concise):
   - docs-only: `docs`,
   - test-only: `tester`.
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
+- Adapter self-identification/display rule:
+  - Use `<nickname> [<canonical-role>]` in traces/logs when nickname is available.
+  - If runtime-selected nickname differs, self-identify as `<runtime-nickname-or-configured-nickname> [<canonical-role>]`.
 
 Runtime orchestration bootstrap minimum routing rules:
 - execution-mode input header support:
@@ -150,6 +154,7 @@ Runtime orchestration bootstrap minimum routing rules:
 7. Do not duplicate full canonical role contracts unless runtime requirement is explicitly documented.
 8. Include `nickname_candidates` only when supported and requested according to `.ai/runtimes/codex/nickname-strategy.md`.
 9. Treat `nickname_candidates` as advisory only; runtime may ignore them.
+10. Ensure generated `description`/`developer_instructions` keep canonical role visible and enforce display format `<nickname> [<canonical-role>]`.
 
 ## Validation Steps
 Run validation using `.ai/execution/adapter-drift-validation.md` and `.ai/runtimes/codex/adapter-schema.md`:
@@ -164,7 +169,11 @@ Run validation using `.ai/execution/adapter-drift-validation.md` and `.ai/runtim
 9. Codex schema validation.
 10. Reserved-name/collision validation when known names are available.
 11. Nickname quality/collision validation when `nickname_candidates` are provided.
-12. Orchestration bootstrap presence/content validation:
+12. Display-name contract validation:
+   - generated guidance requires `<nickname> [<canonical-role>]`,
+   - canonical role suffix is always present,
+   - self-identification fallback rule exists when runtime nickname differs.
+13. Orchestration bootstrap presence/content validation:
    - file exists at `.ai/runtimes/codex/orchestration-bootstrap.md`,
    - routes are derived from canonical `.ai/*` contracts,
    - required routing rules above are present.
@@ -195,6 +204,7 @@ Reject generation or validation when any apply:
 - Do not claim delegated execution unless delegation actually occurs.
 - Do not claim Codex subagent execution unless explicitly invoked by runtime.
 - Do not depend on runtime display nicknames for routing, validation, reporting, or handoffs.
+- Require runtime-facing display/self-identification guidance to use `<nickname> [<canonical-role>]`.
 - Preserve host-project approval and safety policy requirements.
 - Fall back to sequential mode if delegated preconditions fail.
 

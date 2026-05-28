@@ -55,6 +55,10 @@ Rationale:
 - Parent/orchestrator runtime exposure rule:
   - Do not map parent/orchestrator as a normal child implementation adapter role.
   - Expose parent orchestration behavior through Codex runtime bootstrap artifact `.ai/runtimes/codex/orchestration-bootstrap.md`.
+- Display-name strategy for generated adapters:
+  - Use nickname candidates from `.ai/runtimes/codex/nickname-strategy.md`.
+  - Runtime-facing display format should be `<nickname> [<canonical-role>]`.
+  - Canonical role remains authoritative for routing/reporting.
 - Relevant implementation agent requirement for code-changing runs:
   - frontend-only: `frontend` and/or framework specialist (for example `vue`, `react`),
   - backend-only: `backend` and/or framework specialist (for example `fastapi`, `laravel`, `node-express`),
