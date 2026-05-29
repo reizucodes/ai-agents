@@ -112,9 +112,37 @@ Existing project documentation remains untouched.
 4. Use `examples/` as reference implementations of multi-agent handoffs.
 5. Use `INDEX.md` first for risk-scaled quick-start guidance.
 
+## Repository Runtime Assets
+Repository ships with:
+- `AGENTS.md`
+- `INDEX.md`
+- `CLAUDE.md`
+- Claude runtime contracts under `.ai/runtimes/claude/*`
+
+Repository does not ship with:
+- `.claude/agents/*.md`
+
+Claude adapters are generated only through:
+- `build-claude-agents`
+
 ## Codex Runtime Usage
 Generated Codex agents are artifacts under `.codex/agents/*.toml`.  
 Canonical process/role contracts remain in `.ai/*`.
+
+## Claude Runtime Usage
+Generated Claude adapters are project-level subagent artifacts under `.claude/agents/*.md`.  
+Canonical process/role contracts remain in `.ai/*`.
+
+Constraints:
+- `.claude/agents/*.md` are derivative runtime adapters, not canonical role definitions.
+- `~/.claude/agents/` (user-level Claude agents) is outside this repository scope.
+- Claude adapter `description` fields are delegation-critical and should stay task-oriented.
+- Claude adapter `tools` fields should remain least-privilege and role-scoped.
+
+Adapter governance:
+- `AGENTS.md` remains canonical.
+- Adapter drift validation applies to both Codex and Claude adapter outputs.
+- Codex adapters (`.codex/agents/*.toml`) and Claude adapters (`.claude/agents/*.md`) are generated artifacts derived from `.ai/agents/*`.
 
 ### Runtime Modes
 - `auto`: framework default; parent classifies and chooses best mode.
