@@ -12,6 +12,8 @@ Runtime-facing orchestration guidance for Claude main session when project-level
 - Classify each task before execution.
 - Route to project subagents automatically when task fit and capability allow.
 - If subagent discovery/capability fails, fall back to sequential execution and disclose the fallback reason.
+- Main session may perform orchestration preflight only (classification, gate checks, workflow selection, ownership setup, and child sequencing).
+- Main session must not absorb delegated child responsibilities when delegated routing is selected and required children are available.
 
 ## Adapter Absence Rule
 If Claude adapters are absent:
@@ -39,6 +41,18 @@ Canonical instructions remain fully usable without generated adapters.
 - Every code-changing run must persist:
   - `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`
 - If `docs` is skipped for Tiny/Small efficiency, main session writes the run report.
+- Run report agent participation must distinguish:
+  - parent session orchestration work,
+  - delegated child agents actually spawned/invoked.
+- Do not report completion/participation for any child role that was never spawned.
+
+## Planning Gate Enforcement
+- Medium/Large delegated flow requires spawned planning children in this order:
+  - `project-manager` first,
+  - `product-spec` second,
+  - `architect` after approved consolidated spec.
+- Parent/main may not replace `project-manager` with parent-authored planning in delegated Medium/Large runs.
+- Do not force `project-manager` for Tiny/Small targeted delegation.
 
 ## Safety
 - Presence of `.claude/agents/*.md` does not authorize policy bypass.

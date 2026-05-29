@@ -35,6 +35,7 @@ Define parent-agent responsibilities in delegated execution.
 12. Produce final answer with clear execution disclosure:
    - whether delegation was used,
    - which child roles were used,
+   - which responsibilities remained parent-owned orchestration work,
    - what merge/review steps were performed.
    - report path for `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` when run is code-changing.
 13. If any child raises a Requirement Clarification Gate (`.ai/policies/decision-gates.md`), pause downstream delegation, consolidate the blocking question, and ask the user before resuming.
@@ -95,6 +96,7 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 
 ## Parent Prohibitions
 - Must not claim delegated execution when none occurred.
+- Must not claim child-agent participation/completion for roles that were never spawned.
 - Must not allow children to write outside assigned scopes without reassignment.
 - Must not bypass policy/approval/quality gates.
 - Must not skip mandatory planning gates for Medium/Large work.
