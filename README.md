@@ -24,6 +24,7 @@ The runtime assets retained in the project are:
 ```txt
 AGENTS.md
 INDEX.md
+CLAUDE.md
 .ai/
 examples/
 ```
@@ -37,6 +38,7 @@ profile-dashboard/
 ├── .ai/
 ├── examples/
 ├── AGENTS.md
+├── CLAUDE.md
 ├── INDEX.md
 ├── README.md
 ├── src/
@@ -52,7 +54,7 @@ Preview first:
 ```bash
 rsync -avh --dry-run --itemize-changes \
   --exclude='.DS_Store' \
-  AGENTS.md INDEX.md .ai examples \
+  AGENTS.md INDEX.md CLAUDE.md .ai examples \
   /path/to/existing-project/
 ```
 
@@ -61,7 +63,7 @@ Then perform the sync:
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
-  AGENTS.md INDEX.md .ai examples \
+  AGENTS.md INDEX.md CLAUDE.md .ai examples \
   /path/to/existing-project/
 ```
 
@@ -74,9 +76,36 @@ The goal is to preserve:
 ```txt
 AGENTS.md
 INDEX.md
+CLAUDE.md
 .ai/
 examples/
 ```
+
+`CLAUDE.md` is Claude Code-specific runtime entrypoint guidance.
+`AGENTS.md` remains the canonical instruction source.
+`.ai/*` remains the canonical workflow/agent/runtime library.
+
+### Claude Code Runtime Installation
+
+Recommended install for Claude Code projects:
+
+```bash
+rsync -avh \
+  --exclude='.DS_Store' \
+  AGENTS.md \
+  INDEX.md \
+  CLAUDE.md \
+  .ai \
+  examples \
+  ../your-project/
+```
+
+Notes:
+- `CLAUDE.md` is the Claude Code entrypoint.
+- `AGENTS.md` remains the canonical instruction source.
+- `.ai/*` remains the canonical workflow/agent/runtime library.
+- `.claude/agents/*.md` are not installed by default.
+- Claude adapters are generated later through `build-claude-agents`.
 
 inside the destination repository.
 
@@ -124,6 +153,30 @@ Repository does not ship with:
 
 Claude adapters are generated only through:
 - `build-claude-agents`
+
+Committed files:
+- `CLAUDE.md`
+- `AGENTS.md`
+- `INDEX.md`
+- `.ai/*`
+
+Generated files:
+- `.claude/agents/*.md`
+
+Generated adapters are never canonical.
+Canonical source remains `.ai/agents/*`.
+
+## First Claude Code Session
+1. Open Claude Code in the project.
+2. Claude reads:
+   - `CLAUDE.md`
+   - `AGENTS.md`
+   - `INDEX.md`
+3. Claude discovers runtime contracts.
+4. Claude can execute:
+   - `build-claude-agents`
+5. Generated adapters appear under:
+   - `.claude/agents/*.md`
 
 ## Codex Runtime Usage
 Generated Codex agents are artifacts under `.codex/agents/*.toml`.  
