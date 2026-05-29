@@ -19,11 +19,19 @@ Adapter-contract routing rule:
 - Do not load `.ai/execution/adapter-drift-validation.md` during normal startup.
 - Do not load `.ai/runtimes/codex/adapter-schema.md` during normal startup.
 - Do not load `.ai/runtimes/codex/nickname-strategy.md` during normal startup.
+- Do not load `.ai/runtimes/claude/adapter-schema.md` during normal startup.
+- Do not load `.ai/runtimes/claude/tool-mapping.md` during normal startup.
 - Do not load `.ai/workflows/build-codex-agents.md` during normal startup.
+- Do not load `.ai/workflows/build-claude-agents.md` during normal startup.
 - Load `.ai/runtimes/codex/orchestration-bootstrap.md` during Codex main-session startup when present.
+- Load `.ai/runtimes/claude/orchestration-bootstrap.md` during Claude main-session startup when present.
 - Load adapter contracts only when the user explicitly asks to:
   - build Codex agents,
   - generate `.codex/agents/*.toml`,
+  - build Claude agents,
+  - generate `.claude/agents/*.md`,
+  - validate Claude adapters,
+  - work on Claude runtime adapter generation,
   - validate Codex adapters,
   - work on Codex runtime adapter generation.
 
@@ -69,8 +77,8 @@ Execution contract rules:
 |---|---|---|---|---|---|---|
 | Tiny | Typo fixes, label changes, CSS tweaks, small validation message changes | `task.md` | `bugfix.md` or direct task execution | Stack agent | QA (optional for trivial non-functional edits) | DoD basics, runtime-safety/approval-levels if commands are risky |
 | Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, QA (recommended) | Code-review | Implementation + Quality gate, risk-classification, DoD |
-| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Architect, stack agent, QA, code-review | Product-spec, Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
-| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Architect, Security, stack agent, QA, code-review | Product-spec, DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
+| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Architect, stack agent, QA, code-review | Product-spec, Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
+| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Architect, Security, stack agent, QA, code-review | Product-spec, DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
 
 `Stack agent` means one or more technology agents from `.ai/agents/`.
 
@@ -100,10 +108,10 @@ Additional specialist agent:
 `task` -> `stack agent` -> `qa`
 
 ### Medium Change
-`feature-spec` -> `architect` -> `stack agent` -> `qa` -> `code-review`
+`feature-spec` -> `project-manager` -> `architect` -> `stack agent` -> `qa` -> `code-review`
 
 ### High-Risk Change
-`feature-spec` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
+`feature-spec` -> `project-manager` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
 
 ### Full-Project Technical Review (Artifact Output)
 `reviewer` -> `docs`
@@ -155,7 +163,7 @@ Not mandatory for routine feature work.
 - Use `technical-design.md` for Medium/Large technical design planning.
 - Use `threat-model.md` for security-sensitive changes.
 - Use `adr.md` when decisions alter architecture/contracts.
-- Use `adapter-run-report.md` for runtime adapter generation/validation reporting, and persist the report file (default: `.ai/reports/codex-adapter-run-report.md`).
+- Use `adapter-run-report.md` for runtime adapter generation/validation reporting, and persist the report file (default by runtime: Codex `.ai/reports/codex-adapter-run-report.md`; Claude `.ai/reports/claude-adapter-run-report.md`).
 
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.

@@ -52,6 +52,8 @@ Documentation specialist responsible for feature documentation and handoff clari
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` and include:
+Map the specialized documentation sections below into that wrapper when producing final responses.
+The specialized sections may extend or substitute wrapper sections only when preserving the required intent: context, approach, implementation/details, validation/testing, risks/tradeoffs, and handoff/next steps.
 1. Context & Assumptions
 2. Documentation Scope Updated
 3. Setup/Handoff/Changelog Notes

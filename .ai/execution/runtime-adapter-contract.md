@@ -29,7 +29,8 @@ Each generated adapter must include:
    - generated-by marker (workflow or tool id)
    - generated-at timestamp (UTC)
    - canonical-source path
-   - canonical-source fingerprint (checksum/hash)
+   - canonical-source fingerprint using SHA-256
+   - fingerprint notation: `sha256:<hex-digest>`
 2. Runtime-required fields:
    - required schema keys for the target runtime
 3. Canonical source pointer:
@@ -41,7 +42,7 @@ Each generated adapter must include:
 
 ## Drift Policy
 - Source path: `.ai/agents/<role>.md`
-- Source fingerprint: checksum/hash captured in adapter metadata
+- Source fingerprint: SHA-256 captured in adapter metadata as `sha256:<hex-digest>`
 - Regeneration trigger:
   - canonical role contract changes,
   - runtime schema changes,
@@ -61,6 +62,7 @@ When performing adapter-generation tasks, the consuming runtime must:
 4. Generate or validate adapters according to minimization, drift, and content policies.
 5. Write a persistent adapter run report file using the active runtime workflow report template.
 6. Use default report output path `.ai/reports/codex-adapter-run-report.md` when the active workflow does not define a runtime-specific override.
+   - Example runtime overrides: Claude `.ai/reports/claude-adapter-run-report.md`, Codex `.ai/reports/codex-adapter-run-report.md`.
 7. Report generated outputs, validation status, unresolved drift, and report artifact path.
 
 ## Rejection Rules

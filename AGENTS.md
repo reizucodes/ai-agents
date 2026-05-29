@@ -52,6 +52,7 @@
 ## Output Formatting Rules
 `AGENTS.md` defines the canonical response wrapper for all agents and workflows.
 Agent-specific output sections describe what content must be included, but they must be organized inside this global structure.
+Role contracts may specialize subsection labels/order within each wrapper section when needed, but must preserve the required global wrapper intent and coverage.
 
 All agents must return output in this order:
 1. **Context & Assumptions**
