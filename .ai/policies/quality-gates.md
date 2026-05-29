@@ -20,6 +20,19 @@ Stop progression and request missing inputs before implementation starts.
 ### Example
 A new endpoint is proposed without response/error contract. Gate fails until contract is defined.
 
+## Proposal Gate
+### Requirements
+- Planning outputs are complete for required planning roles.
+- Required proposal artifacts exist as repository files.
+- Parent/orchestrator consolidated planning outputs into a proposal review package.
+- User explicitly approved implementation.
+
+### Failure Behavior
+Stop progression and block implementation handoff until artifacts, consolidation, and explicit approval are complete.
+
+### Example
+Planning notes exist in chat but required proposal files are missing. Proposal gate fails.
+
 ## Implementation Gate
 ### Requirements
 - Feature implementation complete for agreed scope.

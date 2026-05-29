@@ -43,6 +43,10 @@ Startup guidance:
 - Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
 - User does not need to explicitly say "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
+- For `targeted` and `delegated`, when runtime subagents are unavailable:
+  - report limitation,
+  - request user approval before sequential role simulation fallback,
+  - do not claim delegation occurred.
 - Use execution-mode input header when provided:
   - `Execution mode: auto|sequential|targeted|delegated`
   - preferred source is runtime/launcher metadata; prompt-body header is fallback only.
@@ -108,10 +112,10 @@ Additional specialist agent:
 `task` -> `stack agent` -> `qa`
 
 ### Medium Change
-`feature-spec` -> `project-manager` -> `architect` -> `stack agent` -> `qa` -> `code-review`
+`feature-spec` -> `project-manager` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review`
 
 ### High-Risk Change
-`feature-spec` -> `project-manager` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
+`feature-spec` -> `project-manager` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
 
 ### Full-Project Technical Review (Artifact Output)
 `reviewer` -> `docs`
@@ -204,6 +208,33 @@ User interaction is only required when a Decision Gate is triggered.
 - Stage outputs should automatically become inputs to the next stage.
 - Decision Gates are used only for meaningful human-judgment choices.
 - Decision behavior is defined in `.ai/policies/decision-gates.md`.
+
+Planning proposal gate override:
+- For workflows that include planning roles and proposal artifacts, parent/orchestrator must halt before implementation and trigger Proposal Approval Gate.
+- Planning completion alone never authorizes implementation.
+- Parent/orchestrator must validate required proposal artifacts, present consolidated proposal package using `.ai/templates/proposal-review-package.md`, request explicit user approval, and wait.
+
+## Main Orchestrator Responsibilities (`targeted` and `delegated`)
+- Read `AGENTS.md` and `INDEX.md`.
+- Select/confirm workflow and execution mode.
+- Assign agents and ownership boundaries.
+- Validate agent outputs and required artifacts.
+- Consolidate planning outputs into a proposal review package.
+- Present proposal package and enforce explicit approval gates.
+- Integrate final results and report:
+  - assumptions,
+  - skipped items,
+  - changed files,
+  - validation results,
+  - remaining risks.
+
+Main orchestrator must not:
+- skip approval gates,
+- assume approval,
+- silently continue from planning to implementation,
+- implement directly in delegated mode,
+- collapse specialist roles into itself,
+- claim delegation when only sequential simulation occurred.
 
 ## Policy Map
 - Decision flow: `.ai/policies/decision-gates.md`

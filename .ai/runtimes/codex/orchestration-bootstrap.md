@@ -20,6 +20,10 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - Choose execution mode automatically from classification + capability + delegation eligibility gates.
 - User does not need to explicitly request "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, use sequential fallback and state fallback explicitly.
+- For `targeted`/`delegated` with unavailable subagents:
+  - report limitation,
+  - request user approval before sequential role simulation fallback,
+  - do not claim delegation occurred.
 - For spawned agent display/traces, prefer `<nickname> [<canonical-role>]`.
 - Runtime nickname alone is non-authoritative; canonical role suffix is required in display form.
 - Before `targeted`/`delegated`, check:
@@ -36,7 +40,7 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - Tiny/Small backend code-changing run:
   - `backend` and/or specialist (`fastapi`/`laravel`/`node-express`) -> audit report artifact.
 - Medium/Large feature:
-  - `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
+  - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated proposal package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
 - Remediation/final-rerun:
   - use relevant targeted agents, then `tester` -> `reviewer` -> `docs` when in scope.
 
@@ -44,3 +48,10 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - Every code-changing run must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - For Tiny/Small efficiency cases where `docs` is skipped, parent/main writes the required run report.
 - For delegated review artifact-generating runs, `docs` is required.
+
+## Orchestrator Constraints
+- `targeted`: main remains orchestrator and delegates selected specialist scopes when supported.
+- `delegated`: main remains strict parent/orchestrator and must not implement directly.
+- Do not collapse specialist roles into main silently.
+- Do not continue automatically from planning stages to implementation without passing Proposal Approval Gate.
+- In `targeted`/`delegated`, delegated specialists must provide scoped outputs/reports when subagent spawning is supported.

@@ -36,7 +36,10 @@ Input-source preference:
 Runtime preflight before `targeted`/`delegated`:
 - Check runtime delegation capability gates.
 - Check Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.
-- If unavailable, fall back to `sequential` and state fallback reason explicitly.
+- If unavailable:
+  - report subagent limitation explicitly,
+  - request user approval before sequential role simulation fallback,
+  - do not claim delegation occurred.
 
 ## Modes
 
@@ -67,6 +70,7 @@ Use only when:
 - parent agent decides delegation from classification + eligibility gates and invokes it explicitly at runtime,
 - task decomposition can be assigned to disjoint ownership boundaries,
 - classification and eligibility contracts allow delegation.
+- parent/main remains strictly orchestrator (no direct implementation by parent/main).
 
 Flow:
 1. Parent loads `AGENTS.md`, `INDEX.md`, execution/delegation contracts.
@@ -78,14 +82,15 @@ Flow:
 5. Parent produces a consolidated, implementation-ready spec handoff artifact.
 6. Parent runs architecture phase with `architect` using the approved consolidated spec.
 7. Parent assigns ownership boundaries from architect handoff.
-8. Parent explicitly spawns implementation children (`backend`, `frontend`) only after discovery/spec and architecture gates are complete.
-9. Children execute scoped tasks with mapped role contracts.
-10. Parent runs validation/review/docs sequence:
+8. Parent validates required proposal artifacts, presents consolidated proposal review package to user, asks for explicit implementation approval, and waits.
+9. Parent explicitly spawns implementation children (`backend`, `frontend`) only after discovery/spec and architecture gates are complete and explicit approval is received.
+10. Children execute scoped tasks with mapped role contracts.
+11. Parent runs validation/review/docs sequence:
    - `tester`,
    - `reviewer`,
    - `docs`.
    - when `docs` is in scope, it must run last and persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before parent final validation.
-11. Parent merges, validates, and returns final output.
+12. Parent merges, validates, and returns final output.
 
 Requirements:
 - Delegated mode is never assumed implicitly.
@@ -95,7 +100,12 @@ Requirements:
 - For review artifact-generating tasks, parent automatically routes to `reviewer` and `docs` when delegation capability is available.
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
-  - architecture handoff.
+  - architecture handoff,
+  - required proposal artifacts,
+  - consolidated proposal review package using `.ai/templates/proposal-review-package.md`,
+  - explicit user approval on proposal package.
+- Parent must not collapse specialist roles into itself in delegated mode.
+- Delegated mode is not sequential role simulation.
 - For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` with blockers and next steps.
 
@@ -112,6 +122,9 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Docs if docs/API/setup changed
 - Parent final validation
 - If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- Parent/main remains orchestrator; targeted mode is not direct specialist-role collapse.
+- Each delegated specialist must produce scoped output/report when runtime supports subagents.
+- If subagents are unavailable, request explicit user approval before simulation fallback and disclose that delegation did not occur.
 
 Review-only routing rule:
 - Pure review/analysis only (no file changes): parent/main allowed; `reviewer` optional.
@@ -174,7 +187,7 @@ Examples:
   - no `backend`/`frontend` unless remediation is requested,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Medium/Large feature:
-  - `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
+  - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated review package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Remediation pass:
   - start from tester/reviewer blockers,
@@ -192,6 +205,36 @@ Examples:
 - Tiny/Small: planning agents are optional; diagrams optional.
 - Medium: planning agents expected; diagrams encouraged for workflow/ownership clarity.
 - Large: planning agents mandatory; diagrams expected when boundaries/flows are non-trivial.
+
+## Planning Proposal Gate (Mandatory When Planning Is In Scope)
+After planning roles complete, parent/orchestrator must stop and may not auto-handoff to code-writing roles.
+
+Parent/orchestrator required sequence:
+1. Collect planning outputs.
+2. Validate required proposal artifacts exist as repository files.
+3. Consolidate proposal review package including:
+   - project-manager summary,
+   - product-spec summary,
+   - architect summary,
+   - proposed scope,
+   - proposed implementation plan,
+   - proposed file/folder changes,
+   - UX/content direction when applicable,
+   - technical approach,
+   - assumptions,
+   - risks,
+   - open questions,
+   - generated artifact paths.
+4. Present package to user and ask for explicit approval.
+5. Wait for explicit approval before implementation starts.
+
+Template requirement:
+- Use `.ai/templates/proposal-review-package.md` for the proposal review package in planning-gated flows.
+
+Invalid approval assumptions:
+- planning completion alone,
+- no user objection,
+- inferred or implicit approval.
 
 See:
 - `.ai/execution/task-classification.md`

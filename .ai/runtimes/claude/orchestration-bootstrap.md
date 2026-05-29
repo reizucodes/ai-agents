@@ -12,8 +12,14 @@ Runtime-facing orchestration guidance for Claude main session when project-level
 - Classify each task before execution.
 - Route to project subagents automatically when task fit and capability allow.
 - If subagent discovery/capability fails, fall back to sequential execution and disclose the fallback reason.
+<<<<<<< HEAD
 - Main session may perform orchestration preflight only (classification, gate checks, workflow selection, ownership setup, and child sequencing).
 - Main session must not absorb delegated child responsibilities when delegated routing is selected and required children are available.
+=======
+- For `targeted`/`delegated` fallback:
+  - request user approval before sequential role simulation,
+  - do not claim delegation occurred.
+>>>>>>> 8ab6bbf (feat(orchestration): enforce proposal gates and delegated workflow contracts)
 
 ## Adapter Absence Rule
 If Claude adapters are absent:
@@ -33,7 +39,7 @@ Canonical instructions remain fully usable without generated adapters.
 - Tiny/Small backend change:
   - `backend` and/or framework specialist -> audit report
 - Medium/Large feature:
-  - `project-manager` -> `product-spec` -> approved spec -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`
+  - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated proposal package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`
 - Remediation/final rerun:
   - targeted agents -> `tester` -> `reviewer` -> `docs` when in scope
 
@@ -57,3 +63,7 @@ Canonical instructions remain fully usable without generated adapters.
 ## Safety
 - Presence of `.claude/agents/*.md` does not authorize policy bypass.
 - Use repository approval/safety policies for risky actions.
+- Main session must remain orchestrator in `targeted` and `delegated`.
+- Main session must not implement directly in `delegated`.
+- Main session must not continue automatically from planning stages to implementation without passing Proposal Approval Gate.
+- In `targeted`/`delegated`, delegated specialists must provide scoped outputs/reports when subagent spawning is supported.

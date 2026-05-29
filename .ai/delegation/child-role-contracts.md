@@ -32,6 +32,10 @@ Map canonical role contracts to delegated child responsibilities during delegate
   - `project-manager` then `product-spec`.
 - Design/handoff role:
   - `architect` runs only after approved consolidated spec exists.
+- Proposal gate:
+  - parent/orchestrator must halt after planning and before implementation.
+  - required proposal artifacts must exist as repository files before implementation roles run.
+  - explicit user approval is required before any implementation role runs.
 - Implementation roles:
   - `backend` and `frontend` run only after architect handoff exists.
   - `backend` and `frontend` may run in parallel only when ownership boundaries are explicit.
@@ -63,3 +67,4 @@ Map canonical role contracts to delegated child responsibilities during delegate
 ## Non-goals
 - This file does not create or spawn child agents.
 - This file does not define runtime adapter formats.
+- Sequential role simulation must not be labeled as delegated child execution.

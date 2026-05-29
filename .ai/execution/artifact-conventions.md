@@ -56,6 +56,16 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
 - Diagram artifacts are outputs, not new agent types.
 
 ## Artifact Directories
+- `/artifacts/<workflow-or-task-name>/`
+  - Preferred root for planning/proposal gate artifacts for a specific workflow run.
+  - Required proposal artifacts for planning-gated workflows:
+    - `project-manager-report.md` (or documented workflow equivalent),
+    - `product-spec.md` (or documented workflow equivalent),
+    - `architecture-plan.md` (or documented workflow equivalent).
+  - Example:
+    - `/artifacts/portfolio-refactor/project-manager-report.md`
+    - `/artifacts/portfolio-refactor/product-spec.md`
+    - `/artifacts/portfolio-refactor/architecture-plan.md`
 - `/artifacts/specs/`
   - Product-spec artifacts, consolidated specs, and specification diagrams.
 - `/artifacts/architecture/`
@@ -71,6 +81,11 @@ Directory creation rule:
 - Artifact directories are expected outputs and should be created on demand when a phase runs and the directory is missing.
 - For docs-run artifacts, when `/artifacts/docs/` is missing but sibling phase folders exist, infer `/artifacts/` as the artifact root and write to `/artifacts/docs/`.
 - For any code-changing run, writing `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` is mandatory even when `docs` is not invoked.
+
+Proposal-gate rule:
+- Chat-only planning summaries do not satisfy proposal artifact requirements when the selected workflow requires artifacts.
+- Required proposal artifacts must be actual repository files before implementation.
+- Parent/orchestrator should use `.ai/templates/proposal-review-package.md` to present artifact paths and consolidated planning output before requesting approval.
 
 ## Diagram Source Format
 - Mermaid source is canonical for diagrams.

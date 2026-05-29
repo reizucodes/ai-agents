@@ -111,6 +111,32 @@ Resume:
 - continue automatically after the user answers,
 - re-open the gate only if new material ambiguity appears.
 
+## Proposal Approval Gate
+Agent must stop after planning completion and wait for explicit user approval before implementation starts.
+
+Trigger:
+- workflow includes planning roles (for example: `project-manager`, `product-spec`, `architect`),
+- workflow contract requires proposal artifacts before implementation,
+- planning output exists but implementation has not started.
+
+Required pre-approval checks:
+- parent/orchestrator collects planning outputs,
+- parent/orchestrator verifies required proposal artifact files exist in the repository,
+- parent/orchestrator consolidates a proposal review package using `.ai/templates/proposal-review-package.md`,
+- parent/orchestrator presents artifact paths and summary package to user.
+
+Approval rules:
+- planning completion is not approval,
+- lack of objection is not approval,
+- inferred intent is not approval,
+- implementation starts only after explicit user approval (for example: "approved", "proceed", "continue", "implement", or equivalent explicit instruction).
+
+If artifacts are missing:
+- stop workflow,
+- report missing artifacts,
+- request remediation,
+- do not start implementation.
+
 ## Approval Decisions
 Agent must stop and wait for explicit approval.
 

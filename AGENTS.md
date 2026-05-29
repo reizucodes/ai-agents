@@ -81,6 +81,16 @@ Scale process according to risk:
 
 Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, and agent participation by change size.
 
+## Orchestration Baseline
+- Parent/main agent remains the orchestrator in `targeted` and `delegated` modes.
+- Planning completion is not implementation approval.
+- When planning gates apply, implementation must not start until:
+  - required proposal artifacts exist as repository files,
+  - parent/main presents a consolidated proposal review package using `.ai/templates/proposal-review-package.md`,
+  - user gives explicit approval.
+- Parent/main must not implement directly in delegated mode.
+- Parent/main must not claim delegation when execution was sequential role simulation.
+
 ## Security and Product Discovery
 - Engage `product-spec` before architecture when requirements are unclear or incomplete.
 - Engage `security` when any of the following apply:
