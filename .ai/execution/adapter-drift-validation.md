@@ -22,8 +22,9 @@ Define step-by-step drift and safety validation for generated runtime adapters i
 - If missing: fail `missing_adapter`.
 
 3. Source fingerprint/checksum check
-- Compute or read canonical source fingerprint/checksum.
-- Compare against adapter metadata fingerprint/checksum.
+- Compute canonical source fingerprint using SHA-256.
+- Adapter metadata fingerprint must use notation `sha256:<hex-digest>`.
+- Compare canonical fingerprint against adapter metadata fingerprint.
 - If mismatch: fail `stale_adapter`.
 
 4. Generated timestamp check
@@ -36,7 +37,7 @@ Define step-by-step drift and safety validation for generated runtime adapters i
   - generated-by marker
   - generated-at timestamp
   - canonical source path
-  - canonical source fingerprint/checksum
+  - canonical source fingerprint in `sha256:<hex-digest>` format
 - If any missing: fail `invalid_schema`.
 
 6. Required field check

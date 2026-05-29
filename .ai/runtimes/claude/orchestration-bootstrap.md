@@ -37,7 +37,7 @@ Canonical instructions remain fully usable without generated adapters.
 
 ## Audit Rule
 - Every code-changing run must persist:
-  - `/artifacts/docs/<run-id>-run-report.md`
+  - `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`
 - If `docs` is skipped for Tiny/Small efficiency, main session writes the run report.
 
 ## Safety

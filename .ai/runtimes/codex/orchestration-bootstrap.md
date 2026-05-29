@@ -41,6 +41,6 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
   - use relevant targeted agents, then `tester` -> `reviewer` -> `docs` when in scope.
 
 ## Audit/Docs Enforcement
-- Every code-changing run must persist `/artifacts/docs/<run-id>-run-report.md`.
+- Every code-changing run must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - For Tiny/Small efficiency cases where `docs` is skipped, parent/main writes the required run report.
 - For delegated review artifact-generating runs, `docs` is required.

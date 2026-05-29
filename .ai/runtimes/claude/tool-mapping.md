@@ -68,5 +68,6 @@ docs:
 
 ## Notes
 - Include `Bash` only where implementation, validation, or test execution reasonably requires it.
+- `reviewer` includes `Bash` for read-only validation commands (for example running targeted tests, lint, and diff-support checks) used to confirm findings before sign-off.
 - Destructive commands remain governed by parent instructions and repository safety policies.
 - Tool mapping may be adjusted per project, but generated defaults should remain conservative.

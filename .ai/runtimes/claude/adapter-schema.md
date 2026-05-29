@@ -38,7 +38,7 @@ Each generated subagent must include drift-checkable metadata in either frontmat
 - generated-by marker
 - generated-at timestamp (UTC ISO-8601)
 - canonical source path
-- canonical source fingerprint/checksum
+- canonical source fingerprint using SHA-256 notation `sha256:<hex-digest>`
 - schema contract reference (`.ai/runtimes/claude/adapter-schema.md`)
 
 ## Body Requirements
