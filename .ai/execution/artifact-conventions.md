@@ -14,13 +14,17 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
     - run type,
     - classification,
     - execution mode,
-    - agents used,
+    - parent-session work performed (orchestration/preflight/merge/final validation),
+    - delegated child agents actually invoked,
     - files changed,
     - tests run,
     - artifacts produced,
     - final result/status,
     - unresolved risks/blockers or skipped validations,
     - whether `docs` produced the report or parent/main produced it.
+  - Participation accuracy rules:
+    - do not list an agent as used/completed unless it was actually spawned/invoked,
+    - if delegated mode was selected but child spawn failed, disclose fallback and continue with accurate participation.
   - Runtime trace exports/updates are separate artifacts and must not replace this run report.
 
 ## Filename Convention

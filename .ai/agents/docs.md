@@ -40,7 +40,8 @@ Documentation specialist responsible for feature documentation and handoff clari
   - execution mode
   - task summary
   - files changed
-  - agents used
+  - parent-session work performed
+  - delegated child agents actually invoked
   - tests run
   - artifacts produced
   - run status (`merge-ready` | `non-merge-ready`)
@@ -49,6 +50,8 @@ Documentation specialist responsible for feature documentation and handoff clari
   - report producer (`docs` or `parent/main`)
   - documentation updates made (or explicitly none)
   - unresolved documentation gaps and required follow-ups
+- Participation accuracy:
+  - do not claim a role participated/completed if it was not actually invoked.
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` and include:
