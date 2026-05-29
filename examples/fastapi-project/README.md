@@ -66,7 +66,7 @@ uv run ruff format .
 uv run python script.py
 ```
 
-Legacy alternatives such as `pip` + `requirements.txt` may be used only for compatibility with existing non-UV repositories.
+`pip` + `requirements.txt` workflows are not allowed for FastAPI projects in this repository.
 
 ## Scenario
 Implement `/api/v1/api-keys` create/list/revoke endpoints with strict response schemas, scoped auth, and auditability.

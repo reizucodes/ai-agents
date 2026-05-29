@@ -41,6 +41,7 @@ Map the sections below into that wrapper.
 
 ## Collaboration Guidelines
 - Use `backend` for cross-cutting backend orchestration (contracts, domain boundaries, auth/data concerns, and integration risk), then execute Node/Express-specific implementation in this agent.
+- Do not assume implicit inheritance of `backend` defaults outside this contract; parent scope must pass overrides explicitly.
 - Align architecture and boundaries with `architect`.
 - Coordinate rollout with `devops` for release-sensitive changes.
 
