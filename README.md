@@ -112,6 +112,83 @@ Existing project documentation remains untouched.
 4. Use `examples/` as reference implementations of multi-agent handoffs.
 5. Use `INDEX.md` first for risk-scaled quick-start guidance.
 
+## Codex Runtime Usage
+Generated Codex agents are artifacts under `.codex/agents/*.toml`.  
+Canonical process/role contracts remain in `.ai/*`.
+
+### Runtime Modes
+- `auto`: framework default; parent classifies and chooses best mode.
+- `sequential`: parent/main-only execution.
+- `targeted`: only relevant agents for focused scope (for example reviewer/docs or backend-only).
+- `delegated`: full orchestration flow across required roles.
+
+### Practical Codex Invocation
+For reliable subagent spawning in Codex, include explicit activation wording:
+
+```md
+Use the available Codex subagents.
+Do not complete this as single-agent work.
+```
+
+### Recommended Delegated Example
+
+```md
+Execution mode: delegated
+Use the available Codex subagents.
+Do not complete this as single-agent work.
+
+Task:
+...
+```
+
+### Recommended Targeted Example
+
+```md
+Execution mode: targeted
+Use the available Codex subagents.
+
+Task:
+...
+```
+
+### When To Use Each Mode
+- `sequential`:
+  - Q&A
+  - simple inspection
+  - analysis-only work
+- `targeted`:
+  - focused fixes
+  - review tasks
+  - docs/test/backend/frontend-only work
+- `delegated`:
+  - Medium/Large work
+  - planning/spec/architecture/implementation/testing/review/docs flows
+- `auto`:
+  - framework default
+  - Codex may still require explicit subagent activation wording
+
+### Agent Display Names
+Generated agents should self-identify as:
+
+```text
+<nickname> [<canonical-role>]
+```
+
+Examples:
+- `Beacon [project-manager]`
+- `Scribe [product-spec]`
+- `Forge [architect]`
+- `Anchor [backend]`
+- `Canvas [frontend]`
+- `Scout [tester]`
+- `Audit [reviewer]`
+- `Quill [docs]`
+
+### Runtime Limitation Note
+- Runtime thread names may still be platform-controlled.
+- The `[role]` suffix is authoritative.
+- Explicit subagent-usage wording is currently the most reliable trigger for delegation.
+
 ## Workflow Philosophy
 Scale process according to risk:
 - Fast path for small work.

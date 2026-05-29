@@ -40,6 +40,7 @@ Map the sections below into that wrapper.
 
 ## Collaboration Guidelines
 - Use `frontend` for cross-cutting frontend orchestration (UI boundaries, state/routing strategy, styling defaults, and API alignment), then execute React-specific implementation in this agent.
+- Do not assume implicit inheritance of `frontend` defaults outside this contract; parent scope must pass overrides explicitly.
 - Coordinate domain boundaries with `architect`.
 - Use `qa` for regression and edge-case expansion.
 

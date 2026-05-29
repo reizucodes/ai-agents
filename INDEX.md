@@ -7,15 +7,61 @@ Preferred initialization order:
 1. `AGENTS.md`
 2. `.ai/context/project-intelligence.md` (if present)
 3. Other relevant `.ai/context/*` files
-4. Relevant policies
-5. Relevant workflow
-6. Relevant agent
-7. Repository inspection as needed
+4. `.ai/execution/*` and `.ai/delegation/*` (execution contracts)
+5. Relevant policies
+6. Relevant workflow
+7. Relevant agent
+8. Target codebase inspection as needed
+
+Adapter-contract routing rule:
+- Do not load `.ai/execution/runtime-adapter-contract.md` during normal startup.
+- Do not load `.ai/execution/adapter-role-mapping.md` during normal startup.
+- Do not load `.ai/execution/adapter-drift-validation.md` during normal startup.
+- Do not load `.ai/runtimes/codex/adapter-schema.md` during normal startup.
+- Do not load `.ai/runtimes/codex/nickname-strategy.md` during normal startup.
+- Do not load `.ai/workflows/build-codex-agents.md` during normal startup.
+- Load `.ai/runtimes/codex/orchestration-bootstrap.md` during Codex main-session startup when present.
+- Load adapter contracts only when the user explicitly asks to:
+  - build Codex agents,
+  - generate `.codex/agents/*.toml`,
+  - validate Codex adapters,
+  - work on Codex runtime adapter generation.
 
 Startup guidance:
 - Read `AGENTS.md` for global runtime instructions and governance baseline.
 - Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
 - For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
+- Sequential mode is the default and portable execution mode.
+- Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
+- User does not need to explicitly say "delegated mode" for eligible tasks.
+- If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
+- Use execution-mode input header when provided:
+  - `Execution mode: auto|sequential|targeted|delegated`
+  - preferred source is runtime/launcher metadata; prompt-body header is fallback only.
+- Markdown instruction files do not spawn agents by themselves.
+
+## Execution Contracts
+Execution contracts are runtime-consumable instructions in:
+- `.ai/execution/execution-mode-input.md`
+- `.ai/execution/modes.md`
+- `.ai/execution/capability-gates.md`
+- `.ai/execution/delegation-eligibility.md`
+- `.ai/execution/task-classification.md`
+- `.ai/execution/artifact-conventions.md`
+- `.ai/execution/runtime-adapter-contract.md` (adapter tasks only; not normal startup)
+- `.ai/execution/adapter-role-mapping.md` (adapter tasks only; not normal startup)
+- `.ai/execution/adapter-drift-validation.md` (adapter tasks only; not normal startup)
+- `.ai/runtimes/codex/adapter-schema.md` (adapter tasks only; not normal startup)
+- `.ai/runtimes/codex/nickname-strategy.md` (adapter tasks only; not normal startup)
+- `.ai/delegation/parent-orchestrator-contract.md`
+- `.ai/delegation/child-role-contracts.md`
+- `.ai/delegation/ownership-boundaries.md`
+- `.ai/delegation/merge-review-validation.md`
+
+Execution contract rules:
+- `.ai/agents/*` remains the canonical role contract source.
+- Delegated execution is never implied by file presence alone.
+- Parent orchestrator is responsible for ownership boundaries, merge, and final validation when delegation is used.
 
 ## Quick Start Matrix
 
@@ -59,6 +105,13 @@ Additional specialist agent:
 ### High-Risk Change
 `feature-spec` -> `architect` -> `security` -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
 
+### Full-Project Technical Review (Artifact Output)
+`reviewer` -> `docs`
+
+Notes:
+- Add `qa` (`tester`) when validation status, test result interpretation, or coverage verification is requested.
+- Keep `backend`/`frontend` out of review-only runs unless remediation is explicitly requested.
+
 Workflow entry points:
 - Choose `bugfix.md` for defects/regressions.
 - Choose `feature.md` for net-new behavior.
@@ -98,11 +151,32 @@ Not mandatory for routine feature work.
 ## Template Selection
 - Use `task.md` for quick daily work.
 - Use `feature-spec.md` for larger or ambiguous work.
+- Use `prd.md` for Medium/Large product specification planning.
+- Use `technical-design.md` for Medium/Large technical design planning.
 - Use `threat-model.md` for security-sensitive changes.
 - Use `adr.md` when decisions alter architecture/contracts.
+- Use `adapter-run-report.md` for runtime adapter generation/validation reporting, and persist the report file (default: `.ai/reports/codex-adapter-run-report.md`).
 
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.
+
+## Execution Mode UX
+Preferred:
+- Keep the user prompt natural and task-focused.
+- Select execution mode in runtime/launcher/session metadata.
+
+Example:
+- Natural prompt: `Review the full PIPS test project.`
+- Runtime-selected mode: `targeted`
+
+Fallback only when runtime metadata cannot be provided:
+- Add `Execution mode: <auto|sequential|targeted|delegated>` in prompt body.
+
+## Classification Rule
+- Classify work first using `.ai/execution/task-classification.md`.
+- Reclassify every follow-up task before execution.
+- Tiny/Small work should avoid unnecessary planning-agent overhead.
+- Medium/Large work should follow spec-first planning gates before implementation.
 
 ## Workflow Automation Model
 Workflow progression should behave as:
@@ -133,14 +207,14 @@ User interaction is only required when a Decision Gate is triggered.
 - Secrets handling: `.ai/policies/secrets-management.md`
 
 ## Project Knowledge Base
-`.ai/context/*` acts as a repository-specific knowledge layer that:
-- reduces repeated repository discovery
+`.ai/context/*` acts as a host project-specific knowledge layer that:
+- reduces repeated target codebase discovery
 - preserves architectural understanding
-- captures project conventions
+- captures host project conventions
 - accelerates onboarding for AI runtimes
 - improves implementation consistency across sessions
 
-If `.ai/context/` exists, treat all files inside it as repository-specific knowledge artifacts.
+If `.ai/context/` exists, treat all files inside it as host project-specific knowledge artifacts.
 
 Consult these files before:
 - architecture work
@@ -151,17 +225,17 @@ Consult these files before:
 - release activities
 
 Knowledge files help:
-- reduce repeated repository discovery
+- reduce repeated target codebase discovery
 - preserve architectural context
-- preserve project conventions
+- preserve host project conventions
 - improve implementation consistency
 - accelerate onboarding for AI runtimes
 
 Guidance:
 - Knowledge files are accelerators, not absolute truth.
-- Repository source code remains the ultimate source of truth.
-- When conflicts occur, prefer current repository evidence.
-- Knowledge files should be updated after significant repository changes.
+- Target codebase source code remains the ultimate source of truth.
+- When conflicts occur, prefer current target codebase evidence.
+- Knowledge files should be updated after significant host project changes.
 - Before implementation, if `.ai/context/confidence-gates.md` exists, use it to classify the requested change and determine required pre-implementation checks.
 - Confidence gates are especially important for:
   - authentication/authorization
@@ -175,13 +249,13 @@ Guidance:
   - security-sensitive changes
 
 Knowledge precedence:
-1. Current repository source code
-2. Repository configuration and manifests
-3. Repository intelligence files
+1. Current target codebase source code
+2. Host project configuration and manifests
+3. Host project intelligence files
 4. Generated assumptions
 
 If conflicts exist:
-- Prefer repository evidence.
+- Prefer target codebase evidence.
 - Update intelligence files accordingly.
 
 Refresh knowledge artifacts after:
