@@ -34,12 +34,20 @@ Each generated Claude subagent file must include:
 - `color`
 
 ## Generated Metadata Requirements
-Each generated subagent must include drift-checkable metadata in either frontmatter keys or an explicit generated metadata section:
+Each generated subagent must include drift-checkable metadata. Metadata representation may use one of:
+- YAML frontmatter keys
+- visible `## Generated Metadata` section
+- machine-readable HTML comment metadata block
+
+Preferred current convention:
+- Use an HTML comment metadata block so operational metadata remains machine-readable without cluttering rendered agent instructions.
+
+Required metadata fields:
 - generated-by marker
 - generated-at timestamp (UTC ISO-8601)
-- canonical source path
-- canonical source fingerprint using SHA-256 notation `sha256:<hex-digest>`
-- schema contract reference (`.ai/runtimes/claude/adapter-schema.md`)
+- canonical-source
+- canonical-fingerprint using SHA-256 notation `sha256:<hex-digest>`
+- schema-ref (`.ai/runtimes/claude/adapter-schema.md`)
 
 ## Body Requirements
 Adapter body must include:
