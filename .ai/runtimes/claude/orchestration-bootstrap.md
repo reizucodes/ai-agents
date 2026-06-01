@@ -12,14 +12,11 @@ Runtime-facing orchestration guidance for Claude main session when project-level
 - Classify each task before execution.
 - Route to project subagents automatically when task fit and capability allow.
 - If subagent discovery/capability fails, fall back to sequential execution and disclose the fallback reason.
-<<<<<<< HEAD
 - Main session may perform orchestration preflight only (classification, gate checks, workflow selection, ownership setup, and child sequencing).
 - Main session must not absorb delegated child responsibilities when delegated routing is selected and required children are available.
-=======
 - For `targeted`/`delegated` fallback:
   - request user approval before sequential role simulation,
   - do not claim delegation occurred.
->>>>>>> 8ab6bbf (feat(orchestration): enforce proposal gates and delegated workflow contracts)
 
 ## Adapter Absence Rule
 If Claude adapters are absent:
