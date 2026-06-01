@@ -1,0 +1,72 @@
+# OpenCode Runtime Validation
+
+## Manual Validation Checklist
+1. Start OpenCode in repository root and confirm `AGENTS.md` is loaded.
+2. Confirm `opencode.json` is detected and `instructions` entries are applied.
+3. Confirm source repository does not contain committed `.opencode/agents/*`.
+4. Verify source-repository guard behavior for `build-opencode-agents`:
+   - fail/stop generation in `ai-agents` source repository by default
+   - pass when refusal message is returned
+   - pass when consumer/test project instructions are provided
+   - fail if generation proceeds in source repository without explicit override
+   - allow source-repo generation only when user explicitly provides unsafe override phrase
+   - source detection uses strong indicators only (framework README identity, repo name `ai-agents`, framework git remote, optional marker file)
+   - presence of `.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`, and `examples/` alone must not trigger source-repo refusal
+5. Verify consumer/test repository behavior:
+   - invoking `build opencode agents` via `.opencode/commands/build-opencode-agents.md` executes generation immediately
+   - no explicit path confirmation prompt
+   - no extra user confirmation prompt
+6. Confirm configured OpenCode agents appear, including `project-manager` as primary.
+7. Confirm OpenCode command list includes `/full-cycle`, `/spec-first`, `/regression-review`, `/review`, `/docs-update`, `/build-opencode-agents`.
+8. Verify committed command files are startup-safe and do not require generated-agent frontmatter.
+   - `grep -R "^agent:" .opencode/commands || true` returns no output
+   - `grep -R "^subtask:" .opencode/commands || true` returns no output
+9. Run a targeted command and verify it references canonical `.ai/workflows/*` paths.
+10. Verify subagent delegation can invoke mapped agents (`product-spec`, `architect`, `backend`, `frontend`, `qa`, `code-review`, `docs`) when generated adapters exist.
+11. Verify generated OpenCode adapter scope matches orchestration-level strategy:
+   - required generated set exists (validation fails if missing): `project-manager`, `product-spec`, `architect`, `backend`, `frontend`, `qa`, `code-review`, `docs`
+   - optional set is reported only (validation does not fail if absent): `security`, `devops` (and `database` only if canonical role exists)
+   - framework specialist runtime-native adapters are absent by default (`ideation`, `laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`)
+   - no invented runtime-only role names exist
+12. Verify generated adapter frontmatter detection compatibility:
+   - each generated adapter file starts with `---` on line 1
+   - no metadata comments appear before frontmatter
+   - frontmatter includes both `description` and `mode`
+   - generated metadata block exists after frontmatter and includes canonical references
+13. Verify forbidden build side effects are absent:
+   - `node_modules/` absent
+   - `package.json` absent unless pre-existing and unrelated
+   - `package-lock.json` absent unless pre-existing and unrelated
+   - `pnpm-lock.yaml` absent unless pre-existing and unrelated
+   - `yarn.lock` absent unless pre-existing and unrelated
+   - `bun.lock`/`bun.lockb` absent unless pre-existing and unrelated
+14. Distinguish OpenCode runtime-managed artifacts from framework outputs:
+   - `.opencode/package.json`, `.opencode/package-lock.json`, `.opencode/node_modules/` may be created by OpenCode runtime/plugin execution
+   - those runtime-managed artifacts are not `build-opencode-agents` outputs
+   - `.opencode/agents/*.md` remain the only framework-generated OpenCode adapter artifacts
+15. Re-run existing Claude/Codex runtime workflows and verify no behavior regression.
+
+## Quick CLI Checks
+- `opencode agent list`
+- `opencode run --agent project-manager "Read AGENTS.md and summarize loaded workflow contracts"`
+- In TUI: execute `/full-cycle <task>` and inspect routing.
+- Scope/parity checks:
+  - `build opencode agents` command executes directly in consumer/test repo (no confirmation gating)
+  - `test ! -d .opencode/agents` in source repo
+  - source repo invocation returns refusal message and consumer/test instructions
+  - consumer repo with `.ai/runtimes/*` and project README still generates immediately
+  - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend qa code-review docs | sort) <(ls -1 /path/to/consumer-project/.opencode/agents/*.md | xargs -n1 basename | sed 's/\\.md$//' | sort)`
+  - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend qa code-review docs | sort) <(jq -r '.agent | keys[]' opencode.json | sort)`
+  - `jq -r '.agent | keys[]' opencode.json | rg '^(security|devops)$' || true`
+  - `ls -1 /path/to/consumer-project/.opencode/agents | rg '^(security|devops)\\.md$' || true`
+  - `ls -1 /path/to/consumer-project/.opencode/agents | rg '^(ideation|laravel|fastapi|node-express|python|vue|react)\\.md$'`
+  - `head -1 /path/to/consumer-project/.opencode/agents/backend.md | rg '^---$'`
+  - `awk 'NR==1,/^---$/{print}' /path/to/consumer-project/.opencode/agents/backend.md`
+  - `grep 'canonical-source:' /path/to/consumer-project/.opencode/agents/*.md`
+  - `test ! -d node_modules`
+  - `test ! -f package.json`
+  - `test ! -f package-lock.json`
+  - `test ! -f pnpm-lock.yaml`
+  - `test ! -f yarn.lock`
+  - `test ! -f bun.lock`
+  - `test ! -f bun.lockb`
