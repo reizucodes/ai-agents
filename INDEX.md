@@ -21,10 +21,19 @@ Adapter-contract routing rule:
 - Do not load `.ai/runtimes/codex/nickname-strategy.md` during normal startup.
 - Do not load `.ai/runtimes/claude/adapter-schema.md` during normal startup.
 - Do not load `.ai/runtimes/claude/tool-mapping.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/adapter.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/adapter-schema.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/agent-mapping.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/workflow-mapping.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/command-mapping.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/delegation.md` during normal startup.
+- Do not load `.ai/runtimes/opencode/validation.md` during normal startup.
 - Do not load `.ai/workflows/build-codex-agents.md` during normal startup.
 - Do not load `.ai/workflows/build-claude-agents.md` during normal startup.
+- Do not load `.ai/workflows/build-opencode-agents.md` during normal startup.
 - Load `.ai/runtimes/codex/orchestration-bootstrap.md` during Codex main-session startup when present.
 - Load `.ai/runtimes/claude/orchestration-bootstrap.md` during Claude main-session startup when present.
+- Load `opencode.json` and `.ai/runtimes/opencode/bootstrap.md` during OpenCode startup when present.
 - Load adapter contracts only when the user explicitly asks to:
   - build Codex agents,
   - generate `.codex/agents/*.toml`,
@@ -33,7 +42,11 @@ Adapter-contract routing rule:
   - validate Claude adapters,
   - work on Claude runtime adapter generation,
   - validate Codex adapters,
-  - work on Codex runtime adapter generation.
+  - work on Codex runtime adapter generation,
+  - build OpenCode agents,
+  - generate `.opencode/agents/*.md`,
+  - validate OpenCode adapters,
+  - work on OpenCode runtime adapter integration/validation.
 
 Startup guidance:
 - Read `AGENTS.md` for global runtime instructions and governance baseline.
