@@ -1,7 +1,7 @@
-# Reusable AI Agent Library
+# AI Agent Library
 
 ## Purpose
-This library provides reusable, production-oriented workflow agents for coding assistants (Codex, Claude Code, Cursor, Cline, Roo Code). It is designed to be copied into software projects and used immediately for implementation, review, testing, and release workflows.
+This library provides reusable, runtime-agnostic, production-oriented workflow agents for coding assistants (Codex, Claude Code, OpenCode, etc). It is designed to be copied into software projects and used immediately for implementation, review, testing, and release workflows.
 
 ## Installation
 ## Option 1: Bootstrap a New Project
