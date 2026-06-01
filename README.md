@@ -183,6 +183,18 @@ Existing project documentation remains untouched.
 4. Use `examples/` as reference implementations of multi-agent handoffs.
 5. Use `INDEX.md` first for risk-scaled quick-start guidance.
 
+## Available Commands
+| Command | Purpose |
+| --- | --- |
+| `build-opencode-agents` | Builds OpenCode-compatible agents for the OpenCode runtime by generating native OpenCode subagents from reusable `ai-agents` definitions. |
+| `build-claude-agents` | Builds Claude Code-compatible agents for the Claude runtime by generating native Claude subagents from reusable `ai-agents` definitions. |
+| `build-codex-agents` | Builds Codex-compatible agents for the Codex runtime by generating native Codex subagents from reusable `ai-agents` definitions. |
+| `build-project-intelligence` | Workflow command (not just a runtime adapter builder). Builds project intelligence for the repository where `ai-agents` is installed by generating or refreshing project context so agents understand the codebase, architecture, conventions, integrations, testing strategy, and technical debt. |
+
+## Runtime Adapters
+`ai-agents` is runtime-agnostic. Runtime build commands convert reusable agent definitions into runtime-native agents/subagents for Codex, Claude, and OpenCode.  
+The source of truth remains reusable `.ai/` framework files.
+
 ## Repository Runtime Assets
 Repository ships with:
 - `AGENTS.md`
