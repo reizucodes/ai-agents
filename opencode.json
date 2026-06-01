@@ -1,0 +1,67 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "INDEX.md",
+    ".ai/agents/*.md",
+    ".ai/workflows/*.md",
+    ".ai/policies/*.md",
+    ".ai/templates/*.md",
+    ".ai/execution/*.md",
+    ".ai/delegation/*.md",
+    ".ai/runtimes/opencode/bootstrap.md"
+  ],
+  "default_agent": "project-manager",
+  "agent": {
+    "project-manager": {
+      "description": "Primary orchestrator for risk-classified workflow routing and delegated execution.",
+      "mode": "primary",
+      "prompt": "Runtime adapter for .ai/agents/project-manager.md. Read and follow canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, and .ai/policies/*. Delegate to mapped subagents and preserve decision gates before implementation."
+    },
+    "product-spec": {
+      "description": "Define and clarify product requirements and acceptance criteria.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/product-spec.md. Use canonical source as authority."
+    },
+    "architect": {
+      "description": "Produce architecture decisions, boundaries, and implementation guidance.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/architect.md. Use canonical source as authority."
+    },
+    "backend": {
+      "description": "Implement backend changes aligned to approved architecture.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/backend.md. Use canonical source as authority."
+    },
+    "frontend": {
+      "description": "Implement frontend changes aligned to approved architecture.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/frontend.md. Use canonical source as authority."
+    },
+    "qa": {
+      "description": "Validate behavior, regression risk, and test coverage.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/qa.md. Use canonical source as authority."
+    },
+    "code-review": {
+      "description": "Perform correctness, risk, and maintainability review before handoff.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/code-review.md. Use canonical source as authority."
+    },
+    "docs": {
+      "description": "Persist run artifacts and documentation updates from validated outcomes.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/docs.md. Use canonical source as authority."
+    },
+    "security": {
+      "description": "Assess security risks, controls, and required mitigations.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/security.md. Use canonical source as authority."
+    },
+    "devops": {
+      "description": "Handle deployment, infrastructure, and operational readiness concerns.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/devops.md. Use canonical source as authority."
+    }
+  }
+}
