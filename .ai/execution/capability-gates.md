@@ -11,8 +11,9 @@ For Codex runtime task routing that expects generated adapters:
 - Record discovery as `present` or `missing`.
 
 If missing for a run that requests/needs `targeted` or `delegated` adapter-based routing:
-- Fall back to `sequential` mode.
-- State fallback reason explicitly.
+- Disclose the limitation explicitly.
+- Request user approval before sequential role simulation fallback.
+- Do not claim delegation occurred.
 
 ### Gate 1: Runtime Capability
 All must be true:
@@ -23,7 +24,9 @@ All must be true:
 
 If any is unknown:
 - Treat as not supported.
-- Use sequential mode.
+- Disclose the limitation explicitly.
+- Request user approval before sequential role simulation fallback.
+- Do not claim delegation occurred.
 
 ### Gate 2: Invocation Integrity
 All must be true:
@@ -32,7 +35,9 @@ All must be true:
 - Parent does not claim delegation if no child agents were spawned.
 
 If false:
-- Use sequential mode.
+- Disclose the limitation explicitly.
+- Request user approval before sequential role simulation fallback.
+- Do not claim delegation occurred.
 
 ### Gate 3: Governance Compatibility
 All must be true:
@@ -41,7 +46,9 @@ All must be true:
 - Security/risk policy application remains intact.
 
 If false:
-- Use sequential mode.
+- Disclose the limitation explicitly.
+- Request user approval before sequential role simulation fallback.
+- Do not claim delegation occurred.
 
 ### Gate 4: Merge Control
 All must be true:
@@ -50,17 +57,22 @@ All must be true:
 - Parent can resolve conflicts and preserve review traceability.
 
 If false:
-- Use sequential mode.
+- Disclose the limitation explicitly.
+- Request user approval before sequential role simulation fallback.
+- Do not claim delegation occurred.
 
 ### Gate 5: Planning Gate Compliance
 For Medium/Large classification, all must be true before implementation delegation:
 - Planning phase output exists (`project-manager`).
 - Product specification output exists (`product-spec` or PRD equivalent).
 - Technical design output exists (`architect` or technical design equivalent).
+- Required proposal artifacts exist as repository files.
+- Parent/orchestrator has presented consolidated proposal package to user.
+- Explicit user approval for implementation is recorded.
 
 If false:
-- Use sequential planning completion first.
-- Do not start delegated implementation roles.
+- Stop and resolve planning/artifact/approval gaps first.
+- Do not start implementation roles (`backend`, `frontend`, or other code-writing roles).
 
 ## Capability Decision
 `targeted` and `delegated` modes are allowed only when all required gates pass.

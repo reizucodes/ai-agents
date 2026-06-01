@@ -21,6 +21,22 @@ Parent may adjust order if dependencies require, but must preserve traceability.
 - Apply relevant `.ai/policies/*` and definition-of-done criteria.
 - Ensure no unresolved high-severity defects/findings remain.
 - Verify delegated claims match actual execution.
+- Detect and flag orchestration violations:
+  - Approval Gate Violation,
+  - Artifact Contract Violation,
+  - Delegation Contract Violation,
+  - Orchestrator Role Violation,
+  - Premature Implementation Handoff.
+- Verify:
+  - planning halted before implementation,
+  - required proposal artifacts were generated as files,
+  - parent/orchestrator consolidated planning outputs,
+  - user approval was requested,
+  - user approval was explicit,
+  - implementation started only after explicit approval,
+  - targeted/delegated used subagents when supported,
+  - scoped specialist outputs/reports are present for delegated specialists when subagents were used,
+  - main agent remained orchestrator.
 
 ## Validation Requirements
 - Validate acceptance criteria against selected workflow.

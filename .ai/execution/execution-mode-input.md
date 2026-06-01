@@ -15,11 +15,17 @@ Preferred UX:
   - force parent/main-only execution.
   - no subagent spawning unless hard escalation is required by policy/gates.
 - `targeted`:
+  - orchestrator remains parent/main and delegates selected specialist tasks when runtime subagents are supported.
   - use only relevant agents for the classified scope.
+  - do not silently absorb specialist work into parent/main.
+  - enforce proposal gates and proposal artifact contracts when planning is in scope.
   - examples: `frontend`/`vue`, `backend`/`fastapi`, `reviewer`/`docs`, `tester` only.
 - `delegated`:
   - full orchestration mode.
+  - parent/main is strictly orchestrator and must not implement directly.
   - required subagent spawning based on workflow contracts.
+  - roles must not be collapsed into parent/main.
+  - enforce proposal gates and proposal artifact contracts.
 
 ## Preferred Input Sources
 Use execution mode from runtime metadata in this priority order:
@@ -53,11 +59,14 @@ Before `targeted` or `delegated` execution, parent/main must check:
 2. Generated Codex adapters availability (`.codex/agents/*.toml`) when running in Codex adapter mode.
 
 If either required precondition is unavailable:
-- fall back to `sequential`,
-- state fallback reason explicitly in output.
+- report the limitation explicitly,
+- request user approval before sequential role simulation fallback,
+- do not claim delegation occurred.
 
 ## Routing Notes
 - `auto` should prefer delegation only when capability + eligibility + mapping availability are satisfied.
 - `targeted` should select minimal relevant agent set.
 - `delegated` should follow full Medium/Large or required review/remediation flow.
+- `delegated` is not direct implementation and not sequential role simulation.
+- For Medium/Large planning in `targeted` or `delegated`, implementation roles must not start before proposal artifacts are validated, the proposal package is presented using `.ai/templates/proposal-review-package.md`, and explicit approval is received.
 - This contract is runtime-facing and does not replace canonical role/flow contracts.

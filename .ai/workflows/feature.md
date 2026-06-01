@@ -31,6 +31,11 @@ Implementation planning ownership:
 - Only Recommendation Decisions and Approval Decisions may pause execution.
 - Approval Decisions must follow `.ai/policies/approval-levels.md`.
 - Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
+- For planning-gated feature flows, Proposal Approval Gate is mandatory before implementation:
+  - parent/orchestrator must halt after planning,
+  - required proposal artifacts must exist as repository files,
+  - consolidated proposal package must be presented using `.ai/templates/proposal-review-package.md`,
+  - explicit user approval is required before code-writing agents run.
 
 ## Deliverables
 - Feature spec

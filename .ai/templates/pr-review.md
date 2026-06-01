@@ -45,3 +45,21 @@
 - [ ] Documentation complete
 - [ ] Ready to merge
 
+## Orchestration Compliance Checklist
+- [ ] Planning halted before implementation (when planning roles were used)
+- [ ] Required proposal artifacts exist as repository files
+- [ ] Parent/orchestrator consolidated planning outputs into a proposal package
+- [ ] User was asked to review and approve proposal package
+- [ ] Approval was explicit (not inferred from silence/non-objection)
+- [ ] Implementation started only after explicit approval
+- [ ] Targeted/delegated mode used subagents when runtime supported
+- [ ] Main agent remained orchestrator
+- [ ] No simulated role output mislabeled as delegated child output
+- [ ] No parent direct implementation occurred in delegated mode
+
+## Required Violation Labels
+- Approval Gate Violation
+- Artifact Contract Violation
+- Delegation Contract Violation
+- Orchestrator Role Violation
+- Premature Implementation Handoff
