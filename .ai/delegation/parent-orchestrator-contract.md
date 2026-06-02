@@ -12,7 +12,9 @@ Define parent-agent responsibilities in delegated execution.
    - `.ai/execution/*` and `.ai/delegation/*`
 2. Reclassify every follow-up task with `.ai/execution/task-classification.md` before execution.
 3. Decide mode using capability/eligibility contracts.
-   - Do not require user to explicitly request delegated mode; choose automatically when classification + gate conditions match.
+   - Do not require user to explicitly request delegated mode; choose automatically when classification + capability + role-adapter gates match.
+   - Treat prompt-body `Execution mode: ...` as routing input only; it does not automatically spawn agents.
+   - Before targeted/delegated execution, record role-specific preflight with required roles, available adapters, missing adapters, delegation decision, and fallback action.
 4. For Medium/Large tasks, complete planning outputs before implementation delegation:
    - `project-manager` (first)
    - `product-spec` (second)
@@ -28,7 +30,7 @@ Define parent-agent responsibilities in delegated execution.
    - present package to user,
    - request explicit implementation approval,
    - wait for explicit approval before implementation delegation.
-9. Explicitly spawn/invoke children only when delegated mode is allowed.
+9. Explicitly spawn/invoke children only when `targeted_required` or `delegated_allowed` passes capability and role-adapter preflight.
 10. Use targeted follow-up delegation when appropriate:
    - relevant implementation agents only,
    - `reviewer` when behavior changed,
@@ -66,6 +68,7 @@ Define parent-agent responsibilities in delegated execution.
    - remain orchestrator while delegating selected specialist scopes when supported,
    - do not silently collapse specialist roles into parent/main,
    - require scoped specialist outputs/reports.
+   - for Tiny/Small code-changing `backend`, `frontend`, and `tester` runs, do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk/scope escalates into planning gates.
 18. For `delegated` mode:
    - remain strictly parent/orchestrator,
    - do not implement directly,
@@ -117,8 +120,10 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Must not skip mandatory planning gates for Medium/Large work.
 - Must not continue from planning to implementation without explicit proposal approval.
 - Must not assume approval from silence, non-objection, or stage completion.
-- Must not spawn `backend` or `frontend` before both `SPEC_APPROVED` and `ARCHITECTURE_READY`.
-- Must not spawn any code-writing role before required proposal artifacts are verified.
+- Must not spawn `backend` or `frontend` for Medium/Large delegated implementation before both `SPEC_APPROVED` and `ARCHITECTURE_READY`.
+- Must not apply Medium/Large planning-state prohibitions to Tiny/Small targeted code changes unless risk/scope escalates.
+- Must not spawn any Medium/Large code-writing role before required proposal artifacts are verified.
+- Must not silently collapse missing required adapters into parent/main.
 - Must not implement directly in delegated mode.
 - Must not complete a code-changing run without `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 

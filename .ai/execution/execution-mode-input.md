@@ -53,10 +53,13 @@ Fallback only when runtime metadata/header injection is unavailable:
 Execution mode: <auto|sequential|targeted|delegated>
 ```
 
+Prompt-body input is routing input only. It does not automatically spawn agents, does not bypass classification, and does not override capability, adapter, planning, approval, or safety gates. Parent/main must still classify the task, run role-specific preflight, and explicitly spawn/invoke child agents only after gates pass.
+
 ## Capability-Aware Preconditions
 Before `targeted` or `delegated` execution, parent/main must check:
 1. Runtime delegation capability (from `.ai/execution/capability-gates.md`).
-2. Generated Codex adapters availability (`.codex/agents/*.toml`) when running in Codex adapter mode.
+2. Exact required role adapter availability (`.codex/agents/<role>.toml`) when running in Codex adapter mode.
+3. Planning/proposal approval state when the classified task is Medium/Large.
 
 If either required precondition is unavailable:
 - report the limitation explicitly,
@@ -68,5 +71,6 @@ If either required precondition is unavailable:
 - `targeted` should select minimal relevant agent set.
 - `delegated` should follow full Medium/Large or required review/remediation flow.
 - `delegated` is not direct implementation and not sequential role simulation.
+- Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless classification escalates due to risk, scope, ambiguity, contract changes, architecture changes, or user-requested planning.
 - For Medium/Large planning in `targeted` or `delegated`, implementation roles must not start before proposal artifacts are validated, the proposal package is presented using `.ai/templates/proposal-review-package.md`, and explicit approval is received.
 - This contract is runtime-facing and does not replace canonical role/flow contracts.

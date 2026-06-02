@@ -26,6 +26,9 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - security child -> `.ai/agents/security.md` when risk/policy requires it.
 - devops child -> `.ai/agents/devops.md` when deployment/ops impact requires it.
 - stack-specialist children map to relevant framework contracts when decomposition requires it.
+- Specialist children (`vue`, `react`, `laravel`, `fastapi`, `node-express`, `python`) are routable only when runtime adapters exist or the runtime can invoke the canonical role explicitly.
+- If a specialist adapter is missing, parent may route through the generic owning adapter (`frontend` or `backend`) only when that generic adapter is available, the task classification allows generic ownership, and the specialist gap is disclosed.
+- Missing required specialist adapters must not silently collapse into parent/main.
 
 ## Planning and Implementation Ordering Rules
 - Discovery/spec roles:
@@ -37,7 +40,8 @@ Map canonical role contracts to delegated child responsibilities during delegate
   - required proposal artifacts must exist as repository files before implementation roles run.
   - explicit user approval is required before any implementation role runs.
 - Implementation roles:
-  - `backend` and `frontend` run only after architect handoff exists.
+  - Medium/Large delegated `backend` and `frontend` run only after architect handoff exists.
+  - Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk/scope escalates.
   - `backend` and `frontend` may run in parallel only when ownership boundaries are explicit.
 - Validation/review/documentation roles:
   - `tester` validates against approved consolidated spec and acceptance criteria.

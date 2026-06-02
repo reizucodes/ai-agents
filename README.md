@@ -307,11 +307,14 @@ Then run:
 - `delegated`: full orchestration flow across required roles.
 
 ### Practical Codex Invocation
-For reliable subagent spawning in Codex, include explicit activation wording:
+Codex routing must still be capability-aware. Prompt-body mode or activation wording is routing input only; it does not automatically spawn agents.
+
+Parent/main must classify the task, check runtime spawn support, check exact required `.codex/agents/<role>.toml` adapters when adapter routing is expected, then explicitly spawn/invoke children when gates pass.
+
+Optional routing hint:
 
 ```md
 Use the available Codex subagents.
-Do not complete this as single-agent work.
 ```
 
 ### Recommended Delegated Example
@@ -319,7 +322,6 @@ Do not complete this as single-agent work.
 ```md
 Execution mode: delegated
 Use the available Codex subagents.
-Do not complete this as single-agent work.
 
 Task:
 ...
@@ -341,15 +343,15 @@ Task:
   - simple inspection
   - analysis-only work
 - `targeted`:
-  - focused fixes
-  - review tasks
-  - docs/test/backend/frontend-only work
+  - Tiny/Small code-changing frontend/backend/test/doc work when required role adapters are available
+  - review artifact tasks (`reviewer` + `docs`)
+  - focused follow-ups after planning
 - `delegated`:
   - Medium/Large work
   - planning/spec/architecture/implementation/testing/review/docs flows
 - `auto`:
   - framework default
-  - Codex may still require explicit subagent activation wording
+  - parent selects targeted/delegated only after capability and required adapter preflight
 
 ### Agent Display Names
 Generated agents should self-identify as:

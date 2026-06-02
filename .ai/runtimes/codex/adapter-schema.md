@@ -99,9 +99,11 @@ Preferred:
 ## Invocation Rule
 - Presence of `.codex/agents/*.toml` does not trigger delegated execution by itself.
 - Codex subagents require explicit runtime invocation by the parent runtime agent.
+- Prompt-body `Execution mode: ...` is routing input only; it does not automatically spawn Codex agents.
 - When runtime supports a main-session orchestration bootstrap, it should be loaded to expose parent routing behavior.
 - Bootstrap guidance is derivative from canonical `.ai/*` and must not override canonical contracts.
 - Bootstrap should include execution-mode input handling from `.ai/execution/execution-mode-input.md`.
+- Bootstrap should require exact role adapter preflight rather than checking only whether any `.codex/agents/*.toml` exists.
 
 ## Non-goals
 - This contract does not define adapter generation workflow steps.

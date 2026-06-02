@@ -8,7 +8,7 @@ Define execution modes for this instruction framework in a runtime-consumable fo
 - Markdown files do not spawn agents.
 - `.ai/agents/*` are canonical role contracts, not executable worker definitions.
 - Sequential mode is the default and portable execution path.
-- Delegated mode is optional and runtime-dependent; when capability and eligibility gates pass, parent should invoke it automatically based on classification/scope (no user "delegated mode" prompt required).
+- Targeted and delegated modes are optional and runtime-dependent; when capability, role-adapter, and eligibility gates pass, parent should invoke required child roles explicitly based on classification/scope (no user "delegated mode" prompt required).
 - Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
 - Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
 - Every code-changing run must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
@@ -35,7 +35,8 @@ Input-source preference:
 
 Runtime preflight before `targeted`/`delegated`:
 - Check runtime delegation capability gates.
-- Check Codex adapter discovery (`.codex/agents/*.toml`) when adapter-based routing is expected.
+- Check exact required Codex role adapters (`.codex/agents/<role>.toml`) when adapter-based routing is expected.
+- Record `runtime_spawn_supported`, `execution_mode_input`, `classification`, `required_roles`, `available_adapters`, `missing_adapters`, `delegation_decision`, and `fallback_action`.
 - If unavailable:
   - report subagent limitation explicitly,
   - request user approval before sequential role simulation fallback,
@@ -60,7 +61,7 @@ Flow:
 Requirements:
 - All policy and quality gates still apply.
 - No delegated/parallel claims unless runtime subagents were actually spawned.
-- For code-changing Tiny/Small runs in sequential mode, use targeted delegation to relevant implementation role(s) rather than full planning pipeline.
+- For code-changing Tiny/Small runs, parent/main may complete directly only when targeted subagents/adapters are unavailable and fallback is disclosed/approved where required.
 - For review-only tasks, parent-only sequential execution is allowed only for pure non-mutating analysis with no artifact output.
 
 ### Mode B: Delegated (Optional)
@@ -94,6 +95,7 @@ Flow:
 
 Requirements:
 - Delegated mode is never assumed implicitly.
+- Full delegated mode is distinct from targeted delegation and may be rejected for Tiny/Small simple work even when targeted role spawning is required.
 - Child execution/concurrency depends on runtime capability.
 - Parent remains accountable for final merge and gate compliance.
 - User does not need to explicitly request delegated mode; parent selection is automatic when gating conditions match.
@@ -109,13 +111,22 @@ Requirements:
 - For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` with blockers and next steps.
 
-### Mode C: Autonomous (Future Extension)
-- Not implemented in this instruction framework.
-- Any future autonomous mode must be explicitly versioned and policy-gated.
-- Note: automatic delegation selection by the parent (within Mode A/B contracts) is already supported and is distinct from a separate future autonomous runtime mode.
+### Mode C: Targeted Delegation
+Use when:
+- classified work requires one or more specialist roles,
+- full Medium/Large delegated planning is unnecessary or already complete,
+- runtime subagents and required role adapters are available,
+- parent/main can keep orchestration, merge, and final validation responsibilities.
 
-## Targeted Follow-Up Delegation Mode
-For follow-up tasks that do not require full planning rerun, use targeted delegation:
+Decision behavior:
+- Code-changing Tiny/Small frontend work: `targeted_required: true`, required role `frontend` unless a generated framework specialist is explicitly selected.
+- Code-changing Tiny/Small backend work: `targeted_required: true`, required role `backend` unless a generated framework specialist is explicitly selected.
+- Test-only code changes: `targeted_required: true`, required role `tester`.
+- Review artifact-generating work: `targeted_required: true`, required roles `reviewer`, `docs`.
+- Pure review/analysis with no artifact output: `main_runtime_allowed: true`, reviewer optional.
+- Tiny/Small targeted implementation does not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk, scope, ambiguity, contract changes, architecture changes, or explicit user request escalates the task into a planning-gated flow.
+
+Flow:
 - Parent
 - Relevant implementation agents only
 - Reviewer if behavior changed
@@ -125,6 +136,11 @@ For follow-up tasks that do not require full planning rerun, use targeted delega
 - Parent/main remains orchestrator; targeted mode is not direct specialist-role collapse.
 - Each delegated specialist must produce scoped output/report when runtime supports subagents.
 - If subagents are unavailable, request explicit user approval before simulation fallback and disclose that delegation did not occur.
+
+### Mode D: Autonomous (Future Extension)
+- Not implemented in this instruction framework.
+- Any future autonomous mode must be explicitly versioned and policy-gated.
+- Note: automatic targeted/delegated selection by the parent (within Mode A/B/C contracts) is already supported and is distinct from a separate future autonomous runtime mode.
 
 Review-only routing rule:
 - Pure review/analysis only (no file changes): parent/main allowed; `reviewer` optional.
@@ -149,8 +165,9 @@ Examples:
 ## Mode Selection Priority
 1. Prefer sequential by default.
 2. Use task classification before selecting planning depth and delegation.
-3. Escalate to delegated automatically when capability and task fit are both true.
-4. Reject delegated when eligibility checks fail.
+3. Use targeted delegation automatically for code-changing Tiny/Small or artifact-generating review tasks when required roles and runtime capability are available.
+4. Escalate to full delegated mode automatically when capability, required adapters, task fit, and planning gates are all true.
+5. Reject full delegated mode when eligibility checks fail, even if targeted mode is still required.
 
 ## Scenario Regression Matrix
 - Pure Q&A / explanation:
@@ -160,11 +177,13 @@ Examples:
   - planning agents may be used when useful,
   - no audit report unless repository files are changed.
 - Tiny frontend-only code change:
-  - targeted delegation to `frontend` and/or relevant specialist,
+  - `targeted_required`,
+  - required role `frontend` unless a generated `vue`/`react` adapter is explicitly selected,
   - targeted validation,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Tiny backend-only code change:
-  - targeted delegation to `backend` and/or relevant specialist,
+  - `targeted_required`,
+  - required role `backend` unless a generated `fastapi`/`laravel`/`node-express` adapter is explicitly selected,
   - targeted validation,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Tiny cross-layer code change:
@@ -175,7 +194,8 @@ Examples:
   - use `docs`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Test-only change:
-  - use `tester`,
+  - `targeted_required`,
+  - required role `tester`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Workflow/framework change:
   - use reviewer/docs as appropriate,
@@ -189,6 +209,15 @@ Examples:
 - Medium/Large feature:
   - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated review package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- Prompt-body `Execution mode: targeted`:
+  - routing input only,
+  - does not automatically spawn child agents,
+  - parent still classifies, checks runtime spawn support, checks exact required role adapters, then explicitly invokes children when gates pass.
+- Missing required adapter:
+  - disclose missing role adapter(s),
+  - set `fallback_requires_approval: true` when targeted/delegated was requested or required,
+  - request approval before sequential role simulation fallback,
+  - never claim delegation unless a child was actually spawned/invoked.
 - Remediation pass:
   - start from tester/reviewer blockers,
   - use targeted agents,
