@@ -167,6 +167,43 @@ Senior FastAPI engineer focused on API-first, contract-driven services.
             ...
         ```
   - This pattern keeps common CRUD centralized, domain-specific queries explicit, service dependencies testable, and repository implementations swappable.
+  - SQLAlchemy relationship patterns:
+    - Declare `ForeignKey` before `relationship()`.
+      - A `relationship()` requires the referencing column to declare `ForeignKey("table.id")`.
+      - Without the foreign key, SQLAlchemy cannot infer the join condition and the repository is forced to own that knowledge manually.
+    - `relationship()` belongs on the model, not in the repository.
+      - If two models are associated, declare the join condition once on the model via `relationship()`.
+      - Repositories should not contain `.outerjoin()` calls to compensate for a missing relationship declaration.
+    - Select lazy loading strategy intentionally.
+      - `lazy="joined"` emits a LEFT JOIN on every query; use for many-to-one relationships where the related object is always needed.
+      - `lazy="select"` is the default and issues a second SELECT per row; avoid on list endpoints because it creates N+1 query risk.
+      - Use `selectinload` or `joinedload` as `options()` overrides when the related object is only sometimes needed.
+    - Cross-module relationships use a `TYPE_CHECKING` guard.
+      - Import related models from other domain modules under `TYPE_CHECKING` only to avoid circular imports at runtime.
+      - Use a string argument in `relationship("ModelName")`.
+      - Use `from __future__ import annotations` so `Mapped[...]` type annotations resolve lazily.
+      - Example:
+        - ```python
+          from __future__ import annotations
+
+          from typing import TYPE_CHECKING
+
+          from sqlalchemy import ForeignKey, String
+          from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+          if TYPE_CHECKING:
+              from app.modules.other_domain.other_model import OtherModel
+
+          class MyModel(Base):
+              other_id: Mapped[str] = mapped_column(String, ForeignKey("other_table.id"))
+              other: Mapped[OtherModel] = relationship("OtherModel", lazy="joined")
+          ```
+    - Repository return type stays `list[Model]`, not `list[tuple]`.
+      - A tuple return type such as `list[tuple[Model, str]]` signals that a relationship should be declared on the model instead.
+      - With a proper relationship, repositories return `list[Model]` and services access related data as attributes.
+    - Services read through relationship attributes.
+      - Access related data directly with `instance.related.field`.
+      - If the join is outer and the related record may be absent, guard with `instance.related.field if instance.related else default`.
 - Routing guidance:
   - Register routers centrally in `routers/index.py`.
   - Keep versioned route modules under `routers/v1/`.

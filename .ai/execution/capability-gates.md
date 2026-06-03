@@ -5,15 +5,18 @@ Define hard capability checks required before using delegated execution.
 
 ## Gate Categories
 
-### Gate 0: Runtime Adapter Discovery (Codex)
+### Gate 0: Role-Specific Runtime Adapter Discovery (Codex)
 For Codex runtime task routing that expects generated adapters:
-- Check whether `.codex/agents/*.toml` exists.
-- Record discovery as `present` or `missing`.
+- Determine the exact `required_roles` from task classification, scope, risk, and execution-mode input.
+- Check whether a matching `.codex/agents/<role>.toml` exists for each required role.
+- Do not treat the existence of any `.codex/agents/*.toml` as sufficient.
+- Record `available_adapters` and `missing_adapters` by canonical role name.
 
-If missing for a run that requests/needs `targeted` or `delegated` adapter-based routing:
+If any required adapter is missing for a run that requests/needs `targeted` or `delegated` adapter-based routing:
 - Disclose the limitation explicitly.
 - Request user approval before sequential role simulation fallback.
 - Do not claim delegation occurred.
+- If a specialist adapter is missing but a generic owning adapter is available, use the generic owning adapter only when the classification selected it as an approved fallback and disclose the specialist gap.
 
 ### Gate 1: Runtime Capability
 All must be true:
@@ -74,8 +77,28 @@ If false:
 - Stop and resolve planning/artifact/approval gaps first.
 - Do not start implementation roles (`backend`, `frontend`, or other code-writing roles).
 
+### Required Preflight Output
+Before `targeted` or `delegated` execution, parent/main must emit or internally record a preflight result with:
+
+- `runtime_spawn_supported`: `true|false|unknown`
+- `execution_mode_input`: `auto|sequential|targeted|delegated` plus source (`runtime_metadata|prompt_body_fallback|default`)
+- `classification`: task size/type and code-changing/artifact status
+- `required_roles`: exact canonical child role names required for this task
+- `available_adapters`: required role adapters found and usable
+- `missing_adapters`: required role adapters not found or stale/unusable
+- `delegation_decision`: object containing `main_runtime_allowed`, `targeted_required`, `delegated_allowed`, `fallback_requires_approval`
+- `fallback_action`: `none|parent_main|sequential_role_simulation_pending_approval|sequential_role_simulation_approved|stop_for_missing_capability`
+
+Role selection examples:
+- frontend Tiny code change: `required_roles: [frontend]` unless a generated `vue` or `react` adapter is explicitly required by classification.
+- backend Tiny code change: `required_roles: [backend]` unless a generated `fastapi`, `laravel`, or `node-express` adapter is explicitly required by classification.
+- test-only code change: `required_roles: [tester]`.
+- pure review/no artifact: `required_roles: []`, reviewer optional.
+- review artifact: `required_roles: [reviewer, docs]`.
+- Medium feature implementation after approval: `required_roles` includes planning roles for the current phase and implementation roles for the approved phase (`project-manager`, `product-spec`, `architect`, then implementation agents, `tester`, `reviewer`, `docs`).
+
 ## Capability Decision
-`targeted` and `delegated` modes are allowed only when all required gates pass.
+`targeted` and `delegated` modes are allowed only when all required gates and role-specific adapter checks pass.
 When an explicit execution-mode input is provided, enforce `.ai/execution/execution-mode-input.md`.
 
 ## Non-claims

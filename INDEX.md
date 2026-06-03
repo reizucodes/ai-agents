@@ -53,7 +53,7 @@ Startup guidance:
 - Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
 - For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
 - Sequential mode is the default and portable execution mode.
-- Delegated mode is optional and runtime-dependent; parent/orchestrator should select it automatically when classification + delegation gates match.
+- Targeted and delegated modes are optional and runtime-dependent; parent/orchestrator should select them automatically when classification + capability + role-adapter gates match.
 - User does not need to explicitly say "delegated mode" for eligible tasks.
 - If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
 - For `targeted` and `delegated`, when runtime subagents are unavailable:
@@ -63,6 +63,8 @@ Startup guidance:
 - Use execution-mode input header when provided:
   - `Execution mode: auto|sequential|targeted|delegated`
   - preferred source is runtime/launcher metadata; prompt-body header is fallback only.
+- Prompt-body `Execution mode: ...` is routing input only; it does not automatically spawn agents.
+- Parent/main must classify the task, check runtime spawn capability, check exact required role adapters, then explicitly spawn/invoke child agents only when gates pass.
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts
@@ -94,8 +96,8 @@ Execution contract rules:
 |---|---|---|---|---|---|---|
 | Tiny | Typo fixes, label changes, CSS tweaks, small validation message changes | `task.md` | `bugfix.md` or direct task execution | Stack agent | QA (optional for trivial non-functional edits) | DoD basics, runtime-safety/approval-levels if commands are risky |
 | Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, QA (recommended) | Code-review | Implementation + Quality gate, risk-classification, DoD |
-| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Architect, stack agent, QA, code-review | Product-spec, Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
-| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Architect, Security, stack agent, QA, code-review | Product-spec, DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
+| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Product-spec, Architect, stack agent, QA, code-review | Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
+| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Product-spec, Architect, Security, stack agent, QA, code-review | DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
 
 `Stack agent` means one or more technology agents from `.ai/agents/`.
 
@@ -125,10 +127,10 @@ Additional specialist agent:
 `task` -> `stack agent` -> `qa`
 
 ### Medium Change
-`feature-spec` -> `project-manager` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review`
+`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review`
 
 ### High-Risk Change
-`feature-spec` -> `project-manager` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
+`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
 
 ### Full-Project Technical Review (Artifact Output)
 `reviewer` -> `docs`
