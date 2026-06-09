@@ -116,18 +116,20 @@ If this adapter conflicts with the canonical role contract, follow the canonical
 Runtime-specific summary requirements (keep concise):
 - Discovery/spec-first role order:
   - `project-manager` -> `product-spec` -> approved consolidated spec -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
-- `backend`/`frontend` must not execute before approved consolidated spec and architect handoff.
+- Medium/Large delegated `backend`/`frontend` must not execute before approved consolidated spec and architect handoff.
+- Tiny/Small targeted `backend`/`frontend`/`tester` runs do not require approved consolidated spec or architect handoff unless risk/scope escalates.
 - `tester` validates against approved consolidated spec and acceptance criteria.
 - `reviewer` runs after tester outputs.
 - `docs` runs last before parent final validation.
 - when `docs` runs, it writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - code-changing runs require relevant implementation role usage:
-  - frontend-only: `frontend`/framework specialist,
-  - backend-only: `backend`/framework specialist,
+  - frontend-only: `frontend`; generated framework specialist (`vue`/`react`) only when selected by classification,
+  - backend-only: `backend`; generated framework specialist (`fastapi`/`laravel`/`node-express`/`python`) only when selected by classification,
   - cross-layer: both `backend` + `frontend`,
   - docs-only: `docs`,
   - test-only: `tester`.
+- specialist adapter gaps must be disclosed; generic `frontend`/`backend` fallback is allowed only when available and sufficient for the classified scope.
 - Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
 - Adapter self-identification/display rule:
   - Use `<nickname> [<canonical-role>]` in traces/logs when nickname is available.
@@ -138,15 +140,28 @@ Runtime orchestration bootstrap minimum routing rules:
   - `Execution mode: auto|sequential|targeted|delegated`.
 - execution mode should be consumed from runtime/launcher metadata first.
 - prompt-body `Execution mode: ...` is fallback only.
+- prompt-body `Execution mode: ...` is routing input only and does not automatically spawn agents.
 - when no mode is provided, default to `auto`.
+- before `targeted`/`delegated`, parent/main must classify the task, check runtime spawn support, check exact required role adapters, and explicitly invoke children only after gates pass.
+- required preflight output fields:
+  - `runtime_spawn_supported`
+  - `execution_mode_input`
+  - `classification`
+  - `required_roles`
+  - `available_adapters`
+  - `missing_adapters`
+  - `delegation_decision`
+  - `fallback_action`
 - full-project review with artifact output -> `reviewer` -> `docs`.
 - review + validation -> `reviewer` -> `tester` (as needed) -> `docs`.
-- Tiny/Small frontend code change -> `frontend`/specialist (`vue`/`react`) -> audit report.
-- Tiny/Small backend code change -> `backend`/specialist (`fastapi`/`laravel`/`node-express`) -> audit report.
-- Medium/Large feature -> `project-manager` -> `product-spec` -> approval -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
+- Tiny/Small frontend code change -> `targeted_required`, required role `frontend` unless generated `vue`/`react` adapter is selected -> audit report.
+- Tiny/Small backend code change -> `targeted_required`, required role `backend` unless generated `fastapi`/`laravel`/`node-express`/`python` adapter is selected -> audit report.
+- test-only code change -> `targeted_required`, required role `tester` -> audit report.
+- Medium/Large feature -> `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated proposal package + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`.
 - remediation/final-rerun flows -> targeted agents, then `tester` -> `reviewer` -> `docs` when in scope.
-- sequential fallback is allowed only when subagent capability gates fail, and fallback must be disclosed.
-- for `targeted`/`delegated`, fallback to `sequential` when runtime delegation capability or Codex adapter discovery is unavailable; fallback reason must be disclosed.
+- sequential fallback is allowed only when subagent capability or required adapter gates fail, and fallback must be disclosed.
+- for `targeted`/`delegated`, fallback to sequential role simulation requires approval where `fallback_requires_approval` is true.
+- never claim delegation unless a child agent was actually spawned/invoked.
 
 4. Include required generated metadata header from runtime/schema contracts.
 5. Include canonical source pointer and drift metadata.
@@ -176,7 +191,9 @@ Run validation using `.ai/execution/adapter-drift-validation.md` and `.ai/runtim
 13. Orchestration bootstrap presence/content validation:
    - file exists at `.ai/runtimes/codex/orchestration-bootstrap.md`,
    - routes are derived from canonical `.ai/*` contracts,
-   - required routing rules above are present.
+   - required routing rules above are present,
+   - prompt-body execution mode is described as routing input only,
+   - role-specific adapter preflight fields are present.
 
 ## Drift-Check Steps
 1. Compute canonical source fingerprint/checksum for each mapped role.
@@ -206,7 +223,7 @@ Reject generation or validation when any apply:
 - Do not depend on runtime display nicknames for routing, validation, reporting, or handoffs.
 - Require runtime-facing display/self-identification guidance to use `<nickname> [<canonical-role>]`.
 - Preserve host-project approval and safety policy requirements.
-- Fall back to sequential mode if delegated preconditions fail.
+- Fall back to sequential mode only with required disclosure and approval where targeted/delegated preconditions fail.
 
 ## Reporting Format
 Each run must use `.ai/templates/adapter-run-report.md` and report:

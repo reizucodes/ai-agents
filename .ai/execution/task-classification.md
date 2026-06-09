@@ -62,10 +62,10 @@ Default flow:
 - Review
 
 Default behavior:
-- Sequential mode.
-- Parent may handle directly.
+- Parent may handle directly only for non-code-changing Tiny tasks.
 - Skip planning agents (`project-manager`, `product-spec`, `architect`).
-- Use targeted delegation to relevant implementation role(s) when files are changed; parent-only is allowed only for non-code-changing tasks.
+- Code-changing Tiny tasks produce `targeted_required` and use relevant implementation role(s) when runtime subagents and required adapters are available.
+- Full delegated mode is normally rejected for Tiny tasks because planning/parallelism is not appropriate unless risk/scope escalates.
 - `docs` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - No diagrams required.
 
@@ -84,9 +84,9 @@ Default flow:
 - Docs (optional)
 
 Default behavior:
-- Sequential mode.
 - `architect` only when contract/boundary risk appears.
-- Relevant implementation role(s) are required for code-changing work via targeted delegation.
+- Relevant implementation role(s) are required for code-changing work via targeted delegation when runtime subagents and required adapters are available.
+- Full delegated mode is normally rejected for Small single-surface tasks unless planning/parallelism is justified by escalated risk/scope.
 - `docs` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
 - Diagrams optional.
 
@@ -213,3 +213,7 @@ Spec-first gates are mandatory for Medium/Large:
 3. Technical design decision exists (`architect` or technical-design artifact).
 
 Implementation agents must not begin Medium/Large execution before these gates pass.
+
+Tiny/Small targeted exception:
+- Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` by default.
+- Escalate into spec-first gates only when risk/scope, requirement ambiguity, external contracts, architecture changes, or explicit user request makes the task Medium/Large or planning-gated.

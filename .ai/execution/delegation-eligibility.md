@@ -12,10 +12,12 @@ Every follow-up task must be reclassified before execution.
 
 ## Eligibility Inputs
 - Task classification from `.ai/execution/task-classification.md`.
+- Execution-mode input from runtime metadata or prompt-body fallback.
 - Follow-up type (Tiny, Small single-surface, Small multi-surface, Medium/Large).
 - Task size and coupling.
 - Risk level and governance requirements.
 - Runtime capability gate result.
+- Role-specific adapter preflight result from `.ai/execution/capability-gates.md`.
 - Availability of disjoint ownership boundaries.
 - Whether the run is code-changing.
 
@@ -34,7 +36,8 @@ Examples:
 
 Default:
 - parent may handle directly only when non-code-changing.
-- code-changing Tiny work must use targeted delegation to relevant implementation role(s).
+- code-changing Tiny work produces `targeted_required` when runtime subagents and required adapters are available.
+- full `delegated` mode should be rejected unless risk/scope escalates beyond Tiny.
 
 ### Small single-surface follow-up
 Examples:
@@ -44,7 +47,8 @@ Examples:
 
 Default:
 - non-code-changing work may be parent-direct.
-- code-changing work requires targeted delegation to relevant implementation role(s).
+- code-changing work produces `targeted_required` when runtime subagents and required adapters are available.
+- full `delegated` mode should be rejected unless planning or parallelism is justified by escalated risk/scope.
 
 ### Small multi-surface follow-up
 Examples:
@@ -53,16 +57,17 @@ Examples:
 - UI change + docs
 
 Default:
-- code-changing work must use targeted delegation to relevant implementation role(s).
+- code-changing work produces `targeted_required` when runtime subagents and required adapters are available.
+- full `delegated` mode is allowed only when the work can be decomposed into disjoint ownership boundaries with meaningful coordination benefit.
 
 ### Medium/Large follow-up
 Default:
-- use delegated flow or planning-gate flow.
+- use full delegated flow or planning-gate flow when runtime subagents and required adapters are available.
 - require finalized spec or active Requirement Clarification Gate before implementation delegation.
 - require architecture handoff before spawning implementation executors.
 
 ## Eligible Cases
-Delegated mode is preferred when all apply:
+Full delegated mode is preferred when all apply:
 - Task can be decomposed into independent subproblems.
 - Write scopes can be separated clearly.
 - Parallel execution reduces critical-path time materially.
@@ -78,7 +83,7 @@ Delegated mode is preferred when all apply:
   - `tester` is required when validation/coverage/test-result verification is in scope.
 
 ## Ineligible Cases (Reject Delegation)
-Reject delegated mode when any apply:
+Reject full delegated mode when any apply:
 - Tiny/single-file/simple change.
 - Small single-surface change with no measurable parallelism benefit.
 - Heavily coupled changes likely to conflict.
@@ -101,10 +106,38 @@ When parent handles a small multi-surface follow-up directly, parent must includ
 - `Reason: <low-risk | tightly coupled | faster parent patch | user did not request full delegation>`
 
 ## Decision Output
-- `sequential_required`
-- `delegated_allowed`
+Every routing decision must report these fields:
+
+- `main_runtime_allowed`: `true` when parent/main may complete the task without spawning child agents.
+- `targeted_required`: `true` when the classified task requires minimal relevant child roles if runtime subagents and required adapters are available.
+- `delegated_allowed`: `true` when full delegated workflow is appropriate and planning/parallelism gates pass.
+- `fallback_requires_approval`: `true` when the requested/required `targeted` or `delegated` path cannot run because runtime subagents or required adapters are unavailable, and the only viable alternative is sequential role simulation.
+
+Decision rules:
+- Pure review/analysis with no artifact output:
+  - `main_runtime_allowed: true`
+  - `targeted_required: false`
+  - `delegated_allowed: false`
+  - `fallback_requires_approval: false`
+- Review artifact-generating task:
+  - `main_runtime_allowed: false` when runtime subagents and required adapters are available
+  - `targeted_required: true`
+  - required roles: `reviewer`, `docs`
+- Tiny/Small code-changing task:
+  - `main_runtime_allowed: false` when runtime subagents and required adapters are available
+  - `targeted_required: true`
+  - `delegated_allowed: false` unless risk/scope escalates beyond Tiny/Small or parallel ownership materially helps
+- Medium/Large task:
+  - `main_runtime_allowed: false` for implementation after planning gates apply
+  - `targeted_required: false` before planning completion unless a scoped non-planning follow-up is classified Tiny/Small
+  - `delegated_allowed: true` only after planning/proposal approval gates and required adapter preflight pass
+- Missing required adapter or unsupported subagent capability:
+  - `fallback_requires_approval: true` for requested/required `targeted` or `delegated`
+  - fallback disclosure must name missing capability/adapters and must not claim delegation.
 
 ## Enforcement
-- Default output is `sequential_required` unless delegated conditions are explicitly met.
-- If delegated mode starts and preconditions fail mid-run, parent must fall back to sequential completion.
-- Sequential completion still must satisfy targeted delegation for code-changing Tiny/Small runs (minimal relevant implementation role assignment) and must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- Default output is `main_runtime_allowed: true` only for non-code-changing or pure review/analysis work where no artifact output is required.
+- If `targeted_required` or `delegated_allowed` is true, parent/main must run role-specific preflight before spawning.
+- If targeted/delegated preconditions fail before execution, parent/main must disclose fallback and request approval where `fallback_requires_approval` is true.
+- If targeted/delegated mode starts and preconditions fail mid-run, parent must stop, disclose the failure, and request approval before sequential role simulation fallback when the contracts require it.
+- Sequential role simulation still must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` for code-changing runs and must identify simulated roles as simulated, not delegated.

@@ -4,7 +4,7 @@
 Deliver new features with clear contracts, predictable quality, and merge readiness.
 
 ## Participating Agents
-`product-spec`, `architect`, stack agent (`laravel`/`vue`/`react`/`node-express`/`fastapi`/`python`), `qa`, optionally `security`, `code-review`, `devops`.
+`project-manager`, `product-spec`, `architect`, stack agent (`laravel`/`vue`/`react`/`node-express`/`fastapi`/`python`), `qa`, `code-review`, optionally `security`, `devops`.
 
 Participation scales by risk path below; not all agents are used for every change.
 
@@ -12,17 +12,20 @@ Participation scales by risk path below; not all agents are used for every chang
 Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used for medium/high-risk work.
 
 Implementation planning ownership:
+- `project-manager` owns planning coordination, phase state, and proposal handoff readiness for Medium/High-risk work.
+- `product-spec` owns goals, user stories, acceptance criteria, and implementation-ready scope for Medium/High-risk work.
 - `architect` owns technical implementation planning for non-trivial/boundary-impacting work.
 - stack agent owns stack-specific implementation steps and execution details.
 
 0. If the goal is vague, early-stage, or not implementation-ready, run `ideation` first to refine direction before product specification.
-1. Product-Spec defines goals, user stories, and acceptance criteria.
-2. Architect defines boundaries, contracts, risks.
-3. Security reviews design when risk/surface warrants it.
-4. Stack agent implements per contract and coding standards.
-5. QA defines and executes risk-based test plan.
-6. Code-review validates correctness and maintainability.
-7. DevOps validates release readiness for high-impact changes.
+1. Project-manager coordinates scope, milestones, phase state, and handoff readiness.
+2. Product-spec defines goals, user stories, and acceptance criteria.
+3. Architect defines boundaries, contracts, risks.
+4. Security reviews design when risk/surface warrants it.
+5. Stack agent implements per contract and coding standards after proposal approval.
+6. QA defines and executes risk-based test plan.
+7. Code-review validates correctness and maintainability.
+8. DevOps validates release readiness for high-impact changes.
 
 ## Stage Progression Rules
 - Stages should continue automatically whenever no Decision Gate is triggered.
@@ -67,20 +70,20 @@ Use for all net-new user-facing features and API capabilities.
 
 ## Medium Risk Path
 - **Templates:** `feature-spec.md` (required), `adr.md` optional.
-- **Required Agents:** `architect`, stack agent, `qa`, `code-review`.
-- **Optional Agents:** `product-spec`, `security`.
+- **Required Agents:** `project-manager`, `product-spec`, `architect`, stack agent, `qa`, `code-review`.
+- **Optional Agents:** `security`.
 - **Gates:** Architecture + Implementation + Quality.
 - **Policies:** risk-classification, quality-gates, definition-of-done, approval-levels/runtime-safety.
 
 ## High Risk Path
 - **Templates:** `feature-spec.md` + `threat-model.md` (recommended), `adr.md` optional.
-- **Required Agents:** `architect`, `security`, stack agent, `qa`, `code-review`.
-- **Optional Agents:** `product-spec`.
+- **Required Agents:** `project-manager`, `product-spec`, `architect`, `security`, stack agent, `qa`, `code-review`.
 - **DevOps:** required when deployment/ops behavior changes.
 - **Gates:** Architecture + Implementation + Quality + Release (for production readiness).
 - **Policies:** all governance policies, especially secrets-management.
 
 ## Agent Handoffs
+- Project-manager -> Product-spec: scope, milestones, assumptions, planning state, and handoff readiness.
 - Product-Spec -> Architect: business goals, user stories, acceptance criteria, constraints.
 - Architect -> Stack: domain boundaries, API/data contracts, risk list.
 - Architect -> Security (conditional): threat-relevant design context and risk class.
@@ -114,6 +117,7 @@ See Low/Medium/High risk paths above.
 - Level 1 actions require approval; Level 2 actions require explicit user command.
 
 ## Handoff Requirements
+- Project-manager -> Product-spec: planning scope, milestones, constraints, blockers, and proposal-readiness status.
 - Product-Spec -> Architect: scoped requirements, acceptance criteria, assumptions, dependencies.
 - Architect -> Stack: spec link, ADR, risk class, required gates.
 - Architect -> Security (conditional): threat surfaces, trust boundaries, data classification.
