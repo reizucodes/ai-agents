@@ -54,7 +54,7 @@ reviewer:
   - Glob
   - Bash
 
-docs:
+documentation:
   - Read
   - Edit
   - Grep

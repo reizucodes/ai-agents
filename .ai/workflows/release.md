@@ -4,7 +4,7 @@
 Prepare and execute production releases with controlled risk and rollback readiness.
 
 ## Participating Agents
-Stack agent(s), `qa`, `code-review`, `devops`, optional `architect`, optional `security`.
+Stack agent(s), `tester`, `reviewer`, `devops`, optional `architect`, optional `security`.
 
 Participation scales by risk path below; not all agents are used for every release scope.
 
@@ -50,21 +50,21 @@ Use for every production release, especially API and schema changes.
 ## Low Risk Path
 - **Templates:** `task.md` or release notes summary.
 - **Required Agents:** stack agent.
-- **Recommended Agents:** `qa`, `code-review`.
+- **Recommended Agents:** `tester`, `reviewer`.
 - **Optional Agents:** `devops` for simple internal/non-prod release checks.
 - **Gates:** Quality + Release (lean checklist for low-risk changes).
 - **Policies:** approval-levels, runtime-safety, definition-of-done.
 
 ## Medium Risk Path
 - **Templates:** `feature-spec.md` (or equivalent change record), `test-plan.md`.
-- **Required Agents:** stack agent, `qa`, `code-review`, `devops`.
+- **Required Agents:** stack agent, `tester`, `reviewer`, `devops`.
 - **Optional Agents:** `architect`, `security`.
 - **Gates:** Quality + Release; Architecture gate if contracts/boundaries changed.
 - **Policies:** risk-classification, quality-gates, runtime-safety, approval-levels.
 
 ## High Risk Path
 - **Templates:** `feature-spec.md`, `threat-model.md`, rollback plan artifact.
-- **Required Agents:** stack agent, `qa`, `code-review`, `devops`, `security`.
+- **Required Agents:** stack agent, `tester`, `reviewer`, `devops`, `security`.
 - **Optional Agents:** `architect` (required if boundary or contract decisions changed).
 - **Gates:** Architecture (when needed) + Quality + Release (strict).
 - **Policies:** all governance policies, especially secrets-management.

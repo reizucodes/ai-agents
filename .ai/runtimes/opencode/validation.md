@@ -22,9 +22,9 @@
    - `grep -R "^agent:" .opencode/commands || true` returns no output
    - `grep -R "^subtask:" .opencode/commands || true` returns no output
 9. Run a targeted command and verify it references canonical `.ai/workflows/*` paths.
-10. Verify subagent delegation can invoke mapped agents (`product-spec`, `architect`, `backend`, `frontend`, `qa`, `code-review`, `docs`) when generated adapters exist.
+10. Verify subagent delegation can invoke mapped agents (`product-spec`, `architect`, `backend`, `frontend`, `tester`, `reviewer`, `documentation`) when generated adapters exist.
 11. Verify generated OpenCode adapter scope matches orchestration-level strategy:
-   - required generated set exists (validation fails if missing): `project-manager`, `product-spec`, `architect`, `backend`, `frontend`, `qa`, `code-review`, `docs`
+    - required generated set exists (validation fails if missing): `project-manager`, `product-spec`, `architect`, `backend`, `frontend`, `tester`, `reviewer`, `documentation`
    - optional set is reported only (validation does not fail if absent): `security`, `devops` (and `database` only if canonical role exists)
    - framework specialist runtime-native adapters are absent by default (`ideation`, `laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`)
    - no invented runtime-only role names exist
@@ -55,8 +55,8 @@
   - `test ! -d .opencode/agents` in source repo
   - source repo invocation returns refusal message and consumer/test instructions
   - consumer repo with `.ai/runtimes/*` and project README still generates immediately
-  - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend qa code-review docs | sort) <(ls -1 /path/to/consumer-project/.opencode/agents/*.md | xargs -n1 basename | sed 's/\\.md$//' | sort)`
-  - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend qa code-review docs | sort) <(jq -r '.agent | keys[]' opencode.json | sort)`
+      - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend tester reviewer documentation | sort) <(ls -1 /path/to/consumer-project/.opencode/agents/*.md | xargs -n1 basename | sed 's/\\.md$//' | sort)`
+      - `comm -3 <(printf '%s\n' project-manager product-spec architect backend frontend tester reviewer documentation | sort) <(jq -r '.agent | keys[]' opencode.json | sort)`
   - `jq -r '.agent | keys[]' opencode.json | rg '^(security|devops)$' || true`
   - `ls -1 /path/to/consumer-project/.opencode/agents | rg '^(security|devops)\\.md$' || true`
   - `ls -1 /path/to/consumer-project/.opencode/agents | rg '^(ideation|laravel|fastapi|node-express|python|vue|react)\\.md$'`

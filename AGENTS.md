@@ -82,13 +82,22 @@ Scale process according to risk:
 Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, and agent participation by change size.
 
 ## Orchestration Baseline
-- Parent/main agent remains the orchestrator in `targeted` and `delegated` modes.
+- The main session is not an implementation agent.
+- Parent/main agent remains the orchestrator, dispatcher, integrator, reviewer, and summarizer.
+- When a suitable specialist exists, delegation is required.
+- Direct implementation by parent/main when a suitable specialist exists is a delegation regression.
+- Parent-only implementation is allowed only when:
+  - the user explicitly says `no subagent` or `main only`,
+  - the required specialist is unavailable, fallback is disclosed, and the user explicitly approves the fallback,
+  - or the task is pure non-code-changing analysis/review work.
 - Planning completion is not implementation approval.
 - When planning gates apply, implementation must not start until:
   - required proposal artifacts exist as repository files,
   - parent/main presents a consolidated proposal review package using `.ai/templates/proposal-review-package.md`,
   - user gives explicit approval.
-- Parent/main must not implement directly in delegated mode.
+- `.ai/agents/*` remains the canonical source of specialist role contracts.
+- Execution mode is runtime metadata only; it does not decide whether delegation is required.
+- Parent/main must not implement directly when a suitable specialist exists unless one of the allowed exceptions above applies.
 - Parent/main must not claim delegation when execution was sequential role simulation.
 
 ## Security and Product Discovery

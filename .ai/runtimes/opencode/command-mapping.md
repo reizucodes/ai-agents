@@ -15,7 +15,8 @@ Commands map to canonical workflows and policies.
 - Commands must remain startup-safe in source repositories where `.opencode/agents/*` is absent.
 - Do not require generated-agent frontmatter (`agent`, `subtask`) in committed command files.
 - Command body references canonical workflow/policy files.
-- Command body may use generated agents when present and fall back to canonical runtime execution when absent.
+- Command body should route to generated/native workers when present because they are the default specialist workers.
+- If a required worker is absent, disclose the gap and obtain explicit approval before parent-only fallback unless the user explicitly says `no subagent` or `main only`.
 - Do not copy workflow logic into command files.
 - Natural invocation `build opencode agents` should be handled by `.opencode/commands/build-opencode-agents.md`.
 - The `build-opencode-agents` command must route to `.ai/workflows/build-opencode-agents.md` and generate static markdown adapters only.

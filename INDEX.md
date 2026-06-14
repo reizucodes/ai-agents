@@ -52,19 +52,16 @@ Startup guidance:
 - Read `AGENTS.md` for global runtime instructions and governance baseline.
 - Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
 - For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
-- Sequential mode is the default and portable execution mode.
-- Targeted and delegated modes are optional and runtime-dependent; parent/orchestrator should select them automatically when classification + capability + role-adapter gates match.
-- User does not need to explicitly say "delegated mode" for eligible tasks.
-- If runtime subagent capability is unavailable, fall back to sequential mode and disclose the fallback explicitly.
-- For `targeted` and `delegated`, when runtime subagents are unavailable:
-  - report limitation,
-  - request user approval before sequential role simulation fallback,
-  - do not claim delegation occurred.
-- Use execution-mode input header when provided:
-  - `Execution mode: auto|sequential|targeted|delegated`
-  - preferred source is runtime/launcher metadata; prompt-body header is fallback only.
-- Prompt-body `Execution mode: ...` is routing input only; it does not automatically spawn agents.
-- Parent/main must classify the task, check runtime spawn capability, check exact required role adapters, then explicitly spawn/invoke child agents only when gates pass.
+- The main session is not an implementation agent.
+- When a suitable specialist exists, delegation is required by default.
+- User does not need to explicitly request delegation for matching specialist work.
+- If runtime subagent capability or required workers are unavailable, disclose the limitation and obtain explicit approval before sequential role simulation fallback unless the user explicitly says `no subagent` or `main only`.
+- Execution mode, when present, is runtime metadata only:
+  - preferred source is runtime/launcher metadata,
+  - prompt-body header is fallback only,
+  - it does not determine whether delegation is required,
+  - it does not automatically spawn agents.
+- Parent/main must classify the task, check runtime spawn capability, check exact required workers/adapters, then explicitly spawn/invoke child agents when the required specialist path is available.
 - Markdown instruction files do not spawn agents by themselves.
 
 ## Execution Contracts
@@ -89,15 +86,16 @@ Execution contract rules:
 - `.ai/agents/*` remains the canonical role contract source.
 - Delegated execution is never implied by file presence alone.
 - Parent orchestrator is responsible for ownership boundaries, merge, and final validation when delegation is used.
+- Execution-mode documents are runtime-facing routing metadata, not the primary framework control surface.
 
 ## Quick Start Matrix
 
 | Change Size | Typical Examples | Template(s) | Workflow | Required Agents | Optional Agents | Gates/Policies |
 |---|---|---|---|---|---|---|
-| Tiny | Typo fixes, label changes, CSS tweaks, small validation message changes | `task.md` | `bugfix.md` or direct task execution | Stack agent | QA (optional for trivial non-functional edits) | DoD basics, runtime-safety/approval-levels if commands are risky |
-| Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, QA (recommended) | Code-review | Implementation + Quality gate, risk-classification, DoD |
-| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Product-spec, Architect, stack agent, QA, code-review | Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
-| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Product-spec, Architect, Security, stack agent, QA, code-review | DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
+| Tiny | Typo fixes, label changes, CSS tweaks, small validation message changes | `task.md` | `bugfix.md` or direct task execution | Stack agent | Tester (optional for trivial non-functional edits) | DoD basics, runtime-safety/approval-levels if commands are risky |
+| Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, Tester (recommended) | Reviewer | Implementation + Quality gate, risk-classification, DoD |
+| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Product-spec, Architect, stack agent, Tester, reviewer | Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
+| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Product-spec, Architect, Security, stack agent, Tester, reviewer | DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
 
 `Stack agent` means one or more technology agents from `.ai/agents/`.
 
@@ -124,19 +122,19 @@ Additional specialist agent:
 `task` -> `stack agent`
 
 ### Small Change
-`task` -> `stack agent` -> `qa`
+`task` -> `stack agent` -> `tester`
 
 ### Medium Change
-`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review`
+`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `tester` -> `reviewer`
 
 ### High-Risk Change
-`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `qa` -> `code-review` -> `devops` (when release/ops impact exists)
+`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `tester` -> `reviewer` -> `devops` (when release/ops impact exists)
 
 ### Full-Project Technical Review (Artifact Output)
-`reviewer` -> `docs`
+`reviewer` -> `documentation`
 
 Notes:
-- Add `qa` (`tester`) when validation status, test result interpretation, or coverage verification is requested.
+- Add `tester` (`qa`) when validation status, test result interpretation, or coverage verification is requested.
 - Keep `backend`/`frontend` out of review-only runs unless remediation is explicitly requested.
 
 Workflow entry points:
@@ -163,11 +161,11 @@ Usually skip for small fixes, minor enhancements, and routine CRUD work.
 Use when authentication/authorization, sensitive data, public APIs, file uploads, payment functionality, or Medium+ risk exists.  
 Usually skip for UI-only changes, simple refactors, and non-sensitive internal functionality.
 
-### QA
+### Tester
 Recommended for most implementation work.  
 May be skipped only for trivial non-functional changes.
 
-### Code Review
+### Reviewer
 Recommended for Medium/High-risk work and shared codebases.  
 Optional for small personal changes.
 
@@ -187,14 +185,14 @@ Not mandatory for routine feature work.
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.
 
-## Execution Mode UX
+## Runtime Routing Metadata
 Preferred:
 - Keep the user prompt natural and task-focused.
-- Select execution mode in runtime/launcher/session metadata.
+- Use runtime/launcher/session metadata only when the runtime exposes it.
 
 Example:
 - Natural prompt: `Review the full PIPS test project.`
-- Runtime-selected mode: `targeted`
+- Runtime-selected routing metadata: `targeted`
 
 Fallback only when runtime metadata cannot be provided:
 - Add `Execution mode: <auto|sequential|targeted|delegated>` in prompt body.
@@ -214,8 +212,8 @@ Prompt
 -> Architect  
 -> Implementation Plan  
 -> Implementation  
--> QA  
--> Code Review
+-> Tester  
+-> Reviewer
 
 User interaction is only required when a Decision Gate is triggered.
 
@@ -229,9 +227,10 @@ Planning proposal gate override:
 - Planning completion alone never authorizes implementation.
 - Parent/orchestrator must validate required proposal artifacts, present consolidated proposal package using `.ai/templates/proposal-review-package.md`, request explicit user approval, and wait.
 
-## Main Orchestrator Responsibilities (`targeted` and `delegated`)
+## Main Session Responsibilities
 - Read `AGENTS.md` and `INDEX.md`.
-- Select/confirm workflow and execution mode.
+- Classify the task and select/confirm workflow.
+- Treat execution mode as runtime routing metadata only when provided.
 - Assign agents and ownership boundaries.
 - Validate agent outputs and required artifacts.
 - Consolidate planning outputs into a proposal review package.
@@ -247,7 +246,7 @@ Main orchestrator must not:
 - skip approval gates,
 - assume approval,
 - silently continue from planning to implementation,
-- implement directly in delegated mode,
+- implement directly when a suitable specialist exists unless the user explicitly requested `no subagent`/`main only` or explicitly approved a disclosed fallback,
 - collapse specialist roles into itself,
 - claim delegation when only sequential simulation occurred.
 

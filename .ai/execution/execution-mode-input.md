@@ -1,25 +1,26 @@
 # Execution Mode Input Contract
 
 ## Purpose
-Define a runtime-facing execution-mode input model with capability-aware fallback behavior.
+Define runtime-facing routing metadata with capability-aware fallback behavior.
 
 Preferred UX:
 - Execution mode is runtime metadata selected by launcher/session context, not required inside every user task prompt body.
+- Execution mode does not determine whether delegation is required.
+- The main session is not an implementation agent.
 
 ## Supported Modes
 - `auto`:
-  - default mode.
-  - parent classifies task and selects best mode.
-  - may escalate to `targeted` or `delegated` when capability checks pass.
+  - default routing metadata when no explicit value is provided.
+  - parent classifies task and routes to the required specialist path.
 - `sequential`:
-  - force parent/main-only execution.
-  - no subagent spawning unless hard escalation is required by policy/gates.
+  - explicit parent-only bypass.
+  - use only when the user explicitly says `no subagent` or `main only`, or when fallback was disclosed and explicitly approved.
 - `targeted`:
   - orchestrator remains parent/main and delegates selected specialist tasks when runtime subagents are supported.
   - use only relevant agents for the classified scope.
   - do not silently absorb specialist work into parent/main.
   - enforce proposal gates and proposal artifact contracts when planning is in scope.
-  - examples: `frontend`/`vue`, `backend`/`fastapi`, `reviewer`/`docs`, `tester` only.
+  - examples: `frontend`/`vue`, `backend`/`fastapi`, `reviewer`/`documentation`, `tester` only.
 - `delegated`:
   - full orchestration mode.
   - parent/main is strictly orchestrator and must not implement directly.
@@ -68,6 +69,7 @@ If either required precondition is unavailable:
 
 ## Routing Notes
 - `auto` should prefer delegation only when capability + eligibility + mapping availability are satisfied.
+- matching specialist work still requires delegation by default when the required worker path is available.
 - `targeted` should select minimal relevant agent set.
 - `delegated` should follow full Medium/Large or required review/remediation flow.
 - `delegated` is not direct implementation and not sequential role simulation.

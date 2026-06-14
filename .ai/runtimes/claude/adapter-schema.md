@@ -74,7 +74,7 @@ Body constraints:
 2. `name` is lowercase kebab-case.
 3. `description` is concise, task-oriented, and role-specific.
 4. `tools` is explicit unless a documented reason is present.
-5. Body includes canonical source pointer.
+  5. Body includes canonical source pointer.
 6. Body does not duplicate full canonical role content.
 7. Generated metadata is present and drift-checkable.
 8. Canonical conflict rule is present.
@@ -118,5 +118,5 @@ Backend implementation specialist for API, service, repository, and persistence 
 Use architect for architecture changes.
 Use tester for validation coverage.
 Use reviewer for final code review.
-Use docs for persisted run reports.
+Use documentation for persisted run reports.
 ```

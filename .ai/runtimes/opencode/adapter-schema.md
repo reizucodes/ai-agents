@@ -56,9 +56,9 @@ Default generated OpenCode adapter set mirrors established Claude/Codex orchestr
 - `architect`
 - `backend`
 - `frontend`
-- `qa`
-- `code-review`
-- `docs`
+- `tester`
+- `reviewer`
+- `documentation`
 
 Optional (opt-in by explicit request/policy):
 - `security`

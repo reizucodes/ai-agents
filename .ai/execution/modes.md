@@ -1,14 +1,17 @@
 # Execution Modes Contract
 
 ## Purpose
-Define execution modes for this instruction framework in a runtime-consumable format.
+Define runtime routing shapes for this instruction framework in a runtime-consumable format.
 
 ## Core Rules
 - This instruction framework is not a runtime.
 - Markdown files do not spawn agents.
 - `.ai/agents/*` are canonical role contracts, not executable worker definitions.
-- Sequential mode is the default and portable execution path.
-- Targeted and delegated modes are optional and runtime-dependent; when capability, role-adapter, and eligibility gates pass, parent should invoke required child roles explicitly based on classification/scope (no user "delegated mode" prompt required).
+- The main session is not an implementation agent.
+- When a suitable specialist exists, delegation is required.
+- Direct implementation by parent/main when a suitable specialist exists is a delegation regression.
+- Execution mode is runtime-facing routing metadata, not the primary framework control surface.
+- Runtime labels such as `targeted` and `delegated` describe routing shape after delegation is already required; they do not decide whether delegation should happen.
 - Pause/resume behavior for requirement ambiguity is governed by `.ai/policies/decision-gates.md` (Requirement Clarification Gate).
 - Code-changing run definition: any run that modifies repository files (source, tests, configs, docs, workflow contracts, or generated artifacts).
 - Every code-changing run must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
@@ -44,11 +47,11 @@ Runtime preflight before `targeted`/`delegated`:
 
 ## Modes
 
-### Mode A: Sequential (Default)
+### Mode A: Sequential
 Use when:
-- runtime has no reliable subagent support,
-- task scope is small/tightly coupled,
-- traceability is more important than parallelism.
+- the user explicitly says `no subagent` or `main only`,
+- runtime has no reliable subagent support and the user explicitly approves fallback after disclosure,
+- or the task is pure non-code-changing analysis/review work.
 
 Flow:
 1. Load `AGENTS.md`.
@@ -61,10 +64,10 @@ Flow:
 Requirements:
 - All policy and quality gates still apply.
 - No delegated/parallel claims unless runtime subagents were actually spawned.
-- For code-changing Tiny/Small runs, parent/main may complete directly only when targeted subagents/adapters are unavailable and fallback is disclosed/approved where required.
+- For code-changing runs, parent/main may complete directly only when the user explicitly bypasses delegation or explicitly approves disclosed fallback.
 - For review-only tasks, parent-only sequential execution is allowed only for pure non-mutating analysis with no artifact output.
 
-### Mode B: Delegated (Optional)
+### Mode B: Planning-Gated Delegated
 Use only when:
 - runtime explicitly supports subagents,
 - runtime can isolate child context safely,
@@ -86,20 +89,20 @@ Flow:
 8. Parent validates required proposal artifacts, presents consolidated proposal review package to user, asks for explicit implementation approval, and waits.
 9. Parent explicitly spawns implementation children (`backend`, `frontend`) only after discovery/spec and architecture gates are complete and explicit approval is received.
 10. Children execute scoped tasks with mapped role contracts.
-11. Parent runs validation/review/docs sequence:
+11. Parent runs validation/review/documentation sequence:
    - `tester`,
    - `reviewer`,
-   - `docs`.
-   - when `docs` is in scope, it must run last and persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before parent final validation.
+   - `documentation`.
+   - when `documentation` is in scope, it must run last and persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before parent final validation.
 12. Parent merges, validates, and returns final output.
 
 Requirements:
-- Delegated mode is never assumed implicitly.
-- Full delegated mode is distinct from targeted delegation and may be rejected for Tiny/Small simple work even when targeted role spawning is required.
+- Matching specialist work is never kept in parent/main when the required worker path is available.
+- Full delegated mode is distinct from targeted delegation and may be unnecessary for Tiny/Small simple work even when targeted role spawning is required.
 - Child execution/concurrency depends on runtime capability.
 - Parent remains accountable for final merge and gate compliance.
 - User does not need to explicitly request delegated mode; parent selection is automatic when gating conditions match.
-- For review artifact-generating tasks, parent automatically routes to `reviewer` and `docs` when delegation capability is available.
+- For review artifact-generating tasks, parent automatically routes to `reviewer` and `documentation` when delegation capability is available.
 - For Medium/Large delegated work, implementation must not start before:
   - approved consolidated spec,
   - architecture handoff,
@@ -108,8 +111,8 @@ Requirements:
   - explicit user approval on proposal package.
 - Parent must not collapse specialist roles into itself in delegated mode.
 - Delegated mode is not sequential role simulation.
-- For remediation and final-rerun flows where docs is in scope, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- For failed/non-merge-ready delegated runs, `docs` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` with blockers and next steps.
+- For remediation and final-rerun flows where documentation is in scope, `documentation` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- For failed/non-merge-ready delegated runs, `documentation` still runs last and writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` with blockers and next steps.
 
 ### Mode C: Targeted Delegation
 Use when:
@@ -122,7 +125,7 @@ Decision behavior:
 - Code-changing Tiny/Small frontend work: `targeted_required: true`, required role `frontend` unless a generated framework specialist is explicitly selected.
 - Code-changing Tiny/Small backend work: `targeted_required: true`, required role `backend` unless a generated framework specialist is explicitly selected.
 - Test-only code changes: `targeted_required: true`, required role `tester`.
-- Review artifact-generating work: `targeted_required: true`, required roles `reviewer`, `docs`.
+- Review artifact-generating work: `targeted_required: true`, required roles `reviewer`, `documentation`.
 - Pure review/analysis with no artifact output: `main_runtime_allowed: true`, reviewer optional.
 - Tiny/Small targeted implementation does not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk, scope, ambiguity, contract changes, architecture changes, or explicit user request escalates the task into a planning-gated flow.
 
@@ -130,9 +133,9 @@ Flow:
 - Parent
 - Relevant implementation agents only
 - Reviewer if behavior changed
-- Docs if docs/API/setup changed
+- Documentation if docs/API/setup changed
 - Parent final validation
-- If `docs` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- If `documentation` is skipped for Tiny/Small efficiency, parent/main must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Parent/main remains orchestrator; targeted mode is not direct specialist-role collapse.
 - Each delegated specialist must produce scoped output/report when runtime supports subagents.
 - If subagents are unavailable, request explicit user approval before simulation fallback and disclose that delegation did not occur.
@@ -144,26 +147,25 @@ Flow:
 
 Review-only routing rule:
 - Pure review/analysis only (no file changes): parent/main allowed; `reviewer` optional.
-- Review artifact-generating: `reviewer` required; `docs` required for run report/audit/final report artifacts.
-- Review + validation: `reviewer` required; `tester` required when validation/coverage/test interpretation is requested; `docs` required if artifacts change.
-- Review + remediation: route to remediation flow with relevant implementation agents and rerun `tester` -> `reviewer` -> `docs`.
+- Review artifact-generating: `reviewer` required; `documentation` required for run report/audit/final report artifacts.
+- Review + validation: `reviewer` required; `tester` required when validation/coverage/test interpretation is requested; `documentation` required if artifacts change.
+- Review + remediation: route to remediation flow with relevant implementation agents and rerun `tester` -> `reviewer` -> `documentation`.
 
 Follow-up docs rule:
-- For remediation runs and final reruns where docs is in scope, `docs` still runs last and writes a run-specific report artifact.
-- For failed/non-merge-ready runs where docs ran, preserve a docs run report artifact that records blockers and remaining documentation gaps.
-- For code-changing Tiny/Small follow-ups where docs does not run, parent/main still writes the required run report artifact with status and residual risks.
+- For remediation runs and final reruns where documentation is in scope, `documentation` still runs last and writes a run-specific report artifact.
+- For failed/non-merge-ready runs where documentation ran, preserve a documentation run report artifact that records blockers and remaining documentation gaps.
+- For code-changing Tiny/Small follow-ups where documentation does not run, parent/main still writes the required run report artifact with status and residual risks.
 
 Notes:
-- Keep sequential mode as the portable default.
 - Presence of markdown contracts does not create runtime spawning behavior.
 
 Examples:
-- CORS fix: backend; reviewer optional; docs optional.
-- Backend endpoint + frontend view: backend + frontend + tester; reviewer; docs optional/required by change impact.
-- Export report format update: docs or parent only; reviewer optional.
+- CORS fix: backend; reviewer optional; documentation optional.
+- Backend endpoint + frontend view: backend + frontend + tester; reviewer; documentation optional/required by change impact.
+- Export report format update: documentation or parent only; reviewer optional.
 
 ## Mode Selection Priority
-1. Prefer sequential by default.
+1. Prefer delegation-first routing by default.
 2. Use task classification before selecting planning depth and delegation.
 3. Use targeted delegation automatically for code-changing Tiny/Small or artifact-generating review tasks when required roles and runtime capability are available.
 4. Escalate to full delegated mode automatically when capability, required adapters, task fit, and planning gates are all true.
@@ -190,24 +192,24 @@ Examples:
   - targeted delegation to both `backend` and `frontend` (or mapped specialists),
   - targeted validation,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- Docs-only change:
-  - use `docs`,
+- Documentation-only change:
+  - use `documentation`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Test-only change:
   - `targeted_required`,
   - required role `tester`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Workflow/framework change:
-  - use reviewer/docs as appropriate,
+  - use reviewer/documentation as appropriate,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`,
   - regenerate adapters when canonical contracts affecting mappings/instructions change.
 - Full-project technical review with artifact output:
-  - `reviewer` -> `docs`,
+  - `reviewer` -> `documentation`,
   - `tester` optional/required when validation or coverage verification is requested,
   - no `backend`/`frontend` unless remediation is requested,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Medium/Large feature:
-  - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated review package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `docs`,
+  - `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated review package using `.ai/templates/proposal-review-package.md` + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `documentation`,
   - required `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Prompt-body `Execution mode: targeted`:
   - routing input only,
@@ -221,14 +223,14 @@ Examples:
 - Remediation pass:
   - start from tester/reviewer blockers,
   - use targeted agents,
-  - rerun `tester` -> `reviewer` -> `docs`,
+  - rerun `tester` -> `reviewer` -> `documentation`,
   - required remediation run report.
 - Final rerun:
   - use relevant targeted agent(s),
-  - rerun `tester` -> `reviewer` -> `docs`,
+  - rerun `tester` -> `reviewer` -> `documentation`,
   - required final-rerun report.
 - Failed/non-merge-ready delegated run:
-  - `docs` still runs last and captures status, blockers, changed files, tests, and next steps.
+  - `documentation` still runs last and captures status, blockers, changed files, tests, and next steps.
 
 ## Planning and Diagram Guidance
 - Tiny/Small: planning agents are optional; diagrams optional.

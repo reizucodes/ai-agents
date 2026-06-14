@@ -35,5 +35,6 @@ Each child returns:
 
 ## Fallback
 If boundaries cannot be defined clearly:
-- delegated mode is not allowed,
-- execute sequentially.
+- do not silently collapse implementation into parent/main,
+- disclose that delegation cannot be completed safely,
+- obtain explicit user approval before sequential role simulation fallback unless the user explicitly says `no subagent` or `main only`.

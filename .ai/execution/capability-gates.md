@@ -1,18 +1,20 @@
 # Execution Capability Gates
 
 ## Purpose
-Define hard capability checks required before using delegated execution.
+Define hard capability checks required before specialist delegation or approved fallback.
 
 ## Gate Categories
 
-### Gate 0: Role-Specific Runtime Adapter Discovery (Codex)
-For Codex runtime task routing that expects generated adapters:
-- Determine the exact `required_roles` from task classification, scope, risk, and execution-mode input.
-- Check whether a matching `.codex/agents/<role>.toml` exists for each required role.
-- Do not treat the existence of any `.codex/agents/*.toml` as sufficient.
-- Record `available_adapters` and `missing_adapters` by canonical role name.
+### Gate 0: Role-Specific Runtime Worker Discovery
+For runtime task routing that expects generated or native workers:
+- Determine the exact `required_roles` from task classification, scope, risk, and runtime metadata.
+- Codex: check whether a matching `.codex/agents/<role>.toml` exists for each required role when adapter-based routing is expected.
+- Claude: check whether a matching `.claude/agents/<role>.md` exists for each required role when generated Claude workers are expected.
+- OpenCode: check whether the matching native worker/config entry exists for each required role.
+- Do not treat the existence of any worker file as sufficient.
+- Record `available_adapters` and `missing_adapters` by canonical runtime-facing role name.
 
-If any required adapter is missing for a run that requests/needs `targeted` or `delegated` adapter-based routing:
+If any required worker is missing for a run that requires specialist routing:
 - Disclose the limitation explicitly.
 - Request user approval before sequential role simulation fallback.
 - Do not claim delegation occurred.
@@ -94,8 +96,8 @@ Role selection examples:
 - backend Tiny code change: `required_roles: [backend]` unless a generated `fastapi`, `laravel`, or `node-express` adapter is explicitly required by classification.
 - test-only code change: `required_roles: [tester]`.
 - pure review/no artifact: `required_roles: []`, reviewer optional.
-- review artifact: `required_roles: [reviewer, docs]`.
-- Medium feature implementation after approval: `required_roles` includes planning roles for the current phase and implementation roles for the approved phase (`project-manager`, `product-spec`, `architect`, then implementation agents, `tester`, `reviewer`, `docs`).
+- review artifact: `required_roles: [reviewer, documentation]`.
+- Medium feature implementation after approval: `required_roles` includes planning roles for the current phase and implementation roles for the approved phase (`project-manager`, `product-spec`, `architect`, then implementation agents, `tester`, `reviewer`, `documentation`).
 
 ## Capability Decision
 `targeted` and `delegated` modes are allowed only when all required gates and role-specific adapter checks pass.
