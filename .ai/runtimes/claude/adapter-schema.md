@@ -10,6 +10,8 @@ Define the Claude Code adapter contract for generating derivative project-level 
 
 ## Canonical Source Rule
 - `AGENTS.md` and `.ai/*` are canonical.
+- Claude adapter sources are `.ai/agents/runtime/*.md` (exactly 16 files; see `.ai/execution/adapter-role-mapping.md`).
+- `.ai/agents/personas/*.md` are NEVER adapter sources; they are inheritance-only skill docs.
 - Claude adapter artifacts are derivative runtime outputs only.
 - If generated Claude adapter content conflicts with canonical `.ai/*`, canonical `.ai/*` wins.
 - Canonical role definitions must not be rewritten during adapter generation.
@@ -80,11 +82,19 @@ Body constraints:
 8. Canonical conflict rule is present.
 9. File path is under `.claude/agents/`.
 
+## Persona Inheritance
+For `backend-developer`, `frontend-developer`, and `web-designer`, the adapter body must include a directive that the agent loads `.ai/agents/personas/<stack>.md` on demand when the matching stack is detected:
+- `backend-developer`: laravel, fastapi, node-express, python
+- `frontend-developer`: react, vue
+- `web-designer`: react, vue (when surface renders through a JS framework)
+
+Persona files are never copied into the adapter and never generated as `.claude/agents/*.md`.
+
 ## Example Generated Shape
 ```md
 ---
-name: backend
-description: Use for backend implementation, APIs, persistence, services, repositories, and backend refactors.
+name: backend-developer
+description: Use for backend implementation, APIs, services, persistence, repositories, and backend refactors. Loads stack persona on demand.
 tools:
   - Read
   - Edit
@@ -94,7 +104,7 @@ tools:
 Generated Claude Code subagent adapter.
 
 Canonical source:
-.ai/agents/backend.md
+.ai/agents/runtime/backend-developer.md
 
 Follow the canonical role contract before performing role work.
 
@@ -102,21 +112,28 @@ This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
 
 ## Role Summary
-Backend implementation specialist for API, service, repository, and persistence work.
+Backend implementation specialist for API, service, repository, and persistence work under approved technical-approach boundaries from `dev-team-lead`.
 
 ## Responsibilities
-- Implement backend changes within approved architecture.
+- Implement backend changes within approved technical approach.
 - Maintain service/repository boundaries.
 - Keep APIs testable and maintainable.
 
+## Persona Inheritance
+When the backend stack is detected, load the matching persona on demand:
+- Laravel/PHP -> `.ai/agents/personas/laravel.md`
+- FastAPI/Python web -> `.ai/agents/personas/fastapi.md`
+- Node/Express -> `.ai/agents/personas/node-express.md`
+- Generic Python -> `.ai/agents/personas/python.md`
+
 ## Boundaries
-- Do not redefine architecture.
-- Escalate architectural decisions to architect.
-- Do not silently change product scope.
+- Do not redefine technical approach.
+- Escalate architecture/contract decisions to `dev-team-lead`.
+- Do not silently change product scope; escalate to `project-owner` via `project-manager`.
 
 ## Escalation
-Use architect for architecture changes.
-Use tester for validation coverage.
-Use reviewer for final code review.
-Use documentation for persisted run reports.
+- `dev-team-lead` for technical-approach changes.
+- `qa-specialist` / `qa-team-lead` for validation coverage.
+- `pr-manager` for commit/PR handoff.
+- `documentation-writer` / `doc-team-lead` for doc updates.
 ```

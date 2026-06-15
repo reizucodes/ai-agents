@@ -15,7 +15,8 @@ Define Codex-specific adapter schema constraints for derivative agent adapters g
 - This contract does not create adapters by itself.
 
 ## Canonical Source and Derivative Rule
-- `.ai/agents/*` is canonical.
+- `.ai/agents/runtime/*.md` is the canonical source of runtime adapter contracts (exactly 16 files; see `.ai/execution/adapter-role-mapping.md`).
+- `.ai/agents/personas/*.md` are NEVER adapter sources; they are inheritance-only skill docs.
 - Codex adapter files are derivative outputs only.
 - Generated adapters must not replace canonical role contracts.
 - Generated adapters are runtime adapters, not skills.
@@ -41,8 +42,9 @@ Each generated adapter must include machine-readable metadata comments:
 - schema contract reference (`.ai/runtimes/codex/adapter-schema.md`)
 
 ## Canonical Source Pointer Requirement
-- Adapter metadata must point to the source role file in `.ai/agents/*`.
+- Adapter metadata must point to the source role file at `.ai/agents/runtime/<role>.md`.
 - Pointer must be explicit and resolvable.
+- Adapter `name` must match the canonical runtime filename (without `.md`).
 
 ## Canonical-First `developer_instructions` Pattern
 Generated adapters must use this pattern:
@@ -52,14 +54,23 @@ developer_instructions = """
 This is a generated Codex adapter.
 
 Before performing role work, read and follow the canonical role contract:
-.ai/agents/<role>.md
+.ai/agents/runtime/<role>.md
 
 This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
 
-<short runtime-specific role summary here>
+<short runtime-specific role summary, including delegation contract, ownership boundaries,
+deliverables, and (for backend-developer, frontend-developer, web-designer) persona inheritance directive>
 """
 ```
+
+## Persona Inheritance
+For `backend-developer`, `frontend-developer`, and `web-designer`, `developer_instructions` must include a directive that the agent loads `.ai/agents/personas/<stack>.md` on demand when the matching stack is detected:
+- `backend-developer`: laravel, fastapi, node-express, python
+- `frontend-developer`: react, vue
+- `web-designer`: react, vue (when surface renders through a JS framework)
+
+Persona files are never copied into the adapter and never generated as `.codex/agents/*.toml`.
 
 Rules:
 - Keep runtime-specific role summary short and scoped.
@@ -99,10 +110,8 @@ Preferred:
 ## Invocation Rule
 - Presence of `.codex/agents/*.toml` does not trigger delegated execution by itself.
 - Codex subagents require explicit runtime invocation by the parent runtime agent.
-- Prompt-body `Execution mode: ...` is routing input only; it does not automatically spawn Codex agents.
 - When runtime supports a main-session orchestration bootstrap, it should be loaded to expose parent routing behavior.
 - Bootstrap guidance is derivative from canonical `.ai/*` and must not override canonical contracts.
-- Bootstrap should include execution-mode input handling from `.ai/execution/execution-mode-input.md`.
 - Bootstrap should require exact role adapter preflight rather than checking only whether any `.codex/agents/*.toml` exists.
 
 ## Non-goals

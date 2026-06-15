@@ -1,103 +1,89 @@
 # Release Workflow
 
 ## Purpose
-Prepare and execute production releases with controlled risk and rollback readiness.
+Ship a versioned release to production through the canonical 5-phase flow. Planning Council is owner-led; Implementation is ops-led; QA runs full regression; Business Go/No-Go is always an explicit Approval gate; PR phase produces release notes.
 
-## Participating Agents
-Stack agent(s), `tester`, `reviewer`, `devops`, optional `architect`, optional `security`.
+## Scope Sizing
+- **Patch** (low-risk fix bundle, no schema/infra change): full 5 phases, lean artifact set.
+- **Minor** (new features, additive changes, possible schema): full 5 phases, full artifact set.
+- **Major** (breaking changes, irreversible migrations, infra cutover): full 5 phases, full artifact set + rollback rehearsal evidence.
 
-Participation scales by risk path below; not all agents are used for every release scope.
+Tiny "no-op" releases (e.g. docs-only re-tag) may collapse Phase 2 to a `devops-engineer` cut-and-tag step; Phases 1/3/4/5 still run.
 
-## Execution Order
-Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used for medium/high-risk release work.
+## Phase 1: Planning Council
+**Required members:** `project-owner` + `project-manager` + `devops-engineer` + `cybersecurity-analyst`.
+**Conditional members:**
+- `dev-team-lead` — release includes contract changes, multi-service coupling, or risk reclassification.
+- `database-administrator` — release includes schema migration or data backfill.
+- `qa-team-lead` — present from Phase 1 for regression scoping when scope is non-trivial.
 
-Implementation planning ownership:
-- `architect` owns technical implementation planning when release scope includes non-trivial boundary/contract changes.
-- stack agent owns stack-specific implementation/release execution steps.
+**Outputs:**
+- Release scope: included changes, excluded changes, compatibility statement, customer-impact summary.
+- Risk tier per `.ai/policies/risk-classification.md` (release tier overrides individual change tiers).
+- Deployment strategy + rollback plan (commands, data, observability checkpoints).
+- Regression scope, performance/security validation scope.
+- Communications plan (release notes audience, downtime/SLA messaging).
+- Artifact requirements per matrix below.
 
-1. Confirm scope, changes, and compatibility impacts.
-2. Validate test suite and regression pass.
-3. Run release readiness review (security/performance/observability).
-4. Execute staged deployment strategy.
-5. Monitor, verify, and close release.
+**Gate:** Approval (L2) — every release requires explicit owner sign-off on scope before Phase 2.
 
-## Stage Progression Rules
-- Stages should continue automatically whenever no Decision Gate is triggered.
-- Stage outputs automatically become inputs to the next stage.
-- Do not pause only because a stage completed.
-- Only Recommendation Decisions and Approval Decisions may pause execution.
-- Approval Decisions must follow `.ai/policies/approval-levels.md`.
-- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
+Cross-reference: `.ai/agents/runtime/project-owner.md`, `project-manager.md`, `devops-engineer.md`, `cybersecurity-analyst.md`, `dev-team-lead.md`, `database-administrator.md`, `qa-team-lead.md`.
 
-## Deliverables
-- Release checklist
-- Rollback plan
-- Monitoring/alert plan
-- Post-release verification summary
+## Phase 2: Implementation
+**Lead:** `devops-engineer` for release execution; `qa-team-lead` for validation orchestration.
+**Executors:**
+- `devops-engineer` — release branch, build, artifact promotion, staged deploys, infra/runtime changes, secret rotation handling per `.ai/policies/secrets-management.md`.
+- `qa-team-lead` — schedules regression, sets gates for staged environments.
+- `database-administrator` (conditional) — migration execution with rollback rehearsal in pre-prod.
 
-## Success Criteria
-- Deployment completed without critical incident.
-- SLO-impacting errors absent or within threshold.
-- Rollback path verified before release.
+Production-impacting operations follow Approval (L2) per `.ai/policies/approval-levels.md`. No production deploy proceeds without explicit user command.
 
-## Escalation Rules
-- Critical production anomaly -> immediate rollback and incident channel.
-- Contract mismatch -> `architect` + relevant stack agent.
+## Phase 3: QA (Full Regression)
+- `qa-specialist` executes: full regression suite, smoke tests in staged environments, performance/load checks where in scope, observability/alert verification, rollback rehearsal where required.
+- `cybersecurity-analyst` validates security-sensitive surfaces touched by the release.
+- `qa-team-lead` consolidates results across environments and owns the **Quality Gate** per `.ai/policies/quality-gates.md`. Quality Gate must pass in pre-prod before Phase 4.
+- Definition of Done per `.ai/policies/definition-of-done.md`.
 
-## Recommended Usage
-Use for every production release, especially API and schema changes.
+## Phase 4: Business Go/No-Go (Explicit Approval)
+**Members:** `project-owner` (final risk acceptance) + `project-manager` (release readiness) + `devops-engineer` (operational readiness) + `cybersecurity-analyst` (security clearance, when in scope).
 
-## Low Risk Path
-- **Templates:** `task.md` or release notes summary.
-- **Required Agents:** stack agent.
-- **Recommended Agents:** `tester`, `reviewer`.
-- **Optional Agents:** `devops` for simple internal/non-prod release checks.
-- **Gates:** Quality + Release (lean checklist for low-risk changes).
-- **Policies:** approval-levels, runtime-safety, definition-of-done.
+**Gate type:** **Approval (L2) — always.** Release never enters production without explicit user approval recorded against:
+- regression evidence,
+- rollback readiness,
+- known residual risks,
+- on-call coverage and observability,
+- secrets/credential handling status.
 
-## Medium Risk Path
-- **Templates:** `feature-spec.md` (or equivalent change record), `test-plan.md`.
-- **Required Agents:** stack agent, `tester`, `reviewer`, `devops`.
-- **Optional Agents:** `architect`, `security`.
-- **Gates:** Quality + Release; Architecture gate if contracts/boundaries changed.
-- **Policies:** risk-classification, quality-gates, runtime-safety, approval-levels.
+A No-Go returns to Phase 2 (fix) or aborts the release window.
 
-## High Risk Path
-- **Templates:** `feature-spec.md`, `threat-model.md`, rollback plan artifact.
-- **Required Agents:** stack agent, `tester`, `reviewer`, `devops`, `security`.
-- **Optional Agents:** `architect` (required if boundary or contract decisions changed).
-- **Gates:** Architecture (when needed) + Quality + Release (strict).
-- **Policies:** all governance policies, especially secrets-management.
+## Phase 5: Commit / PR (Release Notes + Tagging)
+- `pr-manager` owns: release branch merge PR, tag creation request (executed by `devops-engineer` under L2), commit hygiene, change manifest.
+- `documentation-writer` produces release notes (customer-facing + internal changelog); `doc-team-lead` reviews for accuracy and completeness.
+- `devops-engineer` records deploy outcome, post-release verification, and incident-readiness handoff.
+- Run report at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` per `.ai/execution/artifact-conventions.md`.
 
-## Agent Handoffs
-- Stack -> DevOps: artifacts, migration steps, health checks.
-- QA -> DevOps: go/no-go test evidence and residual risk.
+Cross-reference: `.ai/agents/runtime/pr-manager.md`, `documentation-writer.md`, `doc-team-lead.md`, `devops-engineer.md`, `qa-specialist.md`, `qa-team-lead.md`.
 
-## Gate Selection
-Gate requirements vary by risk level.
+## Artifact Requirements by Release Tier
+Per `.ai/execution/artifact-conventions.md` requirement matrix. Every release is treated as deployment-impacting and PR/release handoff.
 
-- **Low Risk:** lean Quality + Release validation, Definition of Done, and applicable safety policies.
-- **Medium Risk:** Quality + Release gates (Architecture Gate when contracts/boundaries changed).
-- **High Risk:** strict Quality + Release governance, plus Architecture Gate when boundary/contract decisions are involved.
+| Tier | Required artifacts |
+|---|---|
+| Patch | release-notes + run-report + rollback plan in PR body |
+| Minor | `feature-spec.md` (release scope) + release-notes + run-report + rollback plan |
+| Major | `feature-spec.md` + `technical-design.md` + `threat-model.md` (when security-touching) + release-notes + run-report + proposal review package + rollback rehearsal evidence |
+| Schema-touching | add migration/rollback notes referenced by the release plan |
+| Security-sensitive | add `threat-model.md` + cybersecurity-analyst sign-off in Phase 4 |
 
-See Low/Medium/High risk paths above.
-
-## Risk Assessment
-- Risk classification required before release decision.
-- High/Critical risk requires explicit mitigation checklist and escalation.
-- Recommend `security` review for releases involving auth/authz, sensitive data paths, public APIs, file uploads, payment functionality, or Medium+ unresolved security findings.
-
-## Approval Requirements
-- Level 1 approvals required for release-prep state changes.
-- Level 2 explicit user instruction required for production deployment/destructive operations.
-
-## Handoff Requirements
-- Stack -> DevOps: release artifact list, migration plan, rollback commands, health checks.
-- QA -> DevOps: pass/fail matrix, unresolved risks, severity summary.
-- Code-review -> DevOps: approval status and blocking findings.
+## Decision Gates Summary
+- **Auto (L0):** read-only validation, building artifacts, dry-run deploys to disposable envs.
+- **Recommendation (L1):** staged deploy to pre-prod, migration in shared non-prod, dependency promotion.
+- **Approval (L2):** production deploy, production migration, secret rotation, tag creation, rollback execution, infra destruction. Phase 4 is always L2.
 
 ## Exit Criteria
-- Release Gate fully passed.
-- Deployment and rollback plans documented.
-- Observability checks active.
-- No unresolved critical defects/findings.
+- Quality Gate passed in pre-prod and verified in production smoke.
+- Phase 4 explicit approval recorded.
+- Deploy completed without unresolved critical incident; rollback path verified and remains available.
+- Observability/alerts active; on-call informed.
+- Release notes published; PR merged; tag created.
+- Run report committed.
