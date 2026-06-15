@@ -37,7 +37,7 @@ Define optional nickname metadata behavior for Codex custom-agent adapters.
 | security | `["Cipher", "Shield"]` |
 | devops | `["Relay", "Harbor"]` |
 | database | `["Atlas", "Archive"]` |
-| docs | `["Quill", "Echo"]` |
+| documentation | `["Quill", "Echo"]` |
 
 ## Collision and Quality Rules
 - Duplicate nickname within one generated adapter set is disallowed.

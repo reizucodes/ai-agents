@@ -11,10 +11,11 @@ Define parent-agent responsibilities in delegated execution.
    - relevant `.ai/workflows/*`
    - `.ai/execution/*` and `.ai/delegation/*`
 2. Reclassify every follow-up task with `.ai/execution/task-classification.md` before execution.
-3. Decide mode using capability/eligibility contracts.
-   - Do not require user to explicitly request delegated mode; choose automatically when classification + capability + role-adapter gates match.
-   - Treat prompt-body `Execution mode: ...` as routing input only; it does not automatically spawn agents.
-   - Before targeted/delegated execution, record role-specific preflight with required roles, available adapters, missing adapters, delegation decision, and fallback action.
+3. Enforce delegation-first routing using capability/eligibility contracts.
+   - The main session is not an implementation agent.
+   - When a suitable specialist exists, delegation is required.
+   - Treat prompt-body `Execution mode: ...` as runtime routing input only; it does not automatically spawn agents and does not decide whether delegation is required.
+   - Before specialist delegation, record role-specific preflight with required roles, available adapters, missing adapters, delegation decision, and fallback action.
 4. For Medium/Large tasks, complete planning outputs before implementation delegation:
    - `project-manager` (first)
    - `product-spec` (second)
@@ -30,14 +31,14 @@ Define parent-agent responsibilities in delegated execution.
    - present package to user,
    - request explicit implementation approval,
    - wait for explicit approval before implementation delegation.
-9. Explicitly spawn/invoke children only when `targeted_required` or `delegated_allowed` passes capability and role-adapter preflight.
+9. Explicitly spawn/invoke matching children whenever the required specialist path passes capability and role-adapter preflight.
 10. Use targeted follow-up delegation when appropriate:
    - relevant implementation agents only,
    - `reviewer` when behavior changed,
-   - `docs` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
+   - `documentation` when task classification marks docs required (for example docs/API/setup/decision/workflow changes),
    - parent final validation.
-   - when `docs` is invoked, require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
-   - for review artifact-generating tasks, automatically route to `reviewer`; require `docs` when run report/audit/final report artifact is created.
+   - when `documentation` is invoked, require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` before final validation (including remediation/final-rerun and non-merge-ready runs).
+   - for review artifact-generating tasks, automatically route to `reviewer`; require `documentation` when run report/audit/final report artifact is created.
    - include `tester` when validation, test interpretation, or coverage verification is requested.
 11. Collect child outputs and integrate deterministically.
 12. Enforce policy gates, quality checks, and final validation.
@@ -62,14 +63,14 @@ Define parent-agent responsibilities in delegated execution.
 16. Enforce code-changing auditability:
    - detect whether the run is code-changing (any repository file changed: source/tests/configs/docs/workflow contracts/generated artifacts),
    - ensure `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` exists before completion,
-   - for Tiny/Small efficiency cases where `docs` is not invoked, parent/main must write the run report and mark producer as `parent/main`.
+   - for Tiny/Small efficiency cases where `documentation` is not invoked, parent/main must write the run report and mark producer as `parent/main`.
    - if runtime trace export/update is requested, maintain it as a separate artifact from run report output.
-17. For `targeted` mode:
+17. For targeted delegation:
    - remain orchestrator while delegating selected specialist scopes when supported,
    - do not silently collapse specialist roles into parent/main,
    - require scoped specialist outputs/reports.
    - for Tiny/Small code-changing `backend`, `frontend`, and `tester` runs, do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk/scope escalates into planning gates.
-18. For `delegated` mode:
+18. For planning-gated delegated flows:
    - remain strictly parent/orchestrator,
    - do not implement directly,
    - do not collapse specialist roles into parent/main.
@@ -106,11 +107,12 @@ Review-only routing constraints:
 - Review artifact-generating tasks must not be parent-only when delegated capability is available.
 - Do not require `backend`/`frontend`/`project-manager`/`product-spec`/`architect` for review-only tasks unless remediation/planning/architecture work is explicitly requested.
 
-## Skip-Delegation Explanation Requirement
-If parent handles a small multi-surface follow-up directly, parent must include:
-- `Classification: Small multi-surface`
-- `Delegation decision: skipped`
-- `Reason: <low-risk | tightly coupled | faster parent patch | user did not request full delegation>`
+## Fallback Approval Requirement
+If parent cannot delegate matching implementation work because required specialist capability is unavailable, parent must:
+- disclose the missing capability/worker explicitly,
+- request explicit user approval before sequential role simulation fallback,
+- avoid claiming delegation occurred,
+- honor explicit user bypasses `no subagent` and `main only`.
 
 ## Parent Prohibitions
 - Must not claim delegated execution when none occurred.
@@ -124,7 +126,7 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Must not apply Medium/Large planning-state prohibitions to Tiny/Small targeted code changes unless risk/scope escalates.
 - Must not spawn any Medium/Large code-writing role before required proposal artifacts are verified.
 - Must not silently collapse missing required adapters into parent/main.
-- Must not implement directly in delegated mode.
+- Must not implement directly when a suitable specialist exists unless the user explicitly requested `no subagent`/`main only` or explicitly approved a disclosed fallback.
 - Must not complete a code-changing run without `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 ## Accountability
@@ -132,7 +134,7 @@ If parent handles a small multi-surface follow-up directly, parent must include:
 - Parent owns unresolved conflict handling.
 - Parent owns final risk disclosure.
 - Parent consolidates `project-manager` + `product-spec` outputs into the approved spec handoff before invoking `architect`.
-- Parent owns final merge and validation across implementation, testing, review, and docs outputs.
+- Parent owns final merge and validation across implementation, testing, review, and documentation outputs.
 - Parent tracks artifact completeness by phase (`specs`, `architecture`, `tests`, `reviews`, `docs`) before marking workflow `COMPLETE`.
 - Parent must stop and request remediation when mandatory proposal artifacts are missing.
 - Parent must report fallback behavior when subagents are unavailable and request user approval before sequential role simulation.

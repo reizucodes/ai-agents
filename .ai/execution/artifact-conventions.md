@@ -21,7 +21,7 @@ Define lightweight, runtime-agnostic artifact conventions for planning, architec
     - artifacts produced,
     - final result/status,
     - unresolved risks/blockers or skipped validations,
-    - whether `docs` produced the report or parent/main produced it.
+    - whether `documentation` produced the report or parent/main produced it.
   - Participation accuracy rules:
     - do not list an agent as used/completed unless it was actually spawned/invoked,
     - if delegated mode was selected but child spawn failed, disclose fallback and continue with accurate participation.
@@ -110,5 +110,5 @@ Proposal-gate rule:
 - `project-manager`: optional high-level planning/workflow diagrams for Medium/Large only.
 - `product-spec`: user/business/state/edge-case flow diagrams as specification artifacts.
 - `architect`: technical/system/sequence/component/integration diagrams as implementation handoff artifacts.
-- `docs`: run-specific docs report artifacts plus documentation handoff status.
+- `documentation`: run-specific docs report artifacts plus documentation handoff status.
 - Executors consume approved diagrams/specs; they do not redefine business/process flows.

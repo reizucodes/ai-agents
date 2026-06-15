@@ -13,9 +13,9 @@ The `ai-agents` source repository must not commit `.opencode/agents/*`.
 - `.opencode/agents/architect.md` -> `.ai/agents/architect.md`
 - `.opencode/agents/backend.md` -> `.ai/agents/backend.md`
 - `.opencode/agents/frontend.md` -> `.ai/agents/frontend.md`
-- `.opencode/agents/qa.md` -> `.ai/agents/qa.md`
-- `.opencode/agents/code-review.md` -> `.ai/agents/code-review.md`
-- `.opencode/agents/docs.md` -> `.ai/agents/docs.md`
+- `.opencode/agents/tester.md` -> `.ai/agents/qa.md`
+- `.opencode/agents/reviewer.md` -> `.ai/agents/code-review.md`
+- `.opencode/agents/documentation.md` -> `.ai/agents/docs.md`
 - `.opencode/agents/security.md` -> `.ai/agents/security.md`
 - `.opencode/agents/devops.md` -> `.ai/agents/devops.md`
 
@@ -25,7 +25,7 @@ The `ai-agents` source repository must not commit `.opencode/agents/*`.
 - Generated output target is consumer-project `.opencode/agents/*` after running `.ai/workflows/build-opencode-agents.md`.
 
 ## Rules
-- Use canonical role names from `.ai/agents/*`.
-- Do not invent runtime-only role names.
+- Use runtime-facing names `tester`, `reviewer`, and `documentation` while preserving canonical source pointers.
+- Do not invent runtime-only role names beyond explicit alias normalization.
 - Keep adapter prompts concise and runtime-specific.
 - Preserve canonical boundaries and escalation paths.

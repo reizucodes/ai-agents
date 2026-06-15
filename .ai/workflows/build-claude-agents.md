@@ -55,7 +55,7 @@ Default generated roles (must follow `.ai/execution/adapter-role-mapping.md`):
 - `frontend`
 - `tester` from canonical `qa`
 - `reviewer` from canonical `code-review`
-- `docs`
+- `documentation` from canonical `docs`
 
 Opt-in only:
 - `security`
@@ -79,9 +79,11 @@ Opt-in only:
    - generated notice
    - canonical source path
    - conflict rule
-   - Claude-specific role summary
-   - concise responsibilities
-   - boundaries
+   - role identity
+   - delegation triggers
+   - ownership boundaries
+   - deliverables and required artifacts
+   - delegation contract
    - escalation
 5. Add generated metadata:
    - generated-by
@@ -94,6 +96,9 @@ Opt-in only:
 
 ## Claude Adapter Content Rules
 - Generated subagents must be useful for Claude automatic delegation.
+- Generated subagents must be immediately callable as the default specialist workers when present.
+- Generated subagents must state that parent/main must delegate matching work to them.
+- Generated subagents must state that they own the delegated implementation scope and must not silently return implementation ownership to parent/main.
 - Do not generate pointer-only adapters.
 - Do not duplicate full canonical role contracts.
 - Keep descriptions concise and delegation-oriented.

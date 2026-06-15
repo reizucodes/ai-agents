@@ -4,7 +4,7 @@
 Improve internal code quality without changing external behavior.
 
 ## Participating Agents
-`architect` (if broad scope), stack agent, `qa`, `code-review`.
+`architect` (if broad scope), stack agent, `tester`, `reviewer`.
 
 Participation scales by risk path below; not all agents are used for every change.
 
@@ -42,7 +42,7 @@ Implementation planning ownership:
 
 ## Escalation Rules
 - Scope creep or architecture drift -> `architect`.
-- Performance regression -> stack agent + `qa`.
+- Performance regression -> stack agent + `tester`.
 
 ## Recommended Usage
 Use for debt reduction, module simplification, and coupling reduction.
@@ -50,21 +50,21 @@ Use for debt reduction, module simplification, and coupling reduction.
 ## Low Risk Path
 - **Templates:** `task.md`.
 - **Required Agents:** stack agent.
-- **Recommended Agents:** `qa`.
-- **Optional Agents:** `code-review`.
+- **Recommended Agents:** `tester`.
+- **Optional Agents:** `reviewer`.
 - **Gates:** Implementation + Quality (lightweight parity checks).
 - **Policies:** risk-classification, definition-of-done.
 
 ## Medium Risk Path
 - **Templates:** `task.md` or `feature-spec.md` for larger scope.
-- **Required Agents:** stack agent, `qa`, `code-review`.
+- **Required Agents:** stack agent, `tester`, `reviewer`.
 - **Optional Agents:** `architect`.
 - **Gates:** Implementation + Quality; Architecture gate if boundaries shift.
 - **Policies:** risk-classification, quality-gates, approval-levels/runtime-safety.
 
 ## High Risk Path
 - **Templates:** `feature-spec.md`, `adr.md` recommended.
-- **Required Agents:** `architect`, stack agent, `qa`, `code-review`.
+- **Required Agents:** `architect`, stack agent, `tester`, `reviewer`.
 - **Optional Agents:** `security` when sensitive/auth/public API surfaces are touched.
 - **DevOps:** required only when operational/deployment behavior changes.
 - **Gates:** Architecture + Implementation + Quality (+ Release when needed).

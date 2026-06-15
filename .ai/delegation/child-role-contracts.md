@@ -20,7 +20,12 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - frontend child -> `.ai/agents/frontend.md`
 - tester child -> `.ai/agents/qa.md`
 - reviewer child -> `.ai/agents/code-review.md`
-- docs child -> `.ai/agents/docs.md`
+- documentation child -> `.ai/agents/docs.md`
+
+## Runtime Alias Normalization
+- runtime-facing `tester` resolves to canonical `qa`
+- runtime-facing `reviewer` resolves to canonical `code-review`
+- runtime-facing `documentation` resolves to canonical `docs`
 
 ## Conditional Role Mapping
 - security child -> `.ai/agents/security.md` when risk/policy requires it.
@@ -46,15 +51,15 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - Validation/review/documentation roles:
   - `tester` validates against approved consolidated spec and acceptance criteria.
   - `reviewer` runs after tester output is available.
-  - `docs` runs last, before parent final validation.
-  - when `docs` is assigned, it must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-  - for Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+  - `documentation` runs last, before parent final validation.
+  - when `documentation` is assigned, it must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+  - for Tiny/Small code-changing runs where `documentation` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
 ## Child Scope Rules
 - Each child receives explicit goals, scope boundaries, and handoff requirements.
 - Planning roles are not broad writers by default.
-- `docs` owns feature documentation, setup notes, handoff notes, and changelog/readme updates when assigned.
-- `docs` report artifacts must cover initial runs, remediation runs, final reruns, and non-merge-ready outcomes when applicable.
+- `documentation` owns feature documentation, setup notes, handoff notes, and changelog/readme updates when assigned.
+- `documentation` report artifacts must cover initial runs, remediation runs, final reruns, and non-merge-ready outcomes when applicable.
 - Required run-report content for any code-changing run:
   - run type,
   - task summary,
@@ -63,7 +68,7 @@ Map canonical role contracts to delegated child responsibilities during delegate
   - tests run,
   - result/status,
   - remaining risks or skipped validations,
-  - report producer (`docs` or `parent/main`).
+  - report producer (`documentation` or `parent/main`).
 - Children should avoid changing files outside assigned ownership.
 - Children should report assumptions, risks, and incomplete checks.
 - Implementation children (`backend`, `frontend`) must not ask the user directly; requirement questions escalate through parent and `product-spec`.

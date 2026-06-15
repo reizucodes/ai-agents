@@ -90,9 +90,9 @@ Generate orchestration-level adapters:
 - `architect`
 - `backend`
 - `frontend`
-- `qa`
-- `code-review`
-- `docs`
+- `tester`
+- `reviewer`
+- `documentation`
 
 Optional only by explicit request/policy:
 - `security`
@@ -141,6 +141,16 @@ Each generated adapter must:
    - canonical source pointer
    - not-source-of-truth statement
    - canonical conflict rule
+   - role identity
+   - delegation triggers
+   - ownership boundaries
+   - deliverables and required artifacts
+   - delegation contract
+
+Runtime-facing alias mapping:
+- `tester` -> canonical `.ai/agents/qa.md`
+- `reviewer` -> canonical `.ai/agents/code-review.md`
+- `documentation` -> canonical `.ai/agents/docs.md`
 
 ## Validation Steps
 0. source-repo guard check:
@@ -169,6 +179,11 @@ Each generated adapter must:
    - `test ! -f bun.lock`
 11. plugin/dependency-installation check:
    - no plugin/dependency installation commands executed
+12. callable-worker validation:
+   - generated workers identify ownership,
+   - generated workers define delegation triggers,
+   - generated workers define required deliverables/artifacts,
+   - generated workers state that parent/main must delegate matching work when they are available
 
 ## Report Persistence Rule
 Every `build-opencode-agents` run must write:

@@ -4,7 +4,7 @@
 Deliver new features with clear contracts, predictable quality, and merge readiness.
 
 ## Participating Agents
-`project-manager`, `product-spec`, `architect`, stack agent (`laravel`/`vue`/`react`/`node-express`/`fastapi`/`python`), `qa`, `code-review`, optionally `security`, `devops`.
+`project-manager`, `product-spec`, `architect`, stack agent (`laravel`/`vue`/`react`/`node-express`/`fastapi`/`python`), `tester`, `reviewer`, optionally `security`, `devops`.
 
 Participation scales by risk path below; not all agents are used for every change.
 
@@ -54,7 +54,7 @@ Implementation planning ownership:
 
 ## Escalation Rules
 - Contract ambiguity -> `architect`.
-- Reproducible quality failures -> stack agent + `qa`.
+- Reproducible quality failures -> stack agent + `tester`.
 - Release blockers -> `devops`.
 
 ## Recommended Usage
@@ -63,21 +63,21 @@ Use for all net-new user-facing features and API capabilities.
 ## Low Risk Path
 - **Templates:** `task.md` (required), `feature-spec.md` optional.
 - **Required Agents:** stack agent.
-- **Recommended Agents:** `qa`.
-- **Optional Agents:** `code-review`.
+- **Recommended Agents:** `tester`.
+- **Optional Agents:** `reviewer`.
 - **Gates:** Implementation + Quality (lightweight evidence).
 - **Policies:** risk-classification, definition-of-done, runtime-safety/approval-levels when applicable.
 
 ## Medium Risk Path
 - **Templates:** `feature-spec.md` (required), `adr.md` optional.
-- **Required Agents:** `project-manager`, `product-spec`, `architect`, stack agent, `qa`, `code-review`.
+- **Required Agents:** `project-manager`, `product-spec`, `architect`, stack agent, `tester`, `reviewer`.
 - **Optional Agents:** `security`.
 - **Gates:** Architecture + Implementation + Quality.
 - **Policies:** risk-classification, quality-gates, definition-of-done, approval-levels/runtime-safety.
 
 ## High Risk Path
 - **Templates:** `feature-spec.md` + `threat-model.md` (recommended), `adr.md` optional.
-- **Required Agents:** `project-manager`, `product-spec`, `architect`, `security`, stack agent, `qa`, `code-review`.
+- **Required Agents:** `project-manager`, `product-spec`, `architect`, `security`, stack agent, `tester`, `reviewer`.
 - **DevOps:** required when deployment/ops behavior changes.
 - **Gates:** Architecture + Implementation + Quality + Release (for production readiness).
 - **Policies:** all governance policies, especially secrets-management.

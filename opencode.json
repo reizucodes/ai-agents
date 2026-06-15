@@ -9,49 +9,50 @@
     ".ai/templates/*.md",
     ".ai/execution/*.md",
     ".ai/delegation/*.md",
-    ".ai/runtimes/opencode/bootstrap.md"
+    ".ai/runtimes/opencode/bootstrap.md",
+    ".ai/runtimes/opencode/delegation.md"
   ],
   "default_agent": "project-manager",
   "agent": {
     "project-manager": {
-      "description": "Primary orchestrator for risk-classified workflow routing and delegated execution.",
+      "description": "Primary orchestrator for risk-classified workflow routing and mandatory delegation to matching workers.",
       "mode": "primary",
-      "prompt": "Runtime adapter for .ai/agents/project-manager.md. Read and follow canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, and .ai/policies/*. Delegate to mapped subagents and preserve decision gates before implementation."
+      "prompt": "Runtime adapter for .ai/agents/project-manager.md. The main session is not an implementation agent. Read and follow canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, .ai/runtimes/opencode/bootstrap.md, .ai/runtimes/opencode/delegation.md, and .ai/policies/*. Delegate matching work to mapped workers and preserve decision gates before implementation."
     },
     "product-spec": {
       "description": "Define and clarify product requirements and acceptance criteria.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/product-spec.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/product-spec.md. Use canonical source as authority. Own requirements clarification, scope definition, and acceptance criteria. Escalate implementation back to project-manager after a clear handoff."
     },
     "architect": {
       "description": "Produce architecture decisions, boundaries, and implementation guidance.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/architect.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/architect.md. Use canonical source as authority. Own architecture boundaries, contract decisions, and implementation handoff artifacts. Do not implement feature code directly."
     },
     "backend": {
       "description": "Implement backend changes aligned to approved architecture.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/backend.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/backend.md. Use canonical source as authority. Own backend implementation work, stay within assigned boundaries, report changed files/tests/risks, and do not return implementation ownership to project-manager."
     },
     "frontend": {
       "description": "Implement frontend changes aligned to approved architecture.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/frontend.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/frontend.md. Use canonical source as authority. Own frontend implementation work, stay within assigned boundaries, report changed files/tests/risks, and do not return implementation ownership to project-manager."
     },
-    "qa": {
+    "tester": {
       "description": "Validate behavior, regression risk, and test coverage.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/qa.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/qa.md. Use canonical source as authority. Own validation, regression checks, test execution interpretation, and test/report artifacts for delegated runs."
     },
-    "code-review": {
+    "reviewer": {
       "description": "Perform correctness, risk, and maintainability review before handoff.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/code-review.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/code-review.md. Use canonical source as authority. Own review findings, risk assessment, and remediation guidance after implementation/testing outputs are available."
     },
-    "docs": {
+    "documentation": {
       "description": "Persist run artifacts and documentation updates from validated outcomes.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/docs.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/docs.md. Use canonical source as authority. Own run reports, documentation updates, and final documentation artifacts after implementation/testing/review outputs are complete."
     },
     "security": {
       "description": "Assess security risks, controls, and required mitigations.",

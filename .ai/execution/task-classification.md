@@ -35,17 +35,17 @@ Review-only task types:
 - Review artifact-generating:
   - Creates/updates review/report/audit/final-report artifacts.
   - Requires targeted delegation to `reviewer`.
-  - Requires `docs` when run report/audit/final report artifact is created.
+  - Requires `documentation` when run report/audit/final report artifact is created.
   - Requires `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Review + validation:
   - Review task that also verifies test results, coverage, or validation status.
   - Requires `reviewer`.
   - `tester` is required when test interpretation/coverage/validation verification is requested.
-  - `docs` required when artifacts change.
+  - `documentation` required when artifacts change.
 - Review + remediation:
   - Review task that includes requested fixes/remediation work.
   - Route to remediation flow and relevant implementation agents.
-  - Rerun `tester` -> `reviewer` -> `docs`.
+  - Rerun `tester` -> `reviewer` -> `documentation`.
 
 ## Levels
 
@@ -57,16 +57,16 @@ Examples:
 - simple docs corrections
 
 Default flow:
-- Parent
+- Parent orchestration
 - Implementation
 - Review
 
 Default behavior:
 - Parent may handle directly only for non-code-changing Tiny tasks.
 - Skip planning agents (`project-manager`, `product-spec`, `architect`).
-- Code-changing Tiny tasks produce `targeted_required` and use relevant implementation role(s) when runtime subagents and required adapters are available.
+- Code-changing Tiny tasks produce `targeted_required` and use relevant implementation role(s). If the required worker path is unavailable, fallback requires disclosure and explicit approval unless the user said `no subagent` or `main only`.
 - Full delegated mode is normally rejected for Tiny tasks because planning/parallelism is not appropriate unless risk/scope escalates.
-- `docs` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
+- `documentation` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `documentation` when invoked, otherwise by parent/main).
 - No diagrams required.
 
 ### Small
@@ -77,17 +77,17 @@ Examples:
 - simple enhancement
 
 Default flow:
-- Parent
+- Parent orchestration
 - Lightweight design note
 - Implementation
 - Review
-- Docs (optional)
+- Documentation (optional)
 
 Default behavior:
 - `architect` only when contract/boundary risk appears.
-- Relevant implementation role(s) are required for code-changing work via targeted delegation when runtime subagents and required adapters are available.
+- Relevant implementation role(s) are required for code-changing work via targeted delegation.
 - Full delegated mode is normally rejected for Small single-surface tasks unless planning/parallelism is justified by escalated risk/scope.
-- `docs` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `docs` when invoked, otherwise by parent/main).
+- `documentation` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `documentation` when invoked, otherwise by parent/main).
 - Diagrams optional.
 
 ### Small Follow-Up Thresholds
@@ -96,26 +96,21 @@ Default behavior:
 Examples:
 - backend-only CORS fix
 - frontend-only copy/UI tweak
-- docs-only summary
+- documentation-only summary
 
 Default:
-- for code-changing runs, use targeted delegation to the relevant implementation role (`backend` for backend-only, `frontend`/framework specialist for frontend-only, `docs` for docs-only, `tester` for test-only).
+- for code-changing runs, use targeted delegation to the relevant implementation role (`backend` for backend-only, `frontend`/framework specialist for frontend-only, `documentation` for documentation-only, `tester` for test-only).
 - parent may handle directly only for non-code-changing runs.
 
 #### Small multi-surface follow-up
 Examples:
 - backend endpoint + frontend view
 - API change + tests
-- UI change + docs
+- UI change + documentation
 
 Default:
-- parent must consider targeted subagents.
 - code-changing runs must use targeted delegation to relevant implementation roles (for example `backend` + `frontend` for cross-layer changes).
-
-Required skip-delegation explanation:
-- `Classification: Small multi-surface`
-- `Delegation decision: skipped`
-- `Reason: <low-risk | tightly coupled | faster parent patch | user did not request full delegation>`
+- if required workers are unavailable, fallback requires disclosure and explicit user approval unless the user explicitly says `no subagent` or `main only`.
 
 ### Medium
 Examples:
@@ -131,14 +126,14 @@ Default flow:
 - Architect
 - Backend + Frontend + Tester
 - Reviewer
-- Docs
+- Documentation
 - Parent
 
 Default behavior:
 - Spec-first planning gates are expected.
 - Backend/frontend/tester may run in parallel only after planning outputs are complete.
-- `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `docs` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- `documentation` is required when feature behavior, setup, API, workflow, or decisions changed.
+- `documentation` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Diagrams are encouraged.
 
 ### Large
@@ -156,14 +151,14 @@ Default flow:
 - Architect or Technical Design
 - Backend + Frontend + Tester
 - Reviewer
-- Docs
+- Documentation
 - Parent Final Validation
 
 Default behavior:
 - Spec-first planning gates are mandatory.
 - Delegation may be used after planning artifacts are approved.
-- `docs` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `docs` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- `documentation` is required when feature behavior, setup, API, workflow, or decisions changed.
+- `documentation` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 - Diagrams are expected when workflows, boundaries, ownership, or API flows are non-trivial.
 
 ## Escalation Rules
@@ -193,7 +188,7 @@ Downgrade only when evidence confirms reduced scope:
 `architect` may be skipped only when:
 - no boundary, data contract, or architecture decision is required.
 
-`docs` may be skipped only when:
+`documentation` may be skipped only when:
 - task is Tiny and not explicitly requested, or
 - task is Small with no behavior/setup/API/workflow/decision changes.
 - When skipped in a code-changing Tiny/Small run, parent/main must still create `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.

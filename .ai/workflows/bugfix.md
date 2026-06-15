@@ -4,7 +4,7 @@
 Diagnose defects quickly, fix root cause, and prevent regression.
 
 ## Participating Agents
-Stack agent, `qa`, `code-review`, optional `architect`, optional `security`.
+Stack agent, `tester`, `reviewer`, optional `architect`, optional `security`.
 
 Participation scales by risk path below; not all agents are used for every change.
 
@@ -50,21 +50,21 @@ Use for production incidents, QA-found defects, and contract-breaking bugs.
 ## Low Risk Path
 - **Templates:** `task.md`.
 - **Required Agents:** stack agent.
-- **Recommended Agents:** `qa`.
-- **Optional Agents:** `code-review`.
+- **Recommended Agents:** `tester`.
+- **Optional Agents:** `reviewer`.
 - **Gates:** Implementation + Quality (lightweight for trivial fixes).
 - **Policies:** risk-classification, definition-of-done.
 
 ## Medium Risk Path
 - **Templates:** `task.md` or `feature-spec.md` if scope expands.
-- **Required Agents:** stack agent, `qa`, `code-review`.
+- **Required Agents:** stack agent, `tester`, `reviewer`.
 - **Optional Agents:** `architect`, `security` (when auth/data/public API concerns exist).
 - **Gates:** Implementation + Quality.
 - **Policies:** risk-classification, quality-gates, approval-levels/runtime-safety.
 
 ## High Risk Path
 - **Templates:** `feature-spec.md` + `threat-model.md` when security-sensitive.
-- **Required Agents:** stack agent, `qa`, `code-review`, `security`.
+- **Required Agents:** stack agent, `tester`, `reviewer`, `security`.
 - **Optional Agents:** `architect`.
 - **DevOps:** required when release/deployment risk is introduced.
 - **Gates:** Implementation + Quality + Release (when production readiness is affected).

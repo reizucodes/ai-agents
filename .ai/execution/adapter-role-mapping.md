@@ -22,7 +22,12 @@ Generate adapters by default for:
 - frontend (`.ai/agents/frontend.md`)
 - tester from qa (`.ai/agents/qa.md`)
 - reviewer from code-review (`.ai/agents/code-review.md`)
-- docs (`.ai/agents/docs.md`)
+- documentation from docs (`.ai/agents/docs.md`)
+
+## Runtime Alias Normalization
+- runtime-facing `tester` resolves to canonical `qa`
+- runtime-facing `reviewer` resolves to canonical `code-review`
+- runtime-facing `documentation` resolves to canonical `docs`
 
 ## Opt-In Roles
 Do not generate by default:
@@ -47,7 +52,7 @@ Rationale:
 | `.ai/agents/frontend.md` | `frontend` | Frontend implementation worker for UI/state/integration tasks under parent constraints. | Frontend modules, UI tests, component state logic. | Backend persistence/migration files, deployment/ops files, unrelated domains. | Medium/Large delegated runs only after approved consolidated spec + architect handoff; Tiny/Small targeted runs are exempt unless risk/scope escalates. May run in parallel with backend when ownership boundaries are explicit. |
 | `.ai/agents/qa.md` | `tester` | Validation worker focused on test coverage, repro steps, and risk checks against approved spec. | Test files, test fixtures, validation artifacts. | Product logic outside test scope unless parent reassigns. | Runs after implementation outputs are available; validates against approved consolidated spec and acceptance criteria. |
 | `.ai/agents/code-review.md` | `reviewer` | Review worker focused on correctness, maintainability, risk, and regressions. | Review notes and scoped remediation when assigned. | Broad feature implementation ownership by default. | Runs after tester outputs are available. |
-| `.ai/agents/docs.md` | `docs` | Documentation worker for feature docs, setup notes, handoffs, changelog/readme updates, and run-specific docs report artifacts when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation; writes a run-specific docs report artifact for each docs run. |
+| `.ai/agents/docs.md` | `documentation` | Documentation worker for feature docs, setup notes, handoffs, changelog/readme updates, and run-specific docs report artifacts when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation; writes a run-specific docs report artifact for each documentation run. |
 
 ## Mapping Constraints
 - Adapter names must be stable and unique.
@@ -65,7 +70,7 @@ Rationale:
   - frontend-only: `frontend`; generated framework specialist (`vue`, `react`) may be additionally required when classification selects specialist ownership,
   - backend-only: `backend`; generated framework specialist (`fastapi`, `laravel`, `node-express`, `python`) may be additionally required when classification selects specialist ownership,
   - cross-layer: both `backend` and `frontend`,
-  - docs-only: `docs`,
+  - documentation-only: `documentation`,
   - test-only: `tester`.
 - Specialist adapter fallback:
   - If `vue`, `react`, `fastapi`, `laravel`, `node-express`, or `python` is selected but missing, parent may route through `frontend` or `backend` only when that generic adapter is available and sufficient for the classified scope.
@@ -82,6 +87,6 @@ Rationale:
 - If implementation discovers requirement ambiguity, escalate through parent/`product-spec` (no direct user questioning by implementation children).
 - `tester` runs after implementation and validates against approved consolidated spec + acceptance criteria.
 - `reviewer` runs after tester.
-- `docs` runs last before parent final validation.
-- When `docs` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).
-- For Tiny/Small code-changing runs where `docs` is skipped for efficiency, parent/main must still persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- `documentation` runs last before parent final validation.
+- When `documentation` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).
+- For Tiny/Small code-changing runs where `documentation` is skipped for efficiency, parent/main must still persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
