@@ -1,8 +1,12 @@
 Claude Code Entry Point
 
+HARD RULE: The main session MUST NOT write, edit, create, or delete any files.
+HARD RULE: The main session MUST NOT implement code directly under any circumstance.
+HARD RULE: If no suitable agent exists, HALT and disclose — do not implement inline.
+
 This repository uses AGENTS.md as the canonical instruction source.
 The main session is not an implementation agent.
-When a suitable Claude worker exists, Claude must delegate matching work and remain orchestration-only.
+Delegation is unconditional. The main session classifies, spawns, and orchestrates — nothing else.
 
 Read in order:
 

@@ -46,12 +46,12 @@ When to delegate vs. main-only.
 |---|---|
 | Non-code-changing Q&A / search / explanation | Main-only allowed |
 | Pure review/analysis, no artifact output | Main-only allowed; `pr-manager` optional |
-| Code-changing Tiny single-surface | Targeted delegation to one relevant role (`backend-developer`, `frontend-developer`, etc.) |
-| Code-changing Small single-surface | Targeted delegation to one role |
-| Code-changing Small multi-surface | Targeted delegation to disjoint roles (e.g. `backend-developer` + `frontend-developer`) |
+| Code-changing Tiny single-surface | Main session spawns one matching specialist directly |
+| Code-changing Tiny multi-surface | Main session spawns two disjoint specialists directly (no PM) |
+| Code-changing Small (any surface) | Main session spawns `project-manager`; PM makes all targeting decisions for specialists |
 | Review artifact-generating (audit, report, final-report) | Targeted delegation to `pr-manager` + `documentation-writer` (and `qa-specialist` when validation in scope) |
-| Medium feature | Full delegated flow after Planning Council |
-| Major feature / refactor | Full delegated flow with proposal approval gate before implementation |
+| Medium feature | Main session spawns `project-manager`; PM convenes full Planning Council then delegates implementation |
+| Major feature / refactor | Main session spawns `project-manager`; PM runs full Planning Council with proposal approval gate before implementation |
 | Required worker unavailable | Disclose gap, request approval before sequential simulation; honor `no subagent` / `main only` |
 
 Rejection rules (full delegated mode):
@@ -72,7 +72,8 @@ Escalate classification upward when any apply:
 Downgrade only when evidence confirms reduced scope: narrowed requirements, removed cross-domain deps, no contract/security/ops impact.
 
 ## Planning-Role Skip Rules
-- `project-manager` and `project-owner` may be skipped for Tiny/Small when requirements are explicit and risk is Low.
+- `project-manager` may be skipped for Tiny work only — main session spawns the specialist directly. PM is always spawned for Small and above.
+- `project-owner` may be skipped for Tiny/Small when requirements are explicit and risk is Low.
 - `dev-team-lead` may be skipped when no boundary, data contract, or architecture decision is required.
 - `documentation-writer` may be skipped for Tiny work; code-changing runs still produce the run report (written by parent/main if no doc role is invoked).
 
