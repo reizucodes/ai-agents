@@ -8,14 +8,18 @@ Runtime-facing orchestration guidance for the Claude main session.
 - This file is derivative runtime guidance only.
 - If any conflict exists, canonical `.ai/*` wins.
 
+## Prompt Routing Contract (Unconditional)
+Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+1. **Classify** — main session classifies the task (size, risk, code-changing or not).
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
+3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
+4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+
 ## Classification Rule
 - Classify each task before execution using `.ai/execution/task-classification.md`.
 - The main session is not an implementation agent.
-- When a suitable Claude worker exists, delegation is required.
-- Route to project subagents automatically when task fit and capability allow.
-- If subagent discovery/capability fails, disclose the fallback reason and obtain explicit approval before parent-only fallback unless the user explicitly says `no subagent` or `main only`.
-- Main session may perform orchestration preflight only (classification, gate checks, workflow selection, ownership setup, and child sequencing).
-- Main session must not absorb delegated child responsibilities when required workers are available.
+- Delegation is unconditional for all non-analysis work — adapter presence is not a prerequisite for the rule; adapter absence requires disclosure and halt, not inline fallback.
+- Main session may perform orchestration preflight only (classification and initial spawn). Main session does not sequence council members or implement.
 
 ## Worker Availability Rule
 If generated Claude workers are present at `.claude/agents/*.md`:
@@ -24,9 +28,10 @@ If generated Claude workers are present at `.claude/agents/*.md`:
 - adapters are derived from canonical sources at `.ai/agents/runtime/*.md`.
 
 If a required Claude worker is absent:
-- operate from `AGENTS.md` and canonical `.ai/*` only as disclosed fallback,
-- do not claim delegation occurred,
-- obtain explicit approval before parent-only implementation unless the user explicitly says `no subagent` or `main only`.
+- disclose the missing adapter by name,
+- halt and await explicit user instruction (`no subagent` / `main only`),
+- do not implement inline as a silent fallback,
+- do not claim delegation occurred.
 
 ## Canonical Runtime Workers (16)
 The generated adapter set is fixed by `.ai/execution/adapter-role-mapping.md`:

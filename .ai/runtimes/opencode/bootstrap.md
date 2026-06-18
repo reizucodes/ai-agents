@@ -20,11 +20,18 @@ Load in this order:
 ## Scope
 This bootstrap is for normal OpenCode startup only.
 
+## Prompt Routing Contract (Unconditional)
+Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+1. **Classify** — main session classifies the task (size, risk, code-changing or not).
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
+3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
+4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+
 Main-session rule:
 - The main session is not an implementation agent.
+- Delegation is unconditional for all non-analysis work — adapter absence requires disclosure and halt, not inline fallback.
 - The primary OpenCode agent (`project-manager`) must remain orchestration-only.
-- When a suitable OpenCode worker exists, delegation is required.
-- If the required worker path is unavailable, disclose the gap and obtain explicit approval before parent-only fallback unless the user explicitly says `no subagent` or `main only`.
+- `opencode.json` `default_agent: project-manager` enforces this for OpenCode — every prompt routes to PM automatically.
 
 Do not load OpenCode adapter/build contracts during normal startup:
 - `.ai/runtimes/opencode/adapter.md`

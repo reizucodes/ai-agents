@@ -28,7 +28,7 @@ Define what the parent/main session OWNS, what it MUST NOT do, and the handoff/m
 - Spawn implementation roles (`backend-developer`, `frontend-developer`, etc.) for Medium/Major before `SPEC_APPROVED` and `ARCHITECTURE_READY`.
 - Apply Medium/Major planning-state prohibitions to Tiny/Small targeted code changes unless risk/scope escalates.
 - Silently collapse missing required adapters into parent/main.
-- Implement directly when a suitable specialist exists, unless the user explicitly says `no subagent` / `main only` or approved a disclosed fallback.
+- Implement directly when a suitable specialist exists, unless the user explicitly says `no subagent` / `main only`.
 - Complete a code-changing run without producing the run report.
 
 ## Handoff Requirements (Parent → Child)
@@ -56,12 +56,15 @@ Parent maintains explicit state across the run:
 
 Tiny/Small targeted runs may skip planning states unless risk/scope escalates.
 
-## Fallback Approval Requirement
-When parent cannot delegate matching implementation because required specialist capability is unavailable:
-- disclose the missing capability/worker explicitly,
-- request explicit user approval before sequential role simulation,
+## Fallback Rule (Halt, Not Inline)
+When parent cannot delegate because a required adapter is absent:
+- disclose the missing adapter by name,
+- halt and await explicit user instruction,
+- do not implement inline as a silent fallback,
 - do not claim delegation occurred,
-- honor explicit `no subagent` / `main only` bypasses.
+- only proceed after explicit `no subagent` / `main only` instruction from the user.
+
+Sequential role simulation is not an approved fallback for implementation work. The absence of an adapter requires a halt, not a workaround.
 
 ## Cross-References
 - Gates and decision types → `.ai/policies/approval-levels.md`

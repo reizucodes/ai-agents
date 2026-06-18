@@ -10,16 +10,22 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - This bootstrap is derivative runtime guidance.
 - If this file conflicts with canonical `.ai/*` contracts, follow canonical contracts.
 
+## Prompt Routing Contract (Unconditional)
+Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+1. **Classify** — main session classifies the task (size, risk, code-changing or not).
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
+3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
+4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+
 ## Main-Session Routing Rules
 - The main session is not an implementation agent.
-- When a suitable Codex worker exists, delegation is required.
+- Delegation is unconditional for all non-analysis work — adapter absence requires disclosure and halt, not inline fallback.
 - Classify task before execution using `.ai/execution/task-classification.md`.
-- Explicitly spawn/invoke matching child agents after capability and role-adapter gates pass.
 - User does not need to explicitly request delegation for matching specialist work.
-- If runtime subagent capability is unavailable, stop or fall back according to approved fallback rules.
 - For specialist routing with unavailable subagents:
-  - report limitation,
-  - request user approval before sequential role simulation fallback,
+  - disclose the missing adapter by name,
+  - halt and await explicit user instruction (`no subagent` / `main only`),
+  - do not implement inline,
   - do not claim delegation occurred.
 - For spawned agent display/traces, prefer `<nickname> [<canonical-role>]`.
 - Runtime nickname alone is non-authoritative; canonical role suffix is required in display form.
