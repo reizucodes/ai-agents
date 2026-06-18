@@ -28,7 +28,7 @@ Parent/main executes serially in one runtime agent.
 
 - **When**: user explicitly says `no subagent` / `main only`; runtime has no reliable subagent support and the user approves disclosed fallback; or task is pure non-code-changing analysis.
 - **Who participates**: parent/main only.
-- **Notes**: all policy/quality gates still apply. For code-changing runs, parent/main may complete directly only under explicit bypass or approved fallback.
+- **Notes**: all policy/quality gates still apply. Code-changing runs in Mode A require explicit `no subagent` / `main only` from the user — parent/main MUST NOT implement inline as a silent fallback or under any self-determined justification.
 
 ### Mode B: Planning-Gated Delegated
 Full orchestration mode for Medium/Major work.
