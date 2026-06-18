@@ -1,7 +1,7 @@
 # Build Codex Agents Workflow
 
 ## Purpose
-Define a Codex-specific workflow for generating and validating derivative adapter artifacts (future `.codex/agents/*.toml`) from canonical role contracts.
+Define the Codex-specific workflow for generating and validating runtime adapter artifacts (`.codex/agents/*.toml`) from canonical runtime role contracts.
 
 This workflow is a contract only. It does not generate files by itself.
 
@@ -10,85 +10,97 @@ This workflow is a contract only. It does not generate files by itself.
 - Does not apply to normal feature, bugfix, refactor, review, or documentation tasks.
 
 ## Canonical and Adapter Clarifications
-- `.ai/agents/*` remains canonical.
+- `AGENTS.md` and `.ai/*` remain canonical.
 - `.codex/agents/*.toml` are generated Codex adapters only.
+- Canonical adapter sources are `.ai/agents/runtime/*.md` (exactly 16 files).
+- `.ai/agents/personas/*.md` are NEVER adapter sources. They are inheritance-only skill docs loaded on demand by matching runtime agents.
 - Generated adapters must not replace canonical role contracts.
 - Codex subagents still require explicit runtime invocation.
-- `.ai/execution/adapter-role-mapping.md` is generation-time mapping.
-- `.ai/delegation/child-role-contracts.md` is delegated execution-time mapping.
+- `.ai/execution/adapter-role-mapping.md` is the authoritative 16-role list.
 
 ## Required Loaded Contracts
 Load all of the following before execution:
-1. `.ai/execution/execution-mode-input.md`
-2. `.ai/execution/runtime-adapter-contract.md`
-3. `.ai/execution/adapter-role-mapping.md`
-4. `.ai/execution/adapter-drift-validation.md`
-5. `.ai/runtimes/codex/adapter-schema.md`
-6. `.ai/runtimes/codex/nickname-strategy.md`
-7. Canonical role source files from `.ai/agents/*` referenced by role mapping
+1. `AGENTS.md`
+2. `INDEX.md`
+3. `.ai/execution/runtime-adapter-contract.md`
+4. `.ai/execution/adapter-role-mapping.md`
+5. `.ai/execution/adapter-drift-validation.md`
+6. `.ai/runtimes/codex/adapter-schema.md`
+7. `.ai/runtimes/codex/nickname-strategy.md`
+8. `.ai/policies/approval-levels.md`
+9. `.ai/policies/quality-gates.md`
+10. `.ai/policies/risk-classification.md`
+11. The 16 canonical role source files from `.ai/agents/runtime/*.md`
+12. Persona files at `.ai/agents/personas/*.md` (used only to describe inheritance, not as adapter sources)
 
 ## Inputs
 - Explicit user request to build Codex adapters.
-- Canonical role contracts from `.ai/agents/*`.
-- Role mapping contract.
-- Codex adapter schema contract.
-- Codex nickname strategy contract (optional nickname metadata behavior).
+- Canonical runtime role contracts from `.ai/agents/runtime/*`.
+- The 16-role list and persona-inheritance map in `.ai/execution/adapter-role-mapping.md`.
+- Codex adapter schema (`.ai/runtimes/codex/adapter-schema.md`).
+- Codex nickname strategy (`.ai/runtimes/codex/nickname-strategy.md`).
 - Optional existing adapter files for drift validation.
 
 ## Outputs
-- Generation plan for target adapters.
-- Validation report per adapter candidate:
-  - pass/fail status,
-  - drift state,
-  - schema validation state,
-  - rejection/remediation actions.
-- Optional generated adapter artifacts (only when generation is explicitly requested and allowed).
-- Persistent adapter run report file formatted with `.ai/templates/adapter-run-report.md`.
-- Runtime-facing orchestration bootstrap artifact for Codex main session:
-  - `.ai/runtimes/codex/orchestration-bootstrap.md`
-  - generated/maintained from canonical `.ai/*` contracts.
+- Exactly 16 adapter files at `.codex/agents/<role>.toml`, with filenames matching canonical runtime filenames (`.md` -> `.toml`).
+- `.ai/runtimes/codex/orchestration-bootstrap.md` (refreshed when role set or routing rules change).
+- `.ai/reports/codex-adapter-run-report.md`.
+
+## Canonical Output Set (16)
+The 16 adapter filenames are fixed by `.ai/execution/adapter-role-mapping.md`:
+`backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`.
+
+`project-manager` is the primary/orchestrator adapter. The other 15 are subagents.
+
+Build workflow MUST refuse to generate any adapter whose name is not in this list. Build workflow MUST NOT generate adapters from `.ai/agents/personas/*`.
+
+## Persona Inheritance Documentation
+For the three inheriting roles, the generated adapter's `developer_instructions` must describe how the agent loads persona files on demand when task detection matches a stack:
+
+- `backend-developer`: when working in a Laravel/PHP, FastAPI/Python, Node/Express, or generic Python backend, load `.ai/agents/personas/<stack>.md` for stack-specific patterns before performing the change.
+- `frontend-developer`: when working in a React or Vue codebase, load `.ai/agents/personas/<stack>.md`.
+- `web-designer`: when the surface renders through React or Vue, load `.ai/agents/personas/<stack>.md`.
+
+Persona inheritance is a runtime directive. Persona files are NEVER copied into the adapter body and are NEVER emitted as `.codex/agents/*.toml`.
 
 ## Report Persistence Rule
 - Every `build-codex-agents` run must write a persistent report artifact file.
 - Default report output path: `.ai/reports/codex-adapter-run-report.md`.
-- The final response may summarize the run, but does not replace the required report file artifact.
-- If a user explicitly provides a different report path, use that path; otherwise use the default path.
+- Final response summary does not replace the required report file artifact.
 
 ## Runtime Routing Rule
 - Build workflow execution may run sequentially because adapter generation itself is a single builder task.
-- The generated Codex workers must support delegation-first runtime behavior.
+- Generated Codex workers must support delegation-first runtime behavior.
 - The Codex main session is not an implementation agent and must delegate matching work whenever a suitable Codex worker exists.
-- Runtime capability gates still apply, but execution-mode metadata does not decide whether delegation is required.
+- Runtime capability gates still apply per `.ai/policies/approval-levels.md`.
 
 ## Regeneration Invocation
-Use this runtime command/prompt for regeneration:
-- `Run .ai/workflows/build-codex-agents.md and generate .codex/agents/*.toml from canonical .ai/agents/* using .ai/runtimes/codex/adapter-schema.md, then write .ai/reports/codex-adapter-run-report.md.`
+- `Run .ai/workflows/build-codex-agents.md and generate the 16 adapters at .codex/agents/*.toml from canonical .ai/agents/runtime/* using .ai/execution/adapter-role-mapping.md and .ai/runtimes/codex/adapter-schema.md, then write .ai/reports/codex-adapter-run-report.md.`
 
 ## Source-to-Adapter Mapping Process
-1. Load generation mapping from `.ai/execution/adapter-role-mapping.md`.
-2. Resolve each mapped canonical source path.
-3. Build target Codex adapter plan using canonical adapter `name` as authoritative identifier:
-   - source role file,
-   - adapter name,
-   - adapter description,
-   - default write/forbidden scopes,
-   - delegation notes,
-   - optional nickname candidates when allowed.
-   - display-name format expectation: `<nickname> [<canonical-role>]`.
-4. Exclude opt-in roles unless explicitly requested by user/policy.
-5. Build/update Codex runtime orchestration bootstrap artifact from canonical contracts:
-   - execution-mode input model as secondary routing metadata (`auto|sequential|targeted|delegated`),
-   - task classification routing,
-   - delegation-first routing,
-   - targeted delegation rules,
-   - Medium/Large delegated flow gates,
-   - docs/audit run-report requirements.
+1. Load the canonical 16-role list from `.ai/execution/adapter-role-mapping.md`.
+2. Resolve each canonical source path `.ai/agents/runtime/<name>.md`.
+3. Build target Codex adapter plan per role:
+   - source role file
+   - adapter name (matches canonical filename)
+   - adapter description
+   - default write/forbidden scopes
+   - delegation notes
+   - phase participation
+   - optional nickname candidates per `.ai/runtimes/codex/nickname-strategy.md`
+   - display-name expectation: `<nickname> [<canonical-role>]`
+4. Reject any plan entry whose name is not in the canonical 16-role set.
+5. Build/update Codex runtime orchestration bootstrap from canonical contracts:
+   - 5-phase flow routing (Planning Council, Implementation, QA, Business Go/No-Go, Commit/PR)
+   - 3-gate approval model (Auto / Recommendation / Approval)
+   - delegation-first routing
+   - artifact requirements per `.ai/policies/risk-classification.md` and `.ai/execution/artifact-conventions.md`
 
 ## Codex TOML Generation Rules
 When generation is requested:
-1. Target output path pattern is `.codex/agents/*.toml`.
+1. Target output path pattern is `.codex/agents/<role>.toml`.
 2. Required fields per adapter:
-   - `name`
+   - `name` (matches canonical filename)
    - `description`
    - `developer_instructions`
 3. `developer_instructions` must use canonical-first pattern:
@@ -98,130 +110,72 @@ developer_instructions = """
 This is a generated Codex adapter.
 
 Before performing role work, read and follow the canonical role contract:
-.ai/agents/<role>.md
+.ai/agents/runtime/<role>.md
 
 This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
 
-<short runtime-specific role summary here>
+<short runtime-specific role summary, including delegation contract, ownership boundaries, deliverables,
+and (for backend-developer, frontend-developer, web-designer) persona inheritance directive>
 """
 ```
 
 Runtime-specific summary requirements (keep concise):
-- Discovery/spec-first role order:
-  - `project-manager` -> `product-spec` -> approved consolidated spec -> `architect` -> `backend`/`frontend` -> `tester` -> `reviewer` -> `documentation`.
-- Role identity:
-  - worker states who it is and what it owns.
-- Delegation triggers:
-  - worker states when parent/main must call it.
-- Ownership boundaries:
-  - worker states what it may change and what it must not change.
-- Deliverables:
-  - worker states required outputs, report format, and artifacts.
-- Delegation contract:
-  - parent/main must delegate matching work,
-  - worker owns delegated implementation,
-  - worker must not silently return implementation ownership to parent/main,
-  - worker must not collapse into orchestration behavior.
-- Medium/Large delegated `backend`/`frontend` must not execute before approved consolidated spec and architect handoff.
-- Tiny/Small targeted `backend`/`frontend`/`tester` runs do not require approved consolidated spec or architect handoff unless risk/scope escalates.
-- `tester` validates against approved consolidated spec and acceptance criteria.
-- `reviewer` runs after tester outputs.
-- `documentation` runs last before parent final validation.
-- when `documentation` runs, it writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- for Tiny/Small code-changing runs where `documentation` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- code-changing runs require relevant implementation role usage:
-  - frontend-only: `frontend`; generated framework specialist (`vue`/`react`) only when selected by classification,
-  - backend-only: `backend`; generated framework specialist (`fastapi`/`laravel`/`node-express`/`python`) only when selected by classification,
-  - cross-layer: both `backend` + `frontend`,
-  - documentation-only: `documentation`,
-  - test-only: `tester`.
-- specialist adapter gaps must be disclosed; generic `frontend`/`backend` fallback is allowed only when available and sufficient for the classified scope.
-- Implementation requirement ambiguity escalates through parent/`product-spec`, not direct user questioning by implementation adapters.
-- Adapter self-identification/display rule:
-  - Use `<nickname> [<canonical-role>]` in traces/logs when nickname is available.
-  - If runtime-selected nickname differs, self-identify as `<runtime-nickname-or-configured-nickname> [<canonical-role>]`.
+- Role identity: worker states who it is and what it owns.
+- Delegation triggers: worker states when parent/main must call it.
+- Ownership boundaries: worker states what it may change and what it must not change.
+- Deliverables: worker states required outputs and artifacts per `.ai/execution/artifact-conventions.md`.
+- Delegation contract: parent/main must delegate matching work; worker owns delegated implementation; worker must not silently return ownership; worker must not collapse into orchestration behavior.
+- Phase placement: state which of the 5 phases the worker participates in.
+- Persona inheritance directive (only for `backend-developer`, `frontend-developer`, `web-designer`).
+- Display rule: `<nickname> [<canonical-role>]`.
 
-Runtime orchestration bootstrap minimum routing rules:
-- execution-mode input header support:
-  - `Execution mode: auto|sequential|targeted|delegated`.
-- execution mode should be consumed from runtime/launcher metadata first.
-- prompt-body `Execution mode: ...` is fallback only.
-- prompt-body `Execution mode: ...` is routing input only and does not automatically spawn agents or decide whether delegation is required.
-- when no mode is provided, default to `auto`.
-- before specialist routing, parent/main must classify the task, check runtime spawn support, check exact required role adapters, and explicitly invoke children only after gates pass.
-- required preflight output fields:
-  - `runtime_spawn_supported`
-  - `execution_mode_input`
-  - `classification`
-  - `required_roles`
-  - `available_adapters`
-  - `missing_adapters`
-  - `delegation_decision`
-  - `fallback_action`
-- full-project review with artifact output -> `reviewer` -> `documentation`.
-- review + validation -> `reviewer` -> `tester` (as needed) -> `documentation`.
-- Tiny/Small frontend code change -> `targeted_required`, required role `frontend` unless generated `vue`/`react` adapter is selected -> audit report.
-- Tiny/Small backend code change -> `targeted_required`, required role `backend` unless generated `fastapi`/`laravel`/`node-express`/`python` adapter is selected -> audit report.
-- test-only code change -> `targeted_required`, required role `tester` -> audit report.
-- Medium/Large feature -> `project-manager` -> `product-spec` -> `architect` -> proposal artifact validation + consolidated proposal package + explicit approval -> `backend`/`frontend` -> `tester` -> `reviewer` -> `documentation`.
-- remediation/final-rerun flows -> targeted agents, then `tester` -> `reviewer` -> `documentation` when in scope.
-- sequential fallback is allowed only when subagent capability or required adapter gates fail, and fallback must be disclosed.
-- for `targeted`/`delegated`, sequential role simulation requires approval where `fallback_requires_approval` is true.
-- never claim delegation unless a child agent was actually spawned/invoked.
-
-4. Include required generated metadata header from runtime/schema contracts.
+4. Include required generated metadata header (machine-readable comments) per `.ai/runtimes/codex/adapter-schema.md`:
+   - generated-by, generated-at (UTC ISO-8601), canonical-source, canonical-source-fingerprint (`sha256:<hex>`), schema-ref.
 5. Include canonical source pointer and drift metadata.
 6. Keep adapter content minimal and scoped.
-7. Do not duplicate full canonical role contracts unless runtime requirement is explicitly documented.
-8. Include `nickname_candidates` only when supported and requested according to `.ai/runtimes/codex/nickname-strategy.md`.
-9. Treat `nickname_candidates` as advisory only; runtime may ignore them.
+7. Do not duplicate full canonical role contracts.
+8. Include `nickname_candidates` only when supported per `.ai/runtimes/codex/nickname-strategy.md`.
+9. Treat `nickname_candidates` as advisory only; runtime may ignore.
 10. Ensure generated `description`/`developer_instructions` keep canonical role visible and enforce display format `<nickname> [<canonical-role>]`.
 
 ## Validation Steps
 Run validation using `.ai/execution/adapter-drift-validation.md` and `.ai/runtimes/codex/adapter-schema.md`:
-1. Canonical source existence check.
-2. Adapter output existence check (for validation runs).
-3. Source fingerprint/checksum comparison.
-4. Generated timestamp validation.
-5. Required metadata validation.
-6. Required field validation.
-7. Canonical source pointer validation.
-8. Minimal-content/no-full-duplication validation.
-9. Codex schema validation.
-10. Reserved-name/collision validation when known names are available.
-11. Nickname quality/collision validation when `nickname_candidates` are provided.
-12. Display-name contract validation:
-   - generated guidance requires `<nickname> [<canonical-role>]`,
-   - canonical role suffix is always present,
-   - self-identification fallback rule exists when runtime nickname differs.
-13. Orchestration bootstrap presence/content validation:
-   - file exists at `.ai/runtimes/codex/orchestration-bootstrap.md`,
-   - routes are derived from canonical `.ai/*` contracts,
-   - required routing rules above are present,
-   - prompt-body execution mode is described as routing input only,
-   - role-specific adapter preflight fields are present.
+1. Role-set integrity: exactly 16 outputs, names match `adapter-role-mapping.md`.
+2. No outputs derived from `.ai/agents/personas/*`.
+3. Canonical source existence check (`.ai/agents/runtime/<name>.md` exists).
+4. Adapter output existence check.
+5. Source fingerprint/checksum comparison.
+6. Generated timestamp validation.
+7. Required metadata validation.
+8. Required field validation (`name`, `description`, `developer_instructions`).
+9. Canonical source pointer validation.
+10. Minimal-content / no-full-duplication validation.
+11. Codex TOML schema validation.
+12. Reserved-name/collision validation.
+13. Nickname quality/collision validation when `nickname_candidates` are provided.
+14. Display-name contract validation (`<nickname> [<canonical-role>]`).
+15. Persona inheritance directive present for `backend-developer`, `frontend-developer`, `web-designer`.
+16. Orchestration bootstrap presence/content validation at `.ai/runtimes/codex/orchestration-bootstrap.md`.
 
 ## Drift-Check Steps
-1. Compute canonical source fingerprint/checksum for each mapped role.
-2. Read adapter fingerprint/checksum metadata.
-3. Compare and classify state:
-   - in-sync,
-   - stale,
-   - missing metadata,
-   - missing adapter.
+1. Compute canonical source fingerprint for each of the 16 roles.
+2. Read adapter fingerprint metadata.
+3. Compare and classify state: in-sync / stale / missing metadata / missing adapter.
 4. Produce remediation action per failure state.
 
 ## Rejection Conditions
 Reject generation or validation when any apply:
-- canonical source missing/ambiguous,
-- required runtime schema unknown/unavailable,
-- required metadata cannot be produced,
-- adapter name collision without explicit user-approved override,
-- request attempts to overwrite canonical source,
-- unsafe duplication of full canonical contracts,
-- policy/quality gate bypass attempts.
-- required Codex orchestration bootstrap cannot be produced from canonical contracts.
+- adapter name not in canonical 16-role set
+- attempt to generate an adapter from `.ai/agents/personas/*`
+- canonical source missing/ambiguous
+- required runtime schema unknown/unavailable
+- required metadata cannot be produced
+- adapter name collision without explicit user-approved override
+- request attempts to overwrite canonical source
+- unsafe duplication of full canonical contracts
+- policy/quality gate bypass attempts
+- required Codex orchestration bootstrap cannot be produced from canonical contracts
 
 ## Safety Rules
 - Do not treat generated adapters as canonical source.
@@ -229,22 +183,15 @@ Reject generation or validation when any apply:
 - Do not claim Codex subagent execution unless explicitly invoked by runtime.
 - Generated Codex workers are the default specialist workers when present.
 - Do not depend on runtime display nicknames for routing, validation, reporting, or handoffs.
-- Require runtime-facing display/self-identification guidance to use `<nickname> [<canonical-role>]`.
-- Preserve host-project approval and safety policy requirements.
-- Fall back to sequential mode only with required disclosure and approval where targeted/delegated preconditions fail.
+- Require display/self-identification format `<nickname> [<canonical-role>]`.
+- Preserve host-project approval and safety policy requirements per `.ai/policies/approval-levels.md`.
 
 ## Reporting Format
 Each run must use `.ai/templates/adapter-run-report.md` and report:
-1. Mode used:
-   - `sequential`
-   - `delegated` (only when allowed and selected by parent/orchestrator)
-2. Loaded contracts.
-3. Adapter targets considered (canonical adapter `name` + canonical role path).
-4. Mapping decisions and excluded roles.
-5. Validation/drift result per target:
-   - `pass` or `fail`,
-   - failure state(s),
-   - remediation action(s).
-6. Generated outputs (if any) and unresolved risks.
-7. Report artifact path written to disk.
-8. Orchestration bootstrap artifact path written to disk.
+1. Loaded contracts.
+2. Adapter targets considered (canonical adapter `name` + canonical role path).
+3. Mapping decisions (the 16-role set; persona files excluded).
+4. Validation/drift result per target: `pass` or `fail`, failure state(s), remediation action(s).
+5. Generated outputs (if any) and unresolved risks.
+6. Report artifact path written to disk.
+7. Orchestration bootstrap artifact path written to disk.

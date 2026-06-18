@@ -18,26 +18,35 @@ Define optional nickname metadata behavior for Codex custom-agent adapters.
 - Include `nickname_candidates` only for forward compatibility when supported by Codex.
 - Display-name contract for generated adapters and traces/logs:
   - `<nickname> [<canonical-role>]`
-  - Example: `Canvas [frontend]`.
+  - Example: `Canvas [frontend-developer]`.
 - Canonical role suffix (`[<canonical-role>]`) is mandatory in display form.
 - Runtime nickname alone is never authoritative.
 - If runtime does not honor configured nickname selection, adapter instructions must still require self-identification as:
   - `<runtime-nickname-or-configured-nickname> [<canonical-role>]`.
 
 ## Recommended Candidates
+Nickname candidates for the canonical 16-role runtime adapter set (see `.ai/execution/adapter-role-mapping.md`):
+
 | Adapter | nickname_candidates |
 |---|---|
 | project-manager | `["Marshal", "Beacon"]` |
-| product-spec | `["Scribe", "Brief"]` |
-| architect | `["Forge", "Keystone"]` |
-| backend | `["Anchor", "Iron"]` |
-| frontend | `["Canvas", "Prism"]` |
-| tester | `["Scout", "Pulse"]` |
-| reviewer | `["Audit", "Ledger"]` |
-| security | `["Cipher", "Shield"]` |
-| devops | `["Relay", "Harbor"]` |
-| database | `["Atlas", "Archive"]` |
-| documentation | `["Quill", "Echo"]` |
+| project-owner | `["Vision", "North"]` |
+| junior-project-manager | `["Probe", "Inquire"]` |
+| dev-team-lead | `["Forge", "Keystone"]` |
+| backend-developer | `["Anchor", "Iron"]` |
+| frontend-developer | `["Canvas", "Prism"]` |
+| database-administrator | `["Atlas", "Archive"]` |
+| devops-engineer | `["Relay", "Harbor"]` |
+| ui-ux-designer | `["Compass", "Flow"]` |
+| web-designer | `["Mosaic", "Palette"]` |
+| cybersecurity-analyst | `["Cipher", "Shield"]` |
+| qa-specialist | `["Scout", "Pulse"]` |
+| qa-team-lead | `["Audit", "Bastion"]` |
+| pr-manager | `["Ledger", "Handoff"]` |
+| documentation-writer | `["Quill", "Echo"]` |
+| doc-team-lead | `["Codex", "Index"]` |
+
+Persona files at `.ai/agents/personas/*.md` (laravel, fastapi, node-express, python, react, vue) do not receive nicknames; they are not runtime adapters.
 
 ## Collision and Quality Rules
 - Duplicate nickname within one generated adapter set is disallowed.

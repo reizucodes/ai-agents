@@ -49,8 +49,8 @@ Feature compiles locally but integration tests fail on validation edge case. Gat
 
 ## Quality Gate
 ### Requirements
-- QA review complete.
-- Security review complete when risk is medium+ or auth/data boundaries changed.
+- `qa-specialist` review complete; `qa-team-lead` consolidates results.
+- `cybersecurity-analyst` review complete when risk is Medium+ or auth/data boundaries changed.
 - Critical defects resolved.
 - Acceptance criteria satisfied.
 
@@ -62,10 +62,10 @@ QA finds authorization bypass (high severity). Gate remains blocked until fix + 
 
 ## Release Gate
 ### Requirements
-- Documentation complete.
+- Documentation complete (`documentation-writer` / `doc-team-lead`).
 - Required tests passing.
-- Code review completed.
-- Deployment plan documented.
+- PR review completed by `pr-manager`.
+- Deployment plan documented by `devops-engineer`.
 - Rollback plan documented and validated.
 
 ### Failure Behavior

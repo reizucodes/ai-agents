@@ -8,7 +8,7 @@ Define step-by-step drift and safety validation for generated runtime adapters i
 - Does not apply to normal feature, bugfix, refactor, review, or documentation tasks.
 
 ## Inputs
-- Canonical role source file path (for example `.ai/agents/<role>.md`).
+- Canonical role source file path (for example `.ai/agents/runtime/<role>.md`).
 - Adapter output path (runtime-specific, for example future `.codex/agents/*.toml`).
 - Runtime schema contract from `.ai/runtimes/<runtime>/*` (for example `.ai/runtimes/codex/adapter-schema.md` when applicable).
 

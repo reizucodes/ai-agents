@@ -1,77 +1,69 @@
 # Child Role Contract Mapping
 
 ## Purpose
-Map canonical role contracts to delegated child responsibilities during delegated execution.
+Map canonical role contracts to delegated child responsibilities during delegated execution. Generation-time adapter mapping lives in `.ai/execution/adapter-role-mapping.md`.
 
 ## Canonical Source Rule
-- `.ai/agents/*` remains canonical.
-- Child role definitions are derived from canonical role contracts.
+- `.ai/agents/runtime/*.md` is the canonical runtime worker source (16 fixed roles).
+- `.ai/agents/personas/*.md` are inheritable skill/persona docs, not child role definitions.
 - Child contracts must not redefine canonical policy constraints.
 
-## Scope Clarification
-- This file defines delegated execution-time role mapping.
-- Generation-time adapter mapping is defined in `.ai/execution/adapter-role-mapping.md`.
+## Canonical Runtime Roles (16)
+- `backend-developer`
+- `cybersecurity-analyst`
+- `database-administrator`
+- `dev-team-lead`
+- `devops-engineer`
+- `doc-team-lead`
+- `documentation-writer`
+- `frontend-developer`
+- `junior-project-manager`
+- `pr-manager`
+- `project-manager`
+- `project-owner`
+- `qa-specialist`
+- `qa-team-lead`
+- `ui-ux-designer`
+- `web-designer`
 
 ## Baseline Delegated Role Mapping
-- project-manager child -> `.ai/agents/project-manager.md`
-- product-spec child -> `.ai/agents/product-spec.md`
-- architect child -> `.ai/agents/architect.md`
-- backend child -> `.ai/agents/backend.md`
-- frontend child -> `.ai/agents/frontend.md`
-- tester child -> `.ai/agents/qa.md`
-- reviewer child -> `.ai/agents/code-review.md`
-- documentation child -> `.ai/agents/docs.md`
+Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`. Examples:
+- `backend-developer` child → `.ai/agents/runtime/backend-developer.md`
+- `frontend-developer` child → `.ai/agents/runtime/frontend-developer.md`
+- `qa-specialist` child → `.ai/agents/runtime/qa-specialist.md`
+- `qa-team-lead` child → `.ai/agents/runtime/qa-team-lead.md`
+- `pr-manager` child → `.ai/agents/runtime/pr-manager.md`
+- `documentation-writer` child → `.ai/agents/runtime/documentation-writer.md`
+- `dev-team-lead` child → `.ai/agents/runtime/dev-team-lead.md`
+- `project-manager` child → `.ai/agents/runtime/project-manager.md`
+- `project-owner` child → `.ai/agents/runtime/project-owner.md`
 
-## Runtime Alias Normalization
-- runtime-facing `tester` resolves to canonical `qa`
-- runtime-facing `reviewer` resolves to canonical `code-review`
-- runtime-facing `documentation` resolves to canonical `docs`
+## Persona Inheritance
+When a runtime worker operates on a codebase that matches a persona (e.g. `backend-developer` on a Laravel project), the worker inherits the relevant `.ai/agents/personas/<stack>.md` content. Persona files are not spawnable child roles; they augment the runtime worker's prompt only when task detection matches.
 
-## Conditional Role Mapping
-- security child -> `.ai/agents/security.md` when risk/policy requires it.
-- devops child -> `.ai/agents/devops.md` when deployment/ops impact requires it.
-- stack-specialist children map to relevant framework contracts when decomposition requires it.
-- Specialist children (`vue`, `react`, `laravel`, `fastapi`, `node-express`, `python`) are routable only when runtime adapters exist or the runtime can invoke the canonical role explicitly.
-- If a specialist adapter is missing, parent may route through the generic owning adapter (`frontend` or `backend`) only when that generic adapter is available, the task classification allows generic ownership, and the specialist gap is disclosed.
-- Missing required specialist adapters must not silently collapse into parent/main.
+## Conditional Role Participation
+- `cybersecurity-analyst` — when risk/policy or auth/data boundary work requires it.
+- `devops-engineer` — when deployment/ops impact requires it.
+- `database-administrator` — when schema/data-model work is in scope.
+- `ui-ux-designer` — when UI/UX surface design is in scope.
+- `web-designer` — when visual/web-styling implementation is in scope.
+- `junior-project-manager` — when requirements clarification is needed without full Planning Council.
 
-## Planning and Implementation Ordering Rules
-- Discovery/spec roles:
-  - `project-manager` then `product-spec`.
-- Design/handoff role:
-  - `architect` runs only after approved consolidated spec exists.
-- Proposal gate:
-  - parent/orchestrator must halt after planning and before implementation.
-  - required proposal artifacts must exist as repository files before implementation roles run.
-  - explicit user approval is required before any implementation role runs.
-- Implementation roles:
-  - Medium/Large delegated `backend` and `frontend` run only after architect handoff exists.
-  - Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk/scope escalates.
-  - `backend` and `frontend` may run in parallel only when ownership boundaries are explicit.
-- Validation/review/documentation roles:
-  - `tester` validates against approved consolidated spec and acceptance criteria.
-  - `reviewer` runs after tester output is available.
-  - `documentation` runs last, before parent final validation.
-  - when `documentation` is assigned, it must write `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-  - for Tiny/Small code-changing runs where `documentation` is skipped for efficiency, parent/main writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+## Planning and Implementation Ordering
+- **Planning Council** runs first for Medium/Major: `project-owner` (vision/scope), `project-manager` (orchestration), `dev-team-lead` (technical approach), `ui-ux-designer` (if UI surface), `cybersecurity-analyst` (if sensitive).
+- **Proposal gate** — parent halts after planning and before implementation; required proposal artifacts must exist as repository files (see `.ai/execution/artifact-conventions.md`); explicit user approval required before any implementation role runs.
+- **Implementation roles** — `backend-developer`, `frontend-developer`, `database-administrator`, `devops-engineer`, `web-designer` operate within `dev-team-lead` boundaries; may run in parallel only when ownership boundaries are explicit.
+- Tiny/Small targeted runs do not require `SPEC_APPROVED` / `ARCHITECTURE_READY` unless risk/scope escalates.
+- **QA phase** — `qa-specialist` executes; `qa-team-lead` consolidates and owns the Quality Gate.
+- **Business go/no-go** — `project-owner` (risk acceptance) + `project-manager` (release readiness).
+- **PR/release handoff** — `pr-manager` owns commit message, PR body, change summary; `documentation-writer` / `doc-team-lead` update docs.
+- Run-report rule: when `documentation-writer` is assigned, it writes `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`. For Tiny/Small code-changing runs where it is skipped, parent/main writes it.
 
 ## Child Scope Rules
-- Each child receives explicit goals, scope boundaries, and handoff requirements.
-- Planning roles are not broad writers by default.
-- `documentation` owns feature documentation, setup notes, handoff notes, and changelog/readme updates when assigned.
-- `documentation` report artifacts must cover initial runs, remediation runs, final reruns, and non-merge-ready outcomes when applicable.
-- Required run-report content for any code-changing run:
-  - run type,
-  - task summary,
-  - files changed,
-  - agents used,
-  - tests run,
-  - result/status,
-  - remaining risks or skipped validations,
-  - report producer (`documentation` or `parent/main`).
+- Each child receives explicit goals, scope boundaries, ownership, and handoff requirements.
+- Implementation children must not ask the user directly; requirement questions escalate through parent and `project-owner` / `junior-project-manager`.
 - Children should avoid changing files outside assigned ownership.
-- Children should report assumptions, risks, and incomplete checks.
-- Implementation children (`backend`, `frontend`) must not ask the user directly; requirement questions escalate through parent and `product-spec`.
+- Children must report assumptions, risks, and incomplete checks.
 
 ## Non-goals
 - This file does not create or spawn child agents.

@@ -1,214 +1,80 @@
 # Task Classification Contract
 
 ## Purpose
-Classify requested work before selecting planning depth, execution mode, and delegation strategy.
+Classify work before selecting planning depth, delegation strategy, and artifact requirements. See `.ai/policies/risk-classification.md` for risk tiers and `.ai/execution/artifact-conventions.md` for the artifact requirement matrix.
 
 ## Follow-Up Reclassification Rule
-Every follow-up task must be reclassified before execution.
-
-- Follow-up tasks inherit current feature context.
-- Follow-up tasks do not inherit previous delegation decisions.
-- Delegation must be selected from current follow-up classification and risk.
+Every follow-up task is reclassified before execution.
+- Follow-ups inherit feature context, not previous delegation decisions.
+- Delegation is decided from current classification + risk.
 
 ## Classification Criteria
-Evaluate all dimensions before classifying:
-- Scope breadth: files/modules/surfaces touched.
-- Coupling: cross-domain dependencies and contract impact.
-- Risk: security, auth, payment, public API, migration, release impact.
-- Ambiguity: requirement clarity and decision uncertainty.
-- Coordination load: number of roles needed to produce safe output.
+Evaluate all dimensions:
+- **Scope breadth** — files/modules/surfaces touched.
+- **Coupling** — cross-domain dependencies, contract impact.
+- **Risk** — security, auth, payment, public API, migration, release impact (see risk-classification.md).
+- **Ambiguity** — requirement clarity, decision uncertainty.
+- **Coordination load** — number of roles needed.
 
-Code-changing run rule:
-- A run is code-changing when it modifies any repository file (source, tests, configs, docs, workflow contracts, or generated artifacts).
-- Code-changing runs require an audit report artifact at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- Non-code-changing runs (pure Q&A/explanation/search/planning-only with no file changes) do not require an audit report artifact.
+Code-changing run: any run that modifies repository files. Code-changing runs require a run report (`/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`) per artifact-conventions.md.
 
-Requirement ambiguity rule:
-- when blocking ambiguity exists, trigger the Requirement Clarification Gate in `.ai/policies/decision-gates.md` before classification-dependent execution continues.
+## Size / Scope Levels
 
-Review-only task types:
-- Pure review / analysis only:
-  - No repository file changes.
-  - Parent/main allowed.
-  - `reviewer` optional.
-  - No audit artifact required.
-- Review artifact-generating:
-  - Creates/updates review/report/audit/final-report artifacts.
-  - Requires targeted delegation to `reviewer`.
-  - Requires `documentation` when run report/audit/final report artifact is created.
-  - Requires `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- Review + validation:
-  - Review task that also verifies test results, coverage, or validation status.
-  - Requires `reviewer`.
-  - `tester` is required when test interpretation/coverage/validation verification is requested.
-  - `documentation` required when artifacts change.
-- Review + remediation:
-  - Review task that includes requested fixes/remediation work.
-  - Route to remediation flow and relevant implementation agents.
-  - Rerun `tester` -> `reviewer` -> `documentation`.
+| Level | Examples | Default Flow |
+|---|---|---|
+| **Tiny** | typo, rename, one-line fix, doc correction | Implementation only; skip planning roles |
+| **Small** | single endpoint, isolated UI tweak, simple enhancement | Lightweight design note + implementation + review |
+| **Medium** | feature spanning backend/frontend/tests, profile mgmt, payment retry | Planning Council + implementation + QA + docs |
+| **Major** | new product module, payment platform, subscription system, service decomposition, high-risk architecture change | Full 5-phase flow with spec + technical-design + proposal approval gate |
 
-## Levels
+## Confidence Gate (Single Rule)
 
-### Tiny
-Examples:
-- typo fixes
-- variable renames
-- small validation fixes
-- simple docs corrections
+If **any** of the following apply, require an explicit pre-implementation confirmation from the user:
+- Risk ≥ **Medium** (per risk-classification.md), OR
+- Ambiguity is **High** (requirements unclear, multiple valid interpretations), OR
+- Scope touches **authentication, authorization, schema or data model, public API, payments, or deployment/infrastructure**.
 
-Default flow:
-- Parent orchestration
-- Implementation
-- Review
+Otherwise, proceed without a confidence gate.
 
-Default behavior:
-- Parent may handle directly only for non-code-changing Tiny tasks.
-- Skip planning agents (`project-manager`, `product-spec`, `architect`).
-- Code-changing Tiny tasks produce `targeted_required` and use relevant implementation role(s). If the required worker path is unavailable, fallback requires disclosure and explicit approval unless the user said `no subagent` or `main only`.
-- Full delegated mode is normally rejected for Tiny tasks because planning/parallelism is not appropriate unless risk/scope escalates.
-- `documentation` may be skipped for efficiency, but code-changing Tiny runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `documentation` when invoked, otherwise by parent/main).
-- No diagrams required.
+The confirmation may be a single targeted message ("Proceed with approach X for Y? Y/N") and may run inside the same conversation turn. For Major work it escalates to the full proposal approval gate.
 
-### Small
-Examples:
-- single endpoint
-- small isolated UI change
-- export button
-- simple enhancement
+## Delegation Decision Matrix
 
-Default flow:
-- Parent orchestration
-- Lightweight design note
-- Implementation
-- Review
-- Documentation (optional)
+When to delegate vs. main-only.
 
-Default behavior:
-- `architect` only when contract/boundary risk appears.
-- Relevant implementation role(s) are required for code-changing work via targeted delegation.
-- Full delegated mode is normally rejected for Small single-surface tasks unless planning/parallelism is justified by escalated risk/scope.
-- `documentation` is optional for efficiency, but code-changing Small runs still require `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` (written by `documentation` when invoked, otherwise by parent/main).
-- Diagrams optional.
+| Situation | Decision |
+|---|---|
+| Non-code-changing Q&A / search / explanation | Main-only allowed |
+| Pure review/analysis, no artifact output | Main-only allowed; `pr-manager` optional |
+| Code-changing Tiny single-surface | Targeted delegation to one relevant role (`backend-developer`, `frontend-developer`, etc.) |
+| Code-changing Small single-surface | Targeted delegation to one role |
+| Code-changing Small multi-surface | Targeted delegation to disjoint roles (e.g. `backend-developer` + `frontend-developer`) |
+| Review artifact-generating (audit, report, final-report) | Targeted delegation to `pr-manager` + `documentation-writer` (and `qa-specialist` when validation in scope) |
+| Medium feature | Full delegated flow after Planning Council |
+| Major feature / refactor | Full delegated flow with proposal approval gate before implementation |
+| Required worker unavailable | Disclose gap, request approval before sequential simulation; honor `no subagent` / `main only` |
 
-### Small Follow-Up Thresholds
-
-#### Small single-surface follow-up
-Examples:
-- backend-only CORS fix
-- frontend-only copy/UI tweak
-- documentation-only summary
-
-Default:
-- for code-changing runs, use targeted delegation to the relevant implementation role (`backend` for backend-only, `frontend`/framework specialist for frontend-only, `documentation` for documentation-only, `tester` for test-only).
-- parent may handle directly only for non-code-changing runs.
-
-#### Small multi-surface follow-up
-Examples:
-- backend endpoint + frontend view
-- API change + tests
-- UI change + documentation
-
-Default:
-- code-changing runs must use targeted delegation to relevant implementation roles (for example `backend` + `frontend` for cross-layer changes).
-- if required workers are unavailable, fallback requires disclosure and explicit user approval unless the user explicitly says `no subagent` or `main only`.
-
-### Medium
-Examples:
-- feature spanning backend/frontend/tests
-- notification preferences
-- profile management
-- payment retry flow
-
-Default flow:
-- Parent
-- Project Manager
-- Product Spec
-- Architect
-- Backend + Frontend + Tester
-- Reviewer
-- Documentation
-- Parent
-
-Default behavior:
-- Spec-first planning gates are expected.
-- Backend/frontend/tester may run in parallel only after planning outputs are complete.
-- `documentation` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `documentation` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- Diagrams are encouraged.
-
-### Large
-Examples:
-- new product module
-- payment platform integration
-- subscription system
-- service decomposition
-- high-risk architecture change
-
-Default flow:
-- Parent
-- Project Manager
-- Product Spec or PRD
-- Architect or Technical Design
-- Backend + Frontend + Tester
-- Reviewer
-- Documentation
-- Parent Final Validation
-
-Default behavior:
-- Spec-first planning gates are mandatory.
-- Delegation may be used after planning artifacts are approved.
-- `documentation` is required when feature behavior, setup, API, workflow, or decisions changed.
-- `documentation` creates `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- Diagrams are expected when workflows, boundaries, ownership, or API flows are non-trivial.
+Rejection rules (full delegated mode):
+- Tiny/Small single-surface with no parallelism benefit.
+- Heavily coupled changes likely to conflict.
+- Auditability needs a single deterministic trace.
 
 ## Escalation Rules
 Escalate classification upward when any apply:
-- new/changed external contract or public API,
-- auth/authz/sensitive data/payment surface,
-- cross-domain or multi-team impact,
-- migration/rollback complexity,
-- unclear requirements blocking implementation.
-- review-only task expands into remediation implementation across code surfaces.
-
-Clarification precedence:
-- unresolved requirement ambiguity must pass the Requirement Clarification Gate before continuing with classification-driven planning or implementation decisions.
+- New/changed external contract or public API.
+- Auth/authz/sensitive data/payment surface.
+- Cross-domain or multi-team impact.
+- Migration/rollback complexity.
+- Unclear requirements blocking implementation (triggers confidence gate).
+- Review-only task expands into remediation.
 
 ## Downgrade Rules
-Downgrade only when evidence confirms reduced scope:
-- requirement and risk surfaces are narrowed,
-- cross-domain dependencies removed,
-- no meaningful contract/security/ops impact remains.
+Downgrade only when evidence confirms reduced scope: narrowed requirements, removed cross-domain deps, no contract/security/ops impact.
 
-## Planning-Agent Skip Rules
-`project-manager` and `product-spec` may be skipped only for Tiny/Small when:
-- requirements are explicit,
-- acceptance criteria are already testable,
-- no medium+ risk trigger exists.
+## Planning-Role Skip Rules
+- `project-manager` and `project-owner` may be skipped for Tiny/Small when requirements are explicit and risk is Low.
+- `dev-team-lead` may be skipped when no boundary, data contract, or architecture decision is required.
+- `documentation-writer` may be skipped for Tiny work; code-changing runs still produce the run report (written by parent/main if no doc role is invoked).
 
-`architect` may be skipped only when:
-- no boundary, data contract, or architecture decision is required.
-
-`documentation` may be skipped only when:
-- task is Tiny and not explicitly requested, or
-- task is Small with no behavior/setup/API/workflow/decision changes.
-- When skipped in a code-changing Tiny/Small run, parent/main must still create `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-
-## Planning-Agent Rerun Rules for Follow-Ups
-Do not rerun `project-manager`/`product-spec`/`architect` for Tiny/Small follow-ups unless at least one applies:
-- scope changes,
-- acceptance criteria change,
-- architecture changes,
-- workflow changes significantly,
-- user explicitly asks for re-planning.
-
-## Spec-First Gate Rules
-Spec-first gates are mandatory for Medium/Large:
-1. Planning output exists (`project-manager` scope/handoff).
-2. Product specification/PRD exists.
-3. Technical design decision exists (`architect` or technical-design artifact).
-
-Implementation agents must not begin Medium/Large execution before these gates pass.
-
-Tiny/Small targeted exception:
-- Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` by default.
-- Escalate into spec-first gates only when risk/scope, requirement ambiguity, external contracts, architecture changes, or explicit user request makes the task Medium/Large or planning-gated.
+## Planning Reuse Rule (Follow-Ups)
+Do not rerun `project-manager` / `project-owner` / `dev-team-lead` for Tiny/Small follow-ups unless scope, acceptance criteria, architecture, or workflow changes significantly, or the user explicitly requests re-planning.

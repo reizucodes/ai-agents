@@ -1,92 +1,79 @@
 # Adapter Role Mapping Contract
 
 ## Purpose
-Define generation-time mapping from canonical role contracts to runtime adapter candidates.
+This file is the single canonical source of the 16-role list used by all runtime adapter generation workflows (`build-claude-agents`, `build-codex-agents`, `build-opencode-agents`). Every build workflow MUST consume this file as its authoritative role list. Build workflows MUST NOT generate adapters from `.ai/agents/personas/*` — those files are inheritance-only skill docs read on demand by matching runtime agents.
 
 ## Scope
 - Applies only to runtime adapter generation and adapter drift validation tasks.
 - Does not apply to normal execution tasks.
-- Includes Codex runtime orchestration bootstrap exposure for main-session routing.
+- Includes runtime orchestration bootstrap exposure for main-session routing.
 
 ## Canonical Rule
-- `.ai/agents/*` remains canonical.
-- Adapter mappings are derivative and selective.
-- Not every role file must generate an adapter.
+- `.ai/agents/runtime/*.md` is the canonical source of runtime workers (16 files).
+- `.ai/agents/personas/*.md` is the canonical source of stack/persona skill docs (6 files) and is NEVER an adapter source.
+- Adapter generation must produce exactly one adapter per canonical runtime file, with matching filename (e.g. `backend-developer.md` -> `.claude/agents/backend-developer.md`).
 
-## Default Generated Roles
-Generate adapters by default for:
-- project-manager (`.ai/agents/project-manager.md`)
-- product-spec (`.ai/agents/product-spec.md`)
-- architect (`.ai/agents/architect.md`)
-- backend (`.ai/agents/backend.md`)
-- frontend (`.ai/agents/frontend.md`)
-- tester from qa (`.ai/agents/qa.md`)
-- reviewer from code-review (`.ai/agents/code-review.md`)
-- documentation from docs (`.ai/agents/docs.md`)
+## Canonical Runtime Role Set (16)
 
-## Runtime Alias Normalization
-- runtime-facing `tester` resolves to canonical `qa`
-- runtime-facing `reviewer` resolves to canonical `code-review`
-- runtime-facing `documentation` resolves to canonical `docs`
+| Canonical Filename | Runtime Name | Mode | Description | Default Phase(s) |
+|---|---|---|---|---|
+| `project-manager.md` | `project-manager` | primary | Orchestrator. Owns delegation, classification, sequencing, and final assembly across all phases. | Planning Council, Implementation, QA, Business Go/No-Go, Commit/PR |
+| `project-owner.md` | `project-owner` | subagent | Vision/scope owner. Provides discovery, business intent, and final risk acceptance. | Planning Council, Business Go/No-Go |
+| `junior-project-manager.md` | `junior-project-manager` | subagent | Requirements-clarification assistant. Captures questions, drives user clarification loops. | Planning Council |
+| `dev-team-lead.md` | `dev-team-lead` | subagent | Technical-approach owner. Defines architecture boundaries, contracts, and implementation handoff. | Planning Council, Implementation |
+| `backend-developer.md` | `backend-developer` | subagent | Backend implementation worker for APIs, services, persistence, business logic. | Implementation |
+| `frontend-developer.md` | `frontend-developer` | subagent | Frontend implementation worker for UI, state, integration, components. | Implementation |
+| `database-administrator.md` | `database-administrator` | subagent | Schema/migration owner. Models data, plans migrations, owns rollback notes. | Implementation |
+| `devops-engineer.md` | `devops-engineer` | subagent | Infrastructure, CI/CD, deployment, and release pipeline owner. | Implementation, Business Go/No-Go |
+| `ui-ux-designer.md` | `ui-ux-designer` | subagent | UX flow, interaction, accessibility, and design-system owner. | Planning Council, Implementation |
+| `web-designer.md` | `web-designer` | subagent | Visual/surface implementation for marketing pages and content surfaces. | Implementation |
+| `cybersecurity-analyst.md` | `cybersecurity-analyst` | subagent | Threat modeling, security review, sensitive-change participation. | Planning Council, QA |
+| `qa-specialist.md` | `qa-specialist` | subagent | Test execution: cases, fixtures, repros, coverage checks. | QA |
+| `qa-team-lead.md` | `qa-team-lead` | subagent | QA consolidation and Quality Gate owner. | QA |
+| `pr-manager.md` | `pr-manager` | subagent | Commit/PR handoff owner: commit message, PR body, change summary, doc-coordination. | Commit/PR |
+| `documentation-writer.md` | `documentation-writer` | subagent | Doc author for feature docs, setup notes, changelog/readme updates. | Commit/PR |
+| `doc-team-lead.md` | `doc-team-lead` | subagent | Documentation consolidation and doc-quality owner. | Commit/PR |
 
-## Opt-In Roles
-Do not generate by default:
-- security (generate only when explicitly requested)
-- devops (generate only when explicitly requested)
-- specialist framework/runtime roles: `vue`, `react`, `laravel`, `fastapi`, `node-express`, `python` (generate only when explicitly requested or when a consumer project requires specialist routing)
-- database and other specialized adapters (generate only when explicitly requested)
+`project-manager` is the only `primary`. The other 15 are `subagent`.
 
-Rationale:
-- Cross-cutting planning roles are required for Medium/Large planning output.
-- Security and operations roles are risk/need driven and not universal.
-- Generic `frontend` and `backend` adapters are the default owners for Tiny/Small code-changing work. Specialist adapters are used only when generated and selected by classification/preflight.
+## Persona Inheritance (Not Adapter Sources)
 
-## Mapping Table
+The following persona files at `.ai/agents/personas/*.md` are NEVER generated as runtime adapters. They are loaded on demand by matching runtime agents when task detection identifies the stack in the consumer project.
 
-| Source Role File | Adapter Name | Adapter Description | Default Write Scope | Default Forbidden Scope | Delegation Notes |
-|---|---|---|---|---|---|
-| `.ai/agents/project-manager.md` | `project-manager` | Planning coordinator for classification, milestones, and handoffs before implementation. | Planning artifacts only. | Broad feature implementation ownership by default. | Runs before implementation for Medium/Large tasks. |
-| `.ai/agents/product-spec.md` | `product-spec` | PRD/specification owner for scope, stories, criteria, constraints, and final consolidated spec. | Spec artifacts only. | Broad feature implementation ownership by default. | Runs after project-manager; drives user clarification loop and consolidated spec approval before architecture/implementation. |
-| `.ai/agents/architect.md` | `architect` | Technical design owner for architecture boundaries, contracts, and executor handoff package. | Technical-design artifacts only. | Broad feature implementation ownership by default. | Runs only after approved consolidated spec and before any implementation executors. |
-| `.ai/agents/backend.md` | `backend` | Backend implementation worker for API/service/data tasks under parent constraints. | Backend modules, service layer, backend tests. | Frontend UI modules, deployment/ops files, unrelated domains. | Medium/Large delegated runs only after approved consolidated spec + architect handoff; Tiny/Small targeted runs are exempt unless risk/scope escalates. May run in parallel with frontend when ownership boundaries are explicit. |
-| `.ai/agents/frontend.md` | `frontend` | Frontend implementation worker for UI/state/integration tasks under parent constraints. | Frontend modules, UI tests, component state logic. | Backend persistence/migration files, deployment/ops files, unrelated domains. | Medium/Large delegated runs only after approved consolidated spec + architect handoff; Tiny/Small targeted runs are exempt unless risk/scope escalates. May run in parallel with backend when ownership boundaries are explicit. |
-| `.ai/agents/qa.md` | `tester` | Validation worker focused on test coverage, repro steps, and risk checks against approved spec. | Test files, test fixtures, validation artifacts. | Product logic outside test scope unless parent reassigns. | Runs after implementation outputs are available; validates against approved consolidated spec and acceptance criteria. |
-| `.ai/agents/code-review.md` | `reviewer` | Review worker focused on correctness, maintainability, risk, and regressions. | Review notes and scoped remediation when assigned. | Broad feature implementation ownership by default. | Runs after tester outputs are available. |
-| `.ai/agents/docs.md` | `documentation` | Documentation worker for feature docs, setup notes, handoffs, changelog/readme updates, and run-specific docs report artifacts when assigned. | Documentation artifacts only. | Broad feature implementation ownership by default. | Runs last after implementation, tester, and reviewer outputs; before parent final validation; writes a run-specific docs report artifact for each documentation run. |
+| Persona File | Inheriting Runtime Roles | Inheritance Trigger |
+|---|---|---|
+| `personas/laravel.md` | `backend-developer` | Laravel/PHP backend detected |
+| `personas/fastapi.md` | `backend-developer` | FastAPI/Python web backend detected |
+| `personas/node-express.md` | `backend-developer` | Node/Express backend detected |
+| `personas/python.md` | `backend-developer` | Generic Python backend detected |
+| `personas/react.md` | `frontend-developer`, `web-designer` | React frontend or React-rendered web surface detected |
+| `personas/vue.md` | `frontend-developer`, `web-designer` | Vue frontend or Vue-rendered web surface detected |
+
+Persona inheritance rules:
+- `backend-developer` may inherit `laravel`, `fastapi`, `node-express`, or `python` based on the detected backend stack.
+- `frontend-developer` may inherit `vue` or `react` based on detected frontend framework.
+- `web-designer` may inherit `vue` or `react` when the marketing/web surface renders through a JS framework.
+- Multiple personas may apply if the project spans multiple stacks; the runtime agent loads only the personas matched by its current task.
+- Build workflows MUST NOT emit `.claude/agents/laravel.md`, `.codex/agents/vue.toml`, or any other adapter file derived from a persona file.
 
 ## Mapping Constraints
-- Adapter names must be stable and unique.
-- Mappings must include explicit source-role pointers.
-- Mappings must preserve policy compatibility and parent gate enforcement.
-- Mapping changes require drift-aware regeneration for affected adapters.
-- Parent/orchestrator runtime exposure rule:
-  - Do not map parent/orchestrator as a normal child implementation adapter role.
-  - Expose parent orchestration behavior through Codex runtime bootstrap artifact `.ai/runtimes/codex/orchestration-bootstrap.md`.
-- Display-name strategy for generated adapters:
-  - Use nickname candidates from `.ai/runtimes/codex/nickname-strategy.md`.
-  - Runtime-facing display format should be `<nickname> [<canonical-role>]`.
-  - Canonical role remains authoritative for routing/reporting.
-- Relevant implementation agent requirement for code-changing runs:
-  - frontend-only: `frontend`; generated framework specialist (`vue`, `react`) may be additionally required when classification selects specialist ownership,
-  - backend-only: `backend`; generated framework specialist (`fastapi`, `laravel`, `node-express`, `python`) may be additionally required when classification selects specialist ownership,
-  - cross-layer: both `backend` and `frontend`,
-  - documentation-only: `documentation`,
-  - test-only: `tester`.
-- Specialist adapter fallback:
-  - If `vue`, `react`, `fastapi`, `laravel`, `node-express`, or `python` is selected but missing, parent may route through `frontend` or `backend` only when that generic adapter is available and sufficient for the classified scope.
-  - The fallback must be disclosed in preflight/final output.
-  - If the specialist role is required by risk, framework-specific contract, or user request, missing adapter sets `fallback_requires_approval: true` and parent must request approval before sequential role simulation or generic fallback.
+- Adapter names must match the canonical runtime filename exactly (kebab-case, `.md` stripped).
+- Adapter names must be stable and unique within each runtime output directory.
+- Mappings must include explicit source-role pointers to `.ai/agents/runtime/<name>.md`.
+- Mappings must preserve policy compatibility and parent gate enforcement defined in `.ai/policies/approval-levels.md`.
+- Mapping changes require drift-aware regeneration for affected adapters per `.ai/execution/adapter-drift-validation.md`.
+- Parent/orchestrator runtime exposure rule: expose parent orchestration behavior through runtime bootstrap artifacts (`.ai/runtimes/<runtime>/orchestration-bootstrap.md` or equivalent), not through duplicated child adapters.
 
-## Planning and Parallelism Rules
-- Discovery/spec-first order for Medium/Large delegated runs:
-  - `project-manager` -> `product-spec` -> approved consolidated spec -> `architect`.
-- Planning agents are not broad writers.
-- Medium/Large delegated `backend` and `frontend` must not run before approved consolidated spec and architect handoff.
-- Tiny/Small targeted `backend`, `frontend`, and `tester` runs do not require approved consolidated spec or architect handoff unless risk/scope escalates.
-- `backend` and `frontend` may run in parallel only after ownership boundaries are explicit.
-- If implementation discovers requirement ambiguity, escalate through parent/`product-spec` (no direct user questioning by implementation children).
-- `tester` runs after implementation and validates against approved consolidated spec + acceptance criteria.
-- `reviewer` runs after tester.
-- `documentation` runs last before parent final validation.
-- When `documentation` runs, persist a run-specific docs report artifact (including remediation/final-rerun and non-merge-ready run status when applicable).
-- For Tiny/Small code-changing runs where `documentation` is skipped for efficiency, parent/main must still persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+## Phase Mapping (5-Phase Flow)
+- Planning Council: `project-owner`, `project-manager`, `dev-team-lead`, `ui-ux-designer` (when UI surface), `cybersecurity-analyst` (when sensitive). `junior-project-manager` participates for clarification.
+- Implementation: `backend-developer`, `frontend-developer`, `database-administrator`, `devops-engineer`, `web-designer` as needed under `dev-team-lead` boundaries.
+- QA: `qa-specialist` executes; `qa-team-lead` consolidates and owns the Quality Gate. `cybersecurity-analyst` participates for sensitive changes.
+- Business Go/No-Go: `project-owner` (final risk acceptance), `project-manager` (release readiness), `devops-engineer` (deployment readiness when applicable).
+- Commit/PR: `pr-manager` owns the handoff; coordinates `documentation-writer`/`doc-team-lead` for doc updates.
+
+## Build Workflow Consumption
+- `.ai/workflows/build-claude-agents.md` reads this file and emits exactly 16 adapters at `.claude/agents/<name>.md`.
+- `.ai/workflows/build-codex-agents.md` reads this file and emits exactly 16 adapters at `.codex/agents/<name>.toml`.
+- `.ai/workflows/build-opencode-agents.md` reads this file and emits exactly 16 adapters at `.opencode/agents/<name>.md`.
+
+All three build workflows MUST refuse to generate any adapter whose name does not appear in the canonical role set above.

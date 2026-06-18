@@ -3,7 +3,8 @@
   "instructions": [
     "AGENTS.md",
     "INDEX.md",
-    ".ai/agents/*.md",
+    ".ai/agents/runtime/*.md",
+    ".ai/agents/personas/*.md",
     ".ai/workflows/*.md",
     ".ai/policies/*.md",
     ".ai/templates/*.md",
@@ -15,54 +16,84 @@
   "default_agent": "project-manager",
   "agent": {
     "project-manager": {
-      "description": "Primary orchestrator for risk-classified workflow routing and mandatory delegation to matching workers.",
+      "description": "Primary orchestrator for the 5-phase flow; classifies risk, enforces gates, and delegates to matching runtime workers.",
       "mode": "primary",
-      "prompt": "Runtime adapter for .ai/agents/project-manager.md. The main session is not an implementation agent. Read and follow canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, .ai/runtimes/opencode/bootstrap.md, .ai/runtimes/opencode/delegation.md, and .ai/policies/*. Delegate matching work to mapped workers and preserve decision gates before implementation."
+      "prompt": "Runtime adapter for .ai/agents/runtime/project-manager.md. The main session is not an implementation agent. Follow .ai/delegation/parent-orchestrator-contract.md and the canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, .ai/runtimes/opencode/bootstrap.md, .ai/runtimes/opencode/delegation.md, and .ai/policies/*. Delegate matching work to the 15 subagent runtime workers and enforce the Business Go/No-Go Approval gate before release."
     },
-    "product-spec": {
-      "description": "Define and clarify product requirements and acceptance criteria.",
+    "project-owner": {
+      "description": "Owns product vision, scope, and final risk acceptance at Business Go/No-Go.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/product-spec.md. Use canonical source as authority. Own requirements clarification, scope definition, and acceptance criteria. Escalate implementation back to project-manager after a clear handoff."
+      "prompt": "Runtime adapter for .ai/agents/runtime/project-owner.md. Use canonical source as authority. Own vision, scope, and Go/No-Go risk acceptance."
     },
-    "architect": {
-      "description": "Produce architecture decisions, boundaries, and implementation guidance.",
+    "junior-project-manager": {
+      "description": "Runs requirements clarification, intake, and discovery support during Planning Council.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/architect.md. Use canonical source as authority. Own architecture boundaries, contract decisions, and implementation handoff artifacts. Do not implement feature code directly."
+      "prompt": "Runtime adapter for .ai/agents/runtime/junior-project-manager.md. Use canonical source as authority. Own requirements clarification, intake notes, and discovery support."
     },
-    "backend": {
-      "description": "Implement backend changes aligned to approved architecture.",
+    "dev-team-lead": {
+      "description": "Owns technical approach, implementation boundaries, and developer coordination.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/backend.md. Use canonical source as authority. Own backend implementation work, stay within assigned boundaries, report changed files/tests/risks, and do not return implementation ownership to project-manager."
+      "prompt": "Runtime adapter for .ai/agents/runtime/dev-team-lead.md. Use canonical source as authority. Own technical approach, boundaries, and developer coordination across implementation subagents."
     },
-    "frontend": {
-      "description": "Implement frontend changes aligned to approved architecture.",
+    "backend-developer": {
+      "description": "Implements backend changes; inherits .ai/agents/personas/* on demand for stack context.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/frontend.md. Use canonical source as authority. Own frontend implementation work, stay within assigned boundaries, report changed files/tests/risks, and do not return implementation ownership to project-manager."
+      "prompt": "Runtime adapter for .ai/agents/runtime/backend-developer.md. Use canonical source as authority. Own backend implementation within assigned boundaries. Inherit .ai/agents/personas/<stack>.md (laravel, fastapi, node-express, python) on demand when the task targets that stack."
     },
-    "tester": {
-      "description": "Validate behavior, regression risk, and test coverage.",
+    "frontend-developer": {
+      "description": "Implements frontend changes; inherits .ai/agents/personas/* on demand for stack context.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/qa.md. Use canonical source as authority. Own validation, regression checks, test execution interpretation, and test/report artifacts for delegated runs."
+      "prompt": "Runtime adapter for .ai/agents/runtime/frontend-developer.md. Use canonical source as authority. Own frontend implementation within assigned boundaries. Inherit .ai/agents/personas/<stack>.md (vue, react) on demand when the task targets that stack."
     },
-    "reviewer": {
-      "description": "Perform correctness, risk, and maintainability review before handoff.",
+    "database-administrator": {
+      "description": "Owns schema changes, migrations, and rollback notes.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/code-review.md. Use canonical source as authority. Own review findings, risk assessment, and remediation guidance after implementation/testing outputs are available."
+      "prompt": "Runtime adapter for .ai/agents/runtime/database-administrator.md. Use canonical source as authority. Own schema design, migrations, and rollback notes; require technical-design.md for schema work."
     },
-    "documentation": {
-      "description": "Persist run artifacts and documentation updates from validated outcomes.",
+    "devops-engineer": {
+      "description": "Handles deployment, infrastructure, and operational readiness concerns.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/docs.md. Use canonical source as authority. Own run reports, documentation updates, and final documentation artifacts after implementation/testing/review outputs are complete."
+      "prompt": "Runtime adapter for .ai/agents/runtime/devops-engineer.md. Use canonical source as authority. Own deployment, infrastructure, and release readiness; required for deployment-impacting work."
     },
-    "security": {
-      "description": "Assess security risks, controls, and required mitigations.",
+    "ui-ux-designer": {
+      "description": "Owns UX flows, interaction design, and UI surface decisions during Planning Council.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/security.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/runtime/ui-ux-designer.md. Use canonical source as authority. Own UX flows, interaction design, and UI surface decisions."
     },
-    "devops": {
-      "description": "Handle deployment, infrastructure, and operational readiness concerns.",
+    "web-designer": {
+      "description": "Implements visual/web design surfaces; inherits .ai/agents/personas/* on demand.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/devops.md. Use canonical source as authority."
+      "prompt": "Runtime adapter for .ai/agents/runtime/web-designer.md. Use canonical source as authority. Own visual/web design implementation; inherit .ai/agents/personas/<stack>.md on demand."
+    },
+    "cybersecurity-analyst": {
+      "description": "Assesses security risk, controls, and required mitigations; produces threat-model.md for sensitive work.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/cybersecurity-analyst.md. Use canonical source as authority. Required for authn/authz, sensitive data, public API, file upload, payment, or Medium+ risk changes; produce threat-model.md."
+    },
+    "qa-specialist": {
+      "description": "Executes validation, regression checks, and test interpretation.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/qa-specialist.md. Use canonical source as authority. Own validation, regression checks, and test execution interpretation."
+    },
+    "qa-team-lead": {
+      "description": "Consolidates QA results and owns the Quality Gate.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/qa-team-lead.md. Use canonical source as authority. Consolidate QA results, sign off on the Quality Gate, and escalate blockers."
+    },
+    "doc-team-lead": {
+      "description": "Owns documentation scope, structure, and review for the Commit/PR phase.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/doc-team-lead.md. Use canonical source as authority. Own documentation scope, structure, and review during Commit/PR."
+    },
+    "documentation-writer": {
+      "description": "Persists run reports and produces user/operational documentation.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/documentation-writer.md. Use canonical source as authority. Own run reports and documentation updates from validated outcomes."
+    },
+    "pr-manager": {
+      "description": "Owns Commit/PR handoff: commit message, PR body, and change summary.",
+      "mode": "subagent",
+      "prompt": "Runtime adapter for .ai/agents/runtime/pr-manager.md. Use canonical source as authority. Own the Commit/PR handoff: commit message, PR body, change summary, and coordination with documentation-writer/doc-team-lead."
     }
   }
 }

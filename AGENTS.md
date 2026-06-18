@@ -64,8 +64,6 @@ All agents must return output in this order:
 
 ## Governance Policy References
 - `.ai/policies/approval-levels.md`
-- `.ai/policies/decision-gates.md`
-- `.ai/policies/runtime-safety.md`
 - `.ai/policies/quality-gates.md`
 - `.ai/policies/risk-classification.md`
 - `.ai/policies/definition-of-done.md`
@@ -74,35 +72,42 @@ All agents must return output in this order:
 All agents and workflows must apply these policies consistently.
 
 ## Workflow Scaling Philosophy
-Scale process according to risk:
-- Fast path for small work.
-- Structured path for complex work.
-- Security path for sensitive work.
+Scale process according to risk using the same 5-phase flow for every workflow:
+**Planning Council -> Implementation -> QA -> Business Go/No-Go -> Commit/PR.**
+Tiny/Small work collapses Planning Council to `project-manager` only and skips required artifacts; Medium work runs the full council with `feature-spec.md` + run-report; Major / security-sensitive / deployment-impacting work adds `technical-design.md`, `threat-model.md`, and a proposal review package as required by `.ai/execution/artifact-conventions.md`.
 
-Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, and agent participation by change size.
+Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, agent participation, and artifact requirements by change size.
 
 ## Orchestration Baseline
-- The main session is not an implementation agent.
-- Parent/main agent remains the orchestrator, dispatcher, integrator, reviewer, and summarizer.
-- When a suitable specialist exists, delegation is required.
-- Direct implementation by parent/main when a suitable specialist exists is a delegation regression.
-- Parent-only implementation is allowed only when:
-  - the user explicitly says `no subagent` or `main only`,
-  - the required specialist is unavailable, fallback is disclosed, and the user explicitly approves the fallback,
-  - or the task is pure non-code-changing analysis/review work.
-- Planning completion is not implementation approval.
-- When planning gates apply, implementation must not start until:
-  - required proposal artifacts exist as repository files,
-  - parent/main presents a consolidated proposal review package using `.ai/templates/proposal-review-package.md`,
-  - user gives explicit approval.
-- `.ai/agents/*` remains the canonical source of specialist role contracts.
+- The main session is not an implementation agent. `project-manager` is the primary orchestrator; the other 15 canonical roles run as subagents.
+- Canonical runtime roles: `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`. Contracts live in `.ai/agents/runtime/*`.
+
+## Prompt Routing Contract (Unconditional)
+Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+1. **Classify** — main session classifies the task (size, risk, code-changing or not).
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
+3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
+4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+
+This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of a generated adapter file does not permit inline implementation; it requires disclosure and a halt.
+
+- When a suitable specialist exists, delegation is required. Direct implementation by parent/main when a matching runtime role exists is a delegation regression.
+- Parent-only implementation is allowed only when the user explicitly says `no subagent` or `main only`, or when the task is pure non-code-changing analysis.
+- Planning completion is not implementation approval. When the Business Go/No-Go gate applies, implementation must not start until required artifacts exist, `project-manager` presents a consolidated proposal review package using `.ai/templates/proposal-review-package.md`, and the user gives explicit approval.
+- The three decision-gate types are defined in `.ai/policies/approval-levels.md`:
+  - **Auto** — runtime proceeds, no human input.
+  - **Recommendation** — present options, default to safe path, log decision.
+  - **Approval** — halt and require explicit user approval before proceeding.
 - Execution mode is runtime metadata only; it does not decide whether delegation is required.
-- Parent/main must not implement directly when a suitable specialist exists unless one of the allowed exceptions above applies.
 - Parent/main must not claim delegation when execution was sequential role simulation.
 
+## Persona Inheritance
+- `.ai/agents/personas/*` (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) are skill/stack docs, not runtime workers.
+- `backend-developer`, `frontend-developer`, and `web-designer` inherit the matching persona on demand when the task targets that stack. Personas are never spawned as separate agents and never generated as runtime adapters.
+
 ## Security and Product Discovery
-- Engage `product-spec` before architecture when requirements are unclear or incomplete.
-- Engage `security` when any of the following apply:
+- Engage `project-owner` (vision/scope) and `junior-project-manager` (requirements clarification) during Planning Council when requirements are unclear or incomplete.
+- Engage `cybersecurity-analyst` when any of the following apply:
   - authentication or authorization changes,
   - sensitive data handling,
   - public API exposure,

@@ -27,7 +27,7 @@ Agents must:
 - Redact sensitive values when summarizing configs/logs.
 - Avoid generating fake "realistic" credentials that could be mistaken as valid.
 - Warn when unsafe secret handling is detected.
-- Refer to approval and runtime safety policies before risky secret operations.
+- Refer to `.ai/policies/approval-levels.md` (Approval gate) before risky secret operations; involve `cybersecurity-analyst` for any rotation or credential handling.
 
 ## Practical Examples
 - Safe:

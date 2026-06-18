@@ -1,3 +1,5 @@
+> **Persona reference** — This is a stack/skill persona inherited on demand by runtime agents (see `.ai/agents/runtime/*.md`). It is NOT a runtime adapter source. Build workflows do not generate adapter files from this directory.
+
 # Laravel Agent
 
 ## Role
@@ -24,7 +26,6 @@ Senior Laravel engineer for PHP 8.2+ backend design and implementation.
   - `.ai/policies/risk-classification.md`
   - `.ai/policies/quality-gates.md`
   - `.ai/policies/approval-levels.md`
-  - `.ai/policies/runtime-safety.md`
   - `.ai/policies/definition-of-done.md`
 
 ## Expected Output Format

@@ -13,7 +13,8 @@ Define OpenCode-specific adapter schema constraints for generated markdown agent
 - `ai-agents` framework source repository must not contain generated `.opencode/agents/*` unless explicit unsafe diagnostic override is provided.
 
 ## Canonical Source Rule
-- `.ai/agents/*` is canonical.
+- `.ai/agents/runtime/*.md` is the canonical source of runtime adapter contracts (exactly 16 files; see `.ai/execution/adapter-role-mapping.md`).
+- `.ai/agents/personas/*.md` are NEVER adapter sources; they are inheritance-only skill docs.
 - OpenCode adapter files are derivative runtime artifacts only.
 - Generated adapters must not replace canonical role contracts.
 
@@ -50,31 +51,48 @@ Required pattern:
 - "If this adapter conflicts with the canonical role contract, follow the canonical role contract"
 
 ## Generation Scope Rule
-Default generated OpenCode adapter set mirrors established Claude/Codex orchestration-level generation strategy:
-- `project-manager`
-- `product-spec`
-- `architect`
-- `backend`
-- `frontend`
-- `tester`
-- `reviewer`
-- `documentation`
+The default generated OpenCode adapter set is the canonical 16-role set defined in `.ai/execution/adapter-role-mapping.md`:
+- `backend-developer`
+- `cybersecurity-analyst`
+- `database-administrator`
+- `dev-team-lead`
+- `devops-engineer`
+- `doc-team-lead`
+- `documentation-writer`
+- `frontend-developer`
+- `junior-project-manager`
+- `pr-manager`
+- `project-manager` (primary)
+- `project-owner`
+- `qa-specialist`
+- `qa-team-lead`
+- `ui-ux-designer`
+- `web-designer`
 
-Optional (opt-in by explicit request/policy):
-- `security`
-- `devops`
-- `database` (only if canonical role exists)
+`project-manager` is generated with `mode: primary`. The other 15 are `mode: subagent`.
 
-Do not generate runtime-native framework specialist adapters unless the canonical runtime strategy is explicitly changed.
+Do not generate runtime-native framework specialist adapters. Persona files at `.ai/agents/personas/{laravel,fastapi,node-express,python,react,vue}.md` are NEVER generated as `.opencode/agents/*.md`; they are loaded on demand by `backend-developer`, `frontend-developer`, and `web-designer` per the persona inheritance rules.
+
+## Persona Inheritance
+For `backend-developer`, `frontend-developer`, and `web-designer`, the adapter body must include a directive that the agent loads `.ai/agents/personas/<stack>.md` on demand:
+- `backend-developer`: laravel, fastapi, node-express, python
+- `frontend-developer`: react, vue
+- `web-designer`: react, vue (when surface renders through a JS framework)
+
+Persona files are never copied into the adapter body and never generated as `.opencode/agents/*.md`.
 
 ## Validation Rules
-1. file path under `.opencode/agents/`
-2. first line is `---` (frontmatter starts at byte 0)
-3. metadata block present with all required keys
-4. metadata block appears after frontmatter (never before frontmatter)
-5. valid timestamp and fingerprint format
-6. canonical source file exists
-7. frontmatter includes `description` and `mode`
-8. body includes canonical-first required statements
-9. no full canonical-role duplication
-10. names map to canonical roles only
+1. exactly 16 outputs under `.opencode/agents/`, names match `.ai/execution/adapter-role-mapping.md`
+2. no outputs derived from `.ai/agents/personas/*`
+3. file path under `.opencode/agents/`
+4. first line is `---` (frontmatter starts at byte 0)
+5. metadata block present with all required keys
+6. metadata block appears after frontmatter (never before frontmatter)
+7. valid timestamp and fingerprint format
+8. canonical source file at `.ai/agents/runtime/<name>.md` exists
+9. frontmatter includes `description` and `mode`
+10. `mode: primary` only on `project-manager`; all others `mode: subagent`
+11. body includes canonical-first required statements
+12. no full canonical-role duplication
+13. persona inheritance directive present for `backend-developer`, `frontend-developer`, `web-designer`
+14. names map to canonical runtime roles only
