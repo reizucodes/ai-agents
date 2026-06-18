@@ -1,5 +1,12 @@
 # AI Agents Root Instructions
 
+## Hard Rules
+- **HARD RULE**: The main session MUST NOT write, edit, create, or delete any files.
+- **HARD RULE**: The main session MUST NOT implement code directly under any circumstance.
+- **HARD RULE**: If no suitable agent exists, HALT and disclose — do not implement inline.
+
+These rules are unconditional. No classification outcome, execution mode, missing adapter, or runtime limitation overrides them. The only exception is an explicit `no subagent` / `main only` instruction from the user.
+
 ## Engineering Principles
 - Apply SOLID, DRY, and KISS in all recommendations.
 - Prefer maintainability and testability over clever abstractions.
