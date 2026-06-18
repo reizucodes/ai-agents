@@ -92,8 +92,8 @@ Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, age
 ## Prompt Routing Contract (Unconditional)
 Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
-3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
+3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. For Small work PM runs a lightweight council (PM + `dev-team-lead`) and makes all targeting decisions for specialist delegation — the main session does not target specialists for Small work. Main session does not sequence council members, does not plan beyond classification, and does not implement.
 4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
 
 This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of a generated adapter file does not permit inline implementation; it requires disclosure and a halt.
