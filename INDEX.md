@@ -5,319 +5,190 @@ This library is risk-scaled: use the lightest process that still protects qualit
 ## Runtime Entry
 Preferred initialization order:
 1. `AGENTS.md`
-2. `.ai/context/project-intelligence.md` (if present)
-3. Other relevant `.ai/context/*` files
-4. `.ai/execution/*` and `.ai/delegation/*` (execution contracts)
-5. Relevant policies
-6. Relevant workflow
-7. Relevant agent
+2. `INDEX.md`
+3. `.ai/context/project-intelligence.md` (if present)
+4. Other relevant `.ai/context/*` files
+5. `.ai/execution/*` and `.ai/delegation/*` (execution contracts, excluding adapter-only files)
+6. `.ai/agents/runtime/*` (canonical runtime role contracts)
+7. Relevant policies, then the relevant workflow
 8. Target codebase inspection as needed
 
-Adapter-contract routing rule:
-- Do not load `.ai/execution/runtime-adapter-contract.md` during normal startup.
-- Do not load `.ai/execution/adapter-role-mapping.md` during normal startup.
-- Do not load `.ai/execution/adapter-drift-validation.md` during normal startup.
-- Do not load `.ai/runtimes/codex/adapter-schema.md` during normal startup.
-- Do not load `.ai/runtimes/codex/nickname-strategy.md` during normal startup.
-- Do not load `.ai/runtimes/claude/adapter-schema.md` during normal startup.
-- Do not load `.ai/runtimes/claude/tool-mapping.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/adapter.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/adapter-schema.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/agent-mapping.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/workflow-mapping.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/command-mapping.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/delegation.md` during normal startup.
-- Do not load `.ai/runtimes/opencode/validation.md` during normal startup.
-- Do not load `.ai/workflows/build-codex-agents.md` during normal startup.
-- Do not load `.ai/workflows/build-claude-agents.md` during normal startup.
-- Do not load `.ai/workflows/build-opencode-agents.md` during normal startup.
-- Load `.ai/runtimes/codex/orchestration-bootstrap.md` during Codex main-session startup when present.
-- Load `.ai/runtimes/claude/orchestration-bootstrap.md` during Claude main-session startup when present.
-- Load `opencode.json` and `.ai/runtimes/opencode/bootstrap.md` during OpenCode startup when present.
-- Load adapter contracts only when the user explicitly asks to:
-  - build Codex agents,
-  - generate `.codex/agents/*.toml`,
-  - build Claude agents,
-  - generate `.claude/agents/*.md`,
-  - validate Claude adapters,
-  - work on Claude runtime adapter generation,
-  - validate Codex adapters,
-  - work on Codex runtime adapter generation,
-  - build OpenCode agents,
-  - generate `.opencode/agents/*.md`,
-  - validate OpenCode adapters,
-  - work on OpenCode runtime adapter integration/validation.
+`.ai/agents/personas/*` (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) are NOT loaded at startup. They are inherited on demand by `backend-developer`, `frontend-developer`, or `web-designer` when the task targets that stack.
+
+Adapter-contract routing rule (skip on normal startup, load only when explicitly building/validating adapters):
+- `.ai/execution/runtime-adapter-contract.md`
+- `.ai/execution/adapter-role-mapping.md`
+- `.ai/execution/adapter-drift-validation.md`
+- `.ai/runtimes/codex/adapter-schema.md`
+- `.ai/runtimes/codex/nickname-strategy.md`
+- `.ai/runtimes/claude/adapter-schema.md`
+- `.ai/runtimes/claude/tool-mapping.md`
+- `.ai/runtimes/opencode/adapter-schema.md`
+- `.ai/runtimes/opencode/agent-mapping.md`
+- `.ai/runtimes/opencode/workflow-mapping.md`
+- `.ai/runtimes/opencode/command-mapping.md`
+- `.ai/runtimes/opencode/delegation.md`
+- `.ai/runtimes/opencode/validation.md`
+- `.ai/workflows/build-codex-agents.md`
+- `.ai/workflows/build-claude-agents.md`
+- `.ai/workflows/build-opencode-agents.md`
+
+Bootstrap files to load when present:
+- Codex main session: `.ai/runtimes/codex/orchestration-bootstrap.md`
+- Claude main session: `.ai/runtimes/claude/orchestration-bootstrap.md`
+- OpenCode: `opencode.json` and `.ai/runtimes/opencode/bootstrap.md`
 
 Startup guidance:
-- Read `AGENTS.md` for global runtime instructions and governance baseline.
-- Use this file (`INDEX.md`) to select risk path, templates, workflows, and participating agents.
-- For runtimes that do not auto-load `AGENTS.md` (for example Claude Code, Cursor, Cline, or Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
-- The main session is not an implementation agent.
-- When a suitable specialist exists, delegation is required by default.
-- User does not need to explicitly request delegation for matching specialist work.
-- If runtime subagent capability or required workers are unavailable, disclose the limitation and obtain explicit approval before sequential role simulation fallback unless the user explicitly says `no subagent` or `main only`.
-- Execution mode, when present, is runtime metadata only:
-  - preferred source is runtime/launcher metadata,
-  - prompt-body header is fallback only,
-  - it does not determine whether delegation is required,
-  - it does not automatically spawn agents.
-- Parent/main must classify the task, check runtime spawn capability, check exact required workers/adapters, then explicitly spawn/invoke child agents when the required specialist path is available.
-- Markdown instruction files do not spawn agents by themselves.
+- For runtimes that do not auto-load `AGENTS.md` (Claude Code, Cursor, Cline, Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
+- The main session is not an implementation agent. `project-manager` is the primary orchestrator; all other canonical roles run as subagents.
+- When a suitable specialist exists, delegation is required by default; the user does not need to ask for it.
+- If runtime subagent capability or required workers are unavailable, disclose the limitation and obtain explicit approval before sequential role simulation fallback, unless the user explicitly says `no subagent` or `main only`.
+- Execution mode is runtime metadata only — it never determines delegation or auto-spawns agents.
+- Markdown instruction files do not spawn agents by themselves; the orchestrator must classify, check capability, then explicitly invoke child agents.
 
 ## Execution Contracts
-Execution contracts are runtime-consumable instructions in:
-- `.ai/execution/execution-mode-input.md`
+Loaded on normal startup:
 - `.ai/execution/modes.md`
 - `.ai/execution/capability-gates.md`
-- `.ai/execution/delegation-eligibility.md`
-- `.ai/execution/task-classification.md`
-- `.ai/execution/artifact-conventions.md`
-- `.ai/execution/runtime-adapter-contract.md` (adapter tasks only; not normal startup)
-- `.ai/execution/adapter-role-mapping.md` (adapter tasks only; not normal startup)
-- `.ai/execution/adapter-drift-validation.md` (adapter tasks only; not normal startup)
-- `.ai/runtimes/codex/adapter-schema.md` (adapter tasks only; not normal startup)
-- `.ai/runtimes/codex/nickname-strategy.md` (adapter tasks only; not normal startup)
+- `.ai/execution/task-classification.md` (absorbs delegation eligibility and confidence-gate rule)
+- `.ai/execution/artifact-conventions.md` (Artifact Requirement Matrix)
+- `.ai/execution/delegation-routing-regression.md`
 - `.ai/delegation/parent-orchestrator-contract.md`
 - `.ai/delegation/child-role-contracts.md`
 - `.ai/delegation/ownership-boundaries.md`
 - `.ai/delegation/merge-review-validation.md`
 
-Execution contract rules:
-- `.ai/agents/*` remains the canonical role contract source.
+Rules:
+- `.ai/agents/runtime/*` is the canonical role contract source.
 - Delegated execution is never implied by file presence alone.
-- Parent orchestrator is responsible for ownership boundaries, merge, and final validation when delegation is used.
-- Execution-mode documents are runtime-facing routing metadata, not the primary framework control surface.
+- Parent orchestrator owns ownership boundaries, merge, and final validation when delegation is used.
+
+## Canonical Runtime Roles
+Sixteen named workers, all under `.ai/agents/runtime/`:
+
+`backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`.
+
+`project-manager` runs as `primary`; the other 15 run as `subagent`. Stack knowledge (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) lives in `.ai/agents/personas/*` and is inherited on demand by `backend-developer`, `frontend-developer`, or `web-designer` — never spawned as its own worker.
 
 ## Quick Start Matrix
+Artifact requirements come from `.ai/execution/artifact-conventions.md`.
 
-| Change Size | Typical Examples | Template(s) | Workflow | Required Agents | Optional Agents | Gates/Policies |
-|---|---|---|---|---|---|---|
-| Tiny | Typo fixes, label changes, CSS tweaks, small validation message changes | `task.md` | `bugfix.md` or direct task execution | Stack agent | Tester (optional for trivial non-functional edits) | DoD basics, runtime-safety/approval-levels if commands are risky |
-| Small | Pagination, sorting, simple endpoint, small bug fix, UI enhancement | `task.md` | `feature.md` or `bugfix.md` | Stack agent, Tester (recommended) | Reviewer | Implementation + Quality gate, risk-classification, DoD |
-| Medium | New module, new workflow, cross-domain feature, significant API changes | `feature-spec.md`, optional `adr.md` | `feature.md` | Project-manager, Product-spec, Architect, stack agent, Tester, reviewer | Security | Architecture + Implementation + Quality gates, risk-classification, DoD |
-| High-Risk | Authentication, authorization, payments, sensitive data, public APIs, file uploads | `feature-spec.md`, `threat-model.md`, optional `adr.md` | `feature.md` (+ `release.md` when shipping) | Project-manager, Product-spec, Architect, Security, stack agent, Tester, reviewer | DevOps (required if deployment/ops impact) | Full gates including Release gate, secrets-management, runtime-safety, approval-levels |
-
-`Stack agent` means one or more technology agents from `.ai/agents/`.
-
-Generic orchestration agents:
-- `frontend`
-- `backend`
-
-Specialist framework agents:
-- `vue`
-- `react`
-- `laravel`
-- `fastapi`
-- `node-express`
-
-Additional specialist agent:
-- `python`
+| Size | Examples | Participating Roles | Required Artifacts | Gates |
+|---|---|---|---|---|
+| Tiny | Typo, copy tweak, CSS nudge | `project-manager`, one implementer (`backend-developer` / `frontend-developer` / `web-designer`) | None beyond conversation output | Auto |
+| Small | Pagination, simple endpoint, minor bug fix | `project-manager`, `dev-team-lead`, one implementer, `qa-specialist` | None required | Auto + Recommendation if risky |
+| Medium | New module, cross-domain feature, sizeable API change | `project-manager`, `project-owner`, `dev-team-lead`, implementer(s) (`backend-developer`/`frontend-developer`/`database-administrator`), `qa-specialist`, `qa-team-lead`, `pr-manager` | `feature-spec.md`, run-report | Recommendation; Approval at Business Go/No-Go |
+| Major | New subsystem, breaking change, major refactor | Full Planning Council + Implementation + QA + Business Go/No-Go + `pr-manager`; add `ui-ux-designer` for UI surface | `feature-spec.md` + `technical-design.md` + run-report + proposal review package | Approval at Business Go/No-Go |
+| Security / Deploy | Authn/authz, payments, sensitive data, public API, file upload, schema change, release | Above + `cybersecurity-analyst` (security) and/or `devops-engineer` (deploy); `database-administrator` for schema | `threat-model.md` (security), `technical-design.md` + migration/rollback notes (schema), `release.md` workflow + run-report (deploy), PR description from `pr-manager` | Approval at Business Go/No-Go; secrets-management, quality-gates enforced |
 
 ## Recommended Flows
+All workflows follow the same 5-phase flow; phases collapse for lighter work.
 
-### Discovery (When Idea Is Still Vague)
-`idea` -> `ideation` -> `product-spec` -> `architect` -> `stack agent`
+### Tiny
+Planning Council collapses to `project-manager` -> implementer commits -> `pr-manager` summary.
 
-### Tiny Change
-`task` -> `stack agent`
+### Small
+Planning Council (`project-manager` + `dev-team-lead`) -> implementer -> `qa-specialist` -> `pr-manager`.
 
-### Small Change
-`task` -> `stack agent` -> `tester`
+### Medium
+Planning Council (`project-owner`, `project-manager`, `dev-team-lead`, `junior-project-manager` if requirements need clarification) -> Implementation under `dev-team-lead` -> `qa-specialist` + `qa-team-lead` -> Business Go/No-Go (`project-owner` + `project-manager`) -> `pr-manager` Commit/PR (with `documentation-writer` for docs).
 
-### Medium Change
-`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `tester` -> `reviewer`
+### Major
+Full Planning Council (add `ui-ux-designer` for UI surface, `cybersecurity-analyst` if sensitive) -> Implementation -> QA -> Business Go/No-Go with proposal review package and explicit Approval -> `pr-manager` + `doc-team-lead`/`documentation-writer`.
 
-### High-Risk Change
-`feature-spec` -> `project-manager` -> `product-spec` -> `architect` -> `security` -> proposal artifacts + proposal review package (`.ai/templates/proposal-review-package.md`) + explicit approval -> `stack agent` -> `tester` -> `reviewer` -> `devops` (when release/ops impact exists)
-
-### Full-Project Technical Review (Artifact Output)
-`reviewer` -> `documentation`
-
-Notes:
-- Add `tester` (`qa`) when validation status, test result interpretation, or coverage verification is requested.
-- Keep `backend`/`frontend` out of review-only runs unless remediation is explicitly requested.
+### Security / Deployment
+Full Major flow with mandatory `cybersecurity-analyst` (security) and `devops-engineer` (deploy); use `release.md` for shipping work.
 
 Workflow entry points:
-- Choose `bugfix.md` for defects/regressions.
-- Choose `feature.md` for net-new behavior.
-- Choose `refactor.md` for internal structural improvement without intended behavior change.
-- Choose `release.md` for deployment/release readiness work.
+- `bugfix.md` for defects/regressions.
+- `feature.md` for net-new behavior.
+- `refactor.md` for internal structural improvement without intended behavior change.
+- `release.md` for deployment/release readiness.
 
 ## Agent Participation Guidance
 
-### Ideation
-Use when the problem or product direction is unclear and you need concept exploration before requirements are drafted.  
-Usually skip when requirements are already clear and scoped.
+### Planning Council
+`project-owner` defines vision and scope; `project-manager` owns orchestration and gate enforcement; `dev-team-lead` proposes technical approach; `junior-project-manager` runs requirements clarification when scope is fuzzy; `ui-ux-designer` joins when a UI surface is affected; `cybersecurity-analyst` joins for sensitive work. Output: scoped plan plus artifact requirements driven by risk class.
 
-### Product Spec
-Use when requirements are unclear, business requirements are complex, multiple user stories exist, or significant planning is needed.  
-Skip for small bug fixes, small enhancements, and routine implementation tasks.
+### Implementation
+`backend-developer`, `frontend-developer`, `database-administrator`, `devops-engineer`, and `web-designer` execute under `dev-team-lead` boundaries. Stack work pulls in `.ai/agents/personas/*` as inherited context, not as a separate worker.
 
-### Architect
-Use when boundaries change, significant design decisions are needed, new modules are introduced, or cross-domain changes occur.  
-Usually skip for small fixes, minor enhancements, and routine CRUD work.
+### QA
+`qa-specialist` executes test plans and validation; `qa-team-lead` consolidates results and owns the Quality Gate. Recommended on most work; skip only for trivial non-functional edits.
 
-### Security
-Use when authentication/authorization, sensitive data, public APIs, file uploads, payment functionality, or Medium+ risk exists.  
-Usually skip for UI-only changes, simple refactors, and non-sensitive internal functionality.
+### Business Go/No-Go
+`project-owner` makes the final risk-acceptance call; `project-manager` confirms release readiness. Single explicit Approval gate — documented decision required for Major / security / deployment / release-impacting work.
 
-### Tester
-Recommended for most implementation work.  
-May be skipped only for trivial non-functional changes.
-
-### Reviewer
-Recommended for Medium/High-risk work and shared codebases.  
-Optional for small personal changes.
-
-### DevOps
-Required only when deployment, infrastructure, or operational behavior changes.  
-Not mandatory for routine feature work.
+### Commit / PR
+`pr-manager` owns the commit message, PR body, and change summary; `documentation-writer` and `doc-team-lead` produce or update docs when changes affect public surface or operations.
 
 ## Template Selection
-- Use `task.md` for quick daily work.
-- Use `feature-spec.md` for larger or ambiguous work.
-- Use `prd.md` for Medium/Large product specification planning.
-- Use `technical-design.md` for Medium/Large technical design planning.
-- Use `threat-model.md` for security-sensitive changes.
-- Use `adr.md` when decisions alter architecture/contracts.
-- Use `adapter-run-report.md` for runtime adapter generation/validation reporting, and persist the report file (default by runtime: Codex `.ai/reports/codex-adapter-run-report.md`; Claude `.ai/reports/claude-adapter-run-report.md`).
+- `task.md` for quick daily work.
+- `feature-spec.md` for Medium+ or ambiguous work.
+- `prd.md` for Medium/Large product specification.
+- `technical-design.md` for Medium/Large technical design and all schema changes.
+- `threat-model.md` for security-sensitive changes.
+- `adr.md` when decisions alter architecture/contracts.
+- `proposal-review-package.md` for Business Go/No-Go approval at Major / security / deploy work.
+- `adapter-run-report.md` for runtime adapter generation/validation reporting (default paths: Codex `.ai/reports/codex-adapter-run-report.md`; Claude `.ai/reports/claude-adapter-run-report.md`).
 
 ## Practical Rule
 Start small, escalate only when risk or complexity increases.
 
 ## Runtime Routing Metadata
-Preferred:
-- Keep the user prompt natural and task-focused.
-- Use runtime/launcher/session metadata only when the runtime exposes it.
+Preferred: keep the user prompt natural; let runtime/launcher metadata carry routing when available.
 
-Example:
-- Natural prompt: `Review the full PIPS test project.`
-- Runtime-selected routing metadata: `targeted`
-
-Fallback only when runtime metadata cannot be provided:
-- Add `Execution mode: <auto|sequential|targeted|delegated>` in prompt body.
+Fallback only when runtime metadata cannot be provided: add `Execution mode: <auto|sequential|targeted|delegated>` in the prompt body.
 
 ## Classification Rule
 - Classify work first using `.ai/execution/task-classification.md`.
 - Reclassify every follow-up task before execution.
-- Tiny/Small work should avoid unnecessary planning-agent overhead.
-- Medium/Large work should follow spec-first planning gates before implementation.
+- Tiny/Small work avoids unnecessary planning overhead.
+- Medium+ work follows the full 5-phase flow with required artifacts before implementation begins.
 
 ## Workflow Automation Model
-Workflow progression should behave as:
+Prompt
+-> Planning Council
+-> Implementation
+-> QA
+-> Business Go/No-Go
+-> Commit/PR
 
-Prompt  
--> Ideation  
--> Product Spec  
--> Architect  
--> Implementation Plan  
--> Implementation  
--> Tester  
--> Reviewer
-
-User interaction is only required when a Decision Gate is triggered.
-
-- Agents should refine and structure work automatically between stages.
-- Stage outputs should automatically become inputs to the next stage.
-- Decision Gates are used only for meaningful human-judgment choices.
-- Decision behavior is defined in `.ai/policies/decision-gates.md`.
-
-Planning proposal gate override:
-- For workflows that include planning roles and proposal artifacts, parent/orchestrator must halt before implementation and trigger Proposal Approval Gate.
-- Planning completion alone never authorizes implementation.
-- Parent/orchestrator must validate required proposal artifacts, present consolidated proposal package using `.ai/templates/proposal-review-package.md`, request explicit user approval, and wait.
+- Stage outputs feed the next stage automatically; the orchestrator advances without prompting unless a gate fires.
+- Auto and Recommendation gates resolve without halting the run.
+- The **Approval** gate at Business Go/No-Go halts execution for Major / security-sensitive / deployment-impacting work. `project-manager` must present a proposal review package using `.ai/templates/proposal-review-package.md` and wait for explicit user approval before implementation continues to release.
 
 ## Main Session Responsibilities
 - Read `AGENTS.md` and `INDEX.md`.
-- Classify the task and select/confirm workflow.
-- Treat execution mode as runtime routing metadata only when provided.
-- Assign agents and ownership boundaries.
-- Validate agent outputs and required artifacts.
-- Consolidate planning outputs into a proposal review package.
-- Present proposal package and enforce explicit approval gates.
-- Integrate final results and report:
-  - assumptions,
-  - skipped items,
-  - changed files,
-  - validation results,
-  - remaining risks.
+- Classify the task and select the workflow.
+- Treat execution mode as runtime routing metadata only.
+- Assign agents, ownership boundaries, and required artifacts.
+- Validate agent outputs against the Artifact Requirement Matrix.
+- Consolidate planning outputs into a proposal review package when the Business Go/No-Go Approval gate applies.
+- Integrate final results and report assumptions, skipped items, changed files, validation results, and remaining risks.
 
 Main orchestrator must not:
-- skip approval gates,
-- assume approval,
-- silently continue from planning to implementation,
-- implement directly when a suitable specialist exists unless the user explicitly requested `no subagent`/`main only` or explicitly approved a disclosed fallback,
+- skip approval gates or assume approval,
+- silently continue past the Business Go/No-Go gate,
+- implement directly when a matching runtime role exists unless the user explicitly requested `no subagent`/`main only` or approved a disclosed fallback,
 - collapse specialist roles into itself,
 - claim delegation when only sequential simulation occurred.
 
 ## Policy Map
-- Decision flow: `.ai/policies/decision-gates.md`
-- Approval boundaries: `.ai/policies/approval-levels.md`
-- Runtime safety execution rules: `.ai/policies/runtime-safety.md`
-- Risk classification: `.ai/policies/risk-classification.md`
-- Completion baseline: `.ai/policies/definition-of-done.md`
+- Approval boundaries and gate types (Auto / Recommendation / Approval): `.ai/policies/approval-levels.md`
+- Risk classification (drives the Artifact Requirement Matrix): `.ai/policies/risk-classification.md`
 - Quality gates: `.ai/policies/quality-gates.md`
+- Completion baseline: `.ai/policies/definition-of-done.md`
 - Secrets handling: `.ai/policies/secrets-management.md`
 
 ## Project Knowledge Base
-`.ai/context/*` acts as a host project-specific knowledge layer that:
-- reduces repeated target codebase discovery
-- preserves architectural understanding
-- captures host project conventions
-- accelerates onboarding for AI runtimes
-- improves implementation consistency across sessions
+`.ai/context/*` is a host-project knowledge layer that reduces repeated codebase discovery, preserves architectural understanding, and accelerates onboarding.
 
-If `.ai/context/` exists, treat all files inside it as host project-specific knowledge artifacts.
+If `.ai/context/` exists, consult it before architecture, implementation, refactoring, testing, security review, or release work. Knowledge files are accelerators, not absolute truth — current target codebase source remains the source of truth, and conflicts resolve toward target evidence (then update intelligence files).
 
-Consult these files before:
-- architecture work
-- implementation work
-- refactoring
-- testing
-- security reviews
-- release activities
+If `.ai/context/confidence-gates.md` exists, use it before implementation to classify the change and determine required pre-implementation checks. Confidence gates matter most for authn/authz, sensitive data, public APIs, data-model changes, external integrations, background jobs, configuration/environment changes, deployment changes, and security-sensitive work.
 
-Knowledge files help:
-- reduce repeated target codebase discovery
-- preserve architectural context
-- preserve host project conventions
-- improve implementation consistency
-- accelerate onboarding for AI runtimes
-
-Guidance:
-- Knowledge files are accelerators, not absolute truth.
-- Target codebase source code remains the ultimate source of truth.
-- When conflicts occur, prefer current target codebase evidence.
-- Knowledge files should be updated after significant host project changes.
-- Before implementation, if `.ai/context/confidence-gates.md` exists, use it to classify the requested change and determine required pre-implementation checks.
-- Confidence gates are especially important for:
-  - authentication/authorization
-  - sensitive data handling
-  - public APIs or external contracts
-  - data model or persistence changes
-  - external integrations
-  - background jobs, queues, or scheduled tasks
-  - configuration/environment changes
-  - deployment/release changes
-  - security-sensitive changes
-
-Knowledge precedence:
-1. Current target codebase source code
-2. Host project configuration and manifests
-3. Host project intelligence files
-4. Generated assumptions
-
-If conflicts exist:
-- Prefer target codebase evidence.
-- Update intelligence files accordingly.
-
-Refresh knowledge artifacts after:
-- architectural changes
-- major dependency changes
-- integration changes
-- domain-model changes
-- large refactors
-- release process changes
+Refresh knowledge artifacts after architectural changes, major dependency changes, integration changes, domain-model changes, large refactors, or release-process changes.
 
 Example structure:
 

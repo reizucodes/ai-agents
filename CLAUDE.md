@@ -11,6 +11,7 @@ Read in order:
 3. .ai/runtimes/claude/orchestration-bootstrap.md
 
 Use .ai/* as the canonical agent, workflow, policy, template, and runtime library.
+Runtime worker contracts live in .ai/agents/runtime/* (16 canonical roles); .ai/agents/personas/* are stack/skill docs inherited on demand by backend-developer, frontend-developer, and web-designer — never spawned as their own workers.
 
 Generated Claude workers are the default specialist workers when present.
 If a required Claude worker is unavailable, disclose the gap and obtain explicit approval before parent-only fallback unless the user explicitly says `no subagent` or `main only`.
@@ -23,4 +24,4 @@ Generated output:
 
 .claude/agents/*.md
 
-Do not duplicate or rewrite canonical .ai/agents/* content.
+Do not duplicate or rewrite canonical .ai/agents/runtime/* or .ai/agents/personas/* content.

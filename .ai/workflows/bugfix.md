@@ -1,105 +1,84 @@
 # Bugfix Workflow
 
 ## Purpose
-Diagnose defects quickly, fix root cause, and prevent regression.
+Resolve defects through the canonical 5-phase flow with a lean default. QA always runs; Planning Council and Business Go/No-Go collapse unless the root cause crosses sensitive surfaces.
 
-## Participating Agents
-Stack agent, `tester`, `reviewer`, optional `architect`, optional `security`.
+## Scope Sizing
+- **Tiny** fix (typo, isolated one-liner): Phase 1 = `project-manager` only (or skipped if root cause is obvious); Phase 4 auto.
+- **Small** fix (single module, no contract change): collapsed Planning Council; Phase 4 auto.
+- **Medium** fix (multi-module, behavior change, regression risk): full collapsed council + conditionals; Phase 4 logged decision.
+- **Major** fix (security incident, data corruption, cross-service contract): full Planning Council with conditionals; Phase 4 explicit Approval.
 
-Participation scales by risk path below; not all agents are used for every change.
+Classify per `.ai/execution/task-classification.md`. Reclassify after root cause is known.
 
-## Execution Order
-Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used when bug impact is beyond low risk.
+## Phase 1: Planning Council
+**Default (collapsed) members:** `project-manager` + `dev-team-lead`.
 
-Implementation planning ownership:
-- `architect` owns technical implementation planning for non-trivial/boundary-impacting fixes.
-- stack agent owns stack-specific implementation steps and execution details.
+**Expand when root cause touches:**
+- Schema or data model → add `database-administrator`.
+- Auth, sensitive data, payments, attack surface → add `cybersecurity-analyst` and `project-owner`.
+- Deployment, runtime config, infra → add `devops-engineer`.
+- User-facing change beyond defect restoration → add `ui-ux-designer`.
 
-1. Reproduce issue and gather failing evidence.
-2. Identify root cause and affected surfaces.
-3. Implement minimal safe fix.
-4. Add regression tests and validate edge behavior.
-5. Run review gate and release decision.
+**Outputs:**
+- Reproduction steps, root-cause hypothesis (or known root cause), blast radius, risk tier per `.ai/policies/risk-classification.md`.
+- Fix strategy + regression scope.
+- Artifact requirements per matrix below.
 
-## Stage Progression Rules
-- Stages should continue automatically whenever no Decision Gate is triggered.
-- Stage outputs automatically become inputs to the next stage.
-- Do not pause only because a stage completed.
-- Only Recommendation Decisions and Approval Decisions may pause execution.
-- Approval Decisions must follow `.ai/policies/approval-levels.md`.
-- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
+**Gate:** Auto for Tiny/Small; Recommendation (L1) for Medium when tradeoffs exist; Approval (L2) for Major.
 
-## Deliverables
-- Root cause analysis
-- Fix summary
-- Regression test coverage
-- Risk assessment
+Cross-reference: `.ai/agents/runtime/project-manager.md`, `dev-team-lead.md`, `database-administrator.md`, `cybersecurity-analyst.md`, `devops-engineer.md`.
 
-## Success Criteria
-- Original defect no longer reproducible.
-- Regression suite updated and passing.
-- No unresolved high-severity findings.
+## Phase 2: Implementation
+**Lead:** `dev-team-lead` for Medium/Major; targeted single role for Tiny/Small.
+**Executors (scoped by root cause):**
+- `backend-developer`, `frontend-developer`, `database-administrator`, `devops-engineer`, `web-designer` — only those whose surface contains the defect.
 
-## Escalation Rules
-- Repeated defects across boundaries -> `architect`.
-- Runtime instability risk -> `devops`.
+Prefer minimal, reversible changes. State-changing ops follow `.ai/policies/approval-levels.md`. Secrets follow `.ai/policies/secrets-management.md`.
 
-## Recommended Usage
-Use for production incidents, QA-found defects, and contract-breaking bugs.
+## Phase 3: QA (Always Runs)
+- `qa-specialist` reproduces the original defect, verifies the fix, runs regression suite scoped to the affected surface and adjacent contracts.
+- `qa-team-lead` consolidates results and owns the **Quality Gate** per `.ai/policies/quality-gates.md`.
+- Definition of Done per `.ai/policies/definition-of-done.md`.
 
-## Low Risk Path
-- **Templates:** `task.md`.
-- **Required Agents:** stack agent.
-- **Recommended Agents:** `tester`.
-- **Optional Agents:** `reviewer`.
-- **Gates:** Implementation + Quality (lightweight for trivial fixes).
-- **Policies:** risk-classification, definition-of-done.
+A bugfix is not done until the failing scenario has an automated regression test (or a documented reason why one is not feasible).
 
-## Medium Risk Path
-- **Templates:** `task.md` or `feature-spec.md` if scope expands.
-- **Required Agents:** stack agent, `tester`, `reviewer`.
-- **Optional Agents:** `architect`, `security` (when auth/data/public API concerns exist).
-- **Gates:** Implementation + Quality.
-- **Policies:** risk-classification, quality-gates, approval-levels/runtime-safety.
+## Phase 4: Business Go/No-Go
+**Members:** `project-owner` + `project-manager` (project-owner may be skipped for non-regression Small/Medium).
 
-## High Risk Path
-- **Templates:** `feature-spec.md` + `threat-model.md` when security-sensitive.
-- **Required Agents:** stack agent, `tester`, `reviewer`, `security`.
-- **Optional Agents:** `architect`.
-- **DevOps:** required when release/deployment risk is introduced.
-- **Gates:** Implementation + Quality + Release (when production readiness is affected).
-- **Policies:** all relevant governance policies, especially secrets-management.
+**Gate type:**
+- Non-regression Tiny / Small / Medium: **Auto** pass-through; decision logged in run report.
+- Regression to user-visible behavior, or Medium fix with residual risk: **Recommendation** (L1).
+- Major (security, data, cross-service): **Approval** (L2) — explicit user approval required.
 
-## Agent Handoffs
-- QA -> Stack: deterministic repro and expected behavior.
-- Security -> Stack/QA (conditional): security findings, risk impact, required validation checks.
-- Stack -> Code-review: diff rationale + test proof.
+## Phase 5: Commit / PR
+- `pr-manager` owns commit message (link defect/ticket), PR body, change summary, regression-test references, merge handoff.
+- `documentation-writer` updates changelog / release notes / operational runbook where impacted; `doc-team-lead` reviews.
+- Run report at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` for all code-changing runs per `.ai/execution/artifact-conventions.md`.
 
-## Gate Selection
-Gate requirements vary by risk level.
+Cross-reference: `.ai/agents/runtime/pr-manager.md`, `documentation-writer.md`, `doc-team-lead.md`, `qa-specialist.md`, `qa-team-lead.md`.
 
-- **Low Risk:** lightweight validation, Definition of Done, and applicable safety policies.
-- **Medium Risk:** Implementation Gate + Quality Gate.
-- **High Risk:** Implementation + Quality gates, plus Release Gate when production readiness is affected.
+## Artifact Requirements by Risk Tier
+Per `.ai/execution/artifact-conventions.md` requirement matrix.
 
-See Low/Medium/High risk paths above.
+| Tier | Required artifacts |
+|---|---|
+| Tiny / Small (non-sensitive) | none beyond conversation outputs and PR description |
+| Medium | run-report + brief root-cause note in PR body |
+| Major | `feature-spec.md` (incident scope) + `technical-design.md` (fix design) + run-report + proposal review package |
+| Schema-touching | add `technical-design.md` + migration/rollback notes |
+| Security-sensitive | add `threat-model.md` + proposal review package |
+| Deployment-impacting | add `release.md` workflow handoff + run-report |
 
-## Risk Assessment
-- Perform at bug triage and re-evaluate after root cause is identified.
-- Use `.ai/policies/risk-classification.md`.
-- Recommend `security` involvement when auth/authz, sensitive data, public APIs, file uploads, payment flows, or Medium+ risk is present.
-
-## Approval Requirements
-- Level 1 approvals for dependency, migration, or destructive file actions.
-- Level 2 actions require explicit user command only.
-
-## Handoff Requirements
-- QA -> Stack: repro steps, expected/actual behavior, severity/priority.
-- Security -> Stack/QA (conditional): risk findings, required mitigations, validation scope.
-- Stack -> QA: root cause, fix scope, regression tests.
-- QA -> Code-review: verification results + residual risks.
+## Decision Gates Summary
+- **Auto (L0):** non-regression Tiny/Small/Medium fixes; reproductions; read-only diagnosis.
+- **Recommendation (L1):** Medium fix tradeoffs; user-visible regression remediation; dependency bumps as part of fix.
+- **Approval (L2):** Major (security/data/infra); hotfix to production; destructive cleanup ops.
 
 ## Exit Criteria
-- Defect fixed and no longer reproducible.
-- Regression tests updated/passing.
-- Required gates passed and DoD satisfied.
+- Defect reproduced before fix; fix verified.
+- Regression test added (or skip documented).
+- Quality Gate passed; no new high/critical defects.
+- Required artifacts present.
+- Phase 4 decision recorded.
+- PR opened by `pr-manager` linking the defect.

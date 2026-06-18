@@ -13,6 +13,8 @@ Load in this order:
 
 ## Canonical Authority
 - `AGENTS.md`, `INDEX.md`, and `.ai/*` remain canonical.
+- Canonical runtime adapter sources are `.ai/agents/runtime/*.md` (exactly 16 files; see `.ai/execution/adapter-role-mapping.md`).
+- `.ai/agents/personas/*.md` are inheritance-only skill docs and are NEVER runtime adapter sources.
 - If runtime guidance conflicts with canonical contracts, canonical contracts win.
 
 ## Scope
@@ -20,7 +22,7 @@ This bootstrap is for normal OpenCode startup only.
 
 Main-session rule:
 - The main session is not an implementation agent.
-- The primary OpenCode agent must remain orchestration-only.
+- The primary OpenCode agent (`project-manager`) must remain orchestration-only.
 - When a suitable OpenCode worker exists, delegation is required.
 - If the required worker path is unavailable, disclose the gap and obtain explicit approval before parent-only fallback unless the user explicitly says `no subagent` or `main only`.
 

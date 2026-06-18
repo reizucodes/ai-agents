@@ -1,132 +1,87 @@
 # Feature Workflow
 
 ## Purpose
-Deliver new features with clear contracts, predictable quality, and merge readiness.
+Deliver new features through the canonical 5-phase flow: Planning Council → Implementation → QA → Business Go/No-Go → Commit/PR.
 
-## Participating Agents
-`project-manager`, `product-spec`, `architect`, stack agent (`laravel`/`vue`/`react`/`node-express`/`fastapi`/`python`), `tester`, `reviewer`, optionally `security`, `devops`.
+## Scope Sizing
+- **Tiny** feature (one-line/copy/flag toggle): collapse Phase 1 to `project-manager` only; skip Phase 4 (auto pass-through).
+- **Small** feature (single surface): Planning Council = `project-manager` + `dev-team-lead`; Phase 4 auto pass-through.
+- **Medium** feature: full Planning Council; explicit Recommendation gate on tradeoffs; Phase 4 logged decision.
+- **Major** feature: full Planning Council with proposal artifacts; explicit Approval gate at Phase 4.
 
-Participation scales by risk path below; not all agents are used for every change.
+Classify per `.ai/execution/task-classification.md` before entering Phase 1.
 
-## Execution Order
-Use the risk paths below to choose the right depth. The sequence below reflects the structured flow used for medium/high-risk work.
+## Phase 1: Planning Council
+**Members (required):** `project-owner`, `project-manager`, `dev-team-lead`.
+**Conditional members:**
+- `ui-ux-designer` — feature touches a user-facing surface.
+- `cybersecurity-analyst` — feature touches auth, sensitive data, payments, or external attack surface.
+- `database-administrator` — feature requires schema or data-model change.
+- `devops-engineer` — feature changes deployment, infra, runtime config, or release surface.
 
-Implementation planning ownership:
-- `project-manager` owns planning coordination, phase state, and proposal handoff readiness for Medium/High-risk work.
-- `product-spec` owns goals, user stories, acceptance criteria, and implementation-ready scope for Medium/High-risk work.
-- `architect` owns technical implementation planning for non-trivial/boundary-impacting work.
-- stack agent owns stack-specific implementation steps and execution details.
+**Outputs:**
+- Scoped plan: goals, user stories, acceptance criteria, in/out of scope.
+- Risk tier per `.ai/policies/risk-classification.md`.
+- Artifact requirement list (see matrix below).
+- Implementation participant list for Phase 2.
 
-0. If the goal is vague, early-stage, or not implementation-ready, run `ideation` first to refine direction before product specification.
-1. Project-manager coordinates scope, milestones, phase state, and handoff readiness.
-2. Product-spec defines goals, user stories, and acceptance criteria.
-3. Architect defines boundaries, contracts, risks.
-4. Security reviews design when risk/surface warrants it.
-5. Stack agent implements per contract and coding standards after proposal approval.
-6. QA defines and executes risk-based test plan.
-7. Code-review validates correctness and maintainability.
-8. DevOps validates release readiness for high-impact changes.
+**Gate:** Recommendation (L1) for Medium; Approval (L2) for Major (proposal review package per `.ai/policies/approval-levels.md`).
 
-## Stage Progression Rules
-- Stages should continue automatically whenever no Decision Gate is triggered.
-- Stage outputs automatically become inputs to the next stage.
-- Do not pause only because a stage completed.
-- Only Recommendation Decisions and Approval Decisions may pause execution.
-- Approval Decisions must follow `.ai/policies/approval-levels.md`.
-- Decision Gate behavior must follow `.ai/policies/decision-gates.md`.
-- For planning-gated feature flows, Proposal Approval Gate is mandatory before implementation:
-  - parent/orchestrator must halt after planning,
-  - required proposal artifacts must exist as repository files,
-  - consolidated proposal package must be presented using `.ai/templates/proposal-review-package.md`,
-  - explicit user approval is required before code-writing agents run.
+Cross-reference role contracts: `.ai/agents/runtime/project-owner.md`, `project-manager.md`, `dev-team-lead.md`, `ui-ux-designer.md`, `cybersecurity-analyst.md`, `database-administrator.md`, `devops-engineer.md`.
 
-## Deliverables
-- Feature spec
-- Implementation plan and decisions
-- Tests and results summary
-- Review findings and resolution log
+## Phase 2: Implementation
+**Lead:** `dev-team-lead` enforces boundaries and integration points.
+**Executors (as scoped by Planning Council):**
+- `backend-developer` — server logic, APIs, domain.
+- `frontend-developer` — client behavior, state, integration.
+- `database-administrator` — migrations, indexes, data contracts.
+- `devops-engineer` — pipeline, infra, runtime config.
+- `web-designer` — visual/markup implementation when distinct from frontend logic.
 
-## Success Criteria
-- Acceptance criteria met.
-- Required tests passing.
-- No unresolved high-severity review findings.
-- Contract docs updated.
+State-changing operations follow Recommendation (L1) / Approval (L2) gates per `.ai/policies/approval-levels.md`. Secrets handling follows `.ai/policies/secrets-management.md`.
 
-## Escalation Rules
-- Contract ambiguity -> `architect`.
-- Reproducible quality failures -> stack agent + `tester`.
-- Release blockers -> `devops`.
+## Phase 3: QA
+- `qa-specialist` executes the risk-based test plan: success paths, validation failures, edge cases, regressions.
+- `qa-team-lead` consolidates results and owns the **Quality Gate** per `.ai/policies/quality-gates.md`.
+- Definition of Done verified per `.ai/policies/definition-of-done.md`.
 
-## Recommended Usage
-Use for all net-new user-facing features and API capabilities.
+Quality Gate must pass before Phase 4. Reproducible failures return to Phase 2.
 
-## Low Risk Path
-- **Templates:** `task.md` (required), `feature-spec.md` optional.
-- **Required Agents:** stack agent.
-- **Recommended Agents:** `tester`.
-- **Optional Agents:** `reviewer`.
-- **Gates:** Implementation + Quality (lightweight evidence).
-- **Policies:** risk-classification, definition-of-done, runtime-safety/approval-levels when applicable.
+## Phase 4: Business Go/No-Go
+**Members:** `project-owner` (final risk acceptance) + `project-manager` (release readiness).
 
-## Medium Risk Path
-- **Templates:** `feature-spec.md` (required), `adr.md` optional.
-- **Required Agents:** `project-manager`, `product-spec`, `architect`, stack agent, `tester`, `reviewer`.
-- **Optional Agents:** `security`.
-- **Gates:** Architecture + Implementation + Quality.
-- **Policies:** risk-classification, quality-gates, definition-of-done, approval-levels/runtime-safety.
+**Gate type:**
+- Tiny / Small: **Auto** pass-through; decision logged in run report.
+- Medium: **Recommendation** — present residual risk + readiness summary; default to ship.
+- Major: **Approval** — explicit user approval required before Phase 5.
 
-## High Risk Path
-- **Templates:** `feature-spec.md` + `threat-model.md` (recommended), `adr.md` optional.
-- **Required Agents:** `project-manager`, `product-spec`, `architect`, `security`, stack agent, `tester`, `reviewer`.
-- **DevOps:** required when deployment/ops behavior changes.
-- **Gates:** Architecture + Implementation + Quality + Release (for production readiness).
-- **Policies:** all governance policies, especially secrets-management.
+## Phase 5: Commit / PR
+- `pr-manager` owns: commit message, PR body, change summary, diff hygiene, merge handoff.
+- `documentation-writer` updates user/API/operational docs; `doc-team-lead` reviews for coverage and consistency.
+- For code-changing runs: run report at `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md` per `.ai/execution/artifact-conventions.md`.
 
-## Agent Handoffs
-- Project-manager -> Product-spec: scope, milestones, assumptions, planning state, and handoff readiness.
-- Product-Spec -> Architect: business goals, user stories, acceptance criteria, constraints.
-- Architect -> Stack: domain boundaries, API/data contracts, risk list.
-- Architect -> Security (conditional): threat-relevant design context and risk class.
-- Stack -> QA: implemented behavior, changed surfaces, known limitations.
-- Security -> QA/Code-review (conditional): prioritized security findings and validation targets.
-- QA -> Code-review: failing scenarios, residual risk.
-- Code-review -> Stack: required changes before approval.
+Cross-reference role contracts: `.ai/agents/runtime/pr-manager.md`, `documentation-writer.md`, `doc-team-lead.md`, `qa-specialist.md`, `qa-team-lead.md`.
 
-## Gate Selection
-Gate requirements vary by risk level.
+## Artifact Requirements by Risk Tier
+Per `.ai/execution/artifact-conventions.md` requirement matrix.
 
-- **Low Risk:** lightweight validation, Definition of Done, and applicable safety policies.
-- **Medium Risk:** Implementation Gate + Quality Gate (and Architecture Gate when boundary/contract decisions are introduced).
-- **High Risk:** Architecture + Implementation + Quality gates, plus Release Gate when production readiness is affected.
+| Tier | Required artifacts |
+|---|---|
+| Tiny / Small (non-sensitive) | none beyond conversation outputs and PR description |
+| Medium | `feature-spec.md` + run-report |
+| Major | `feature-spec.md` + `technical-design.md` + run-report + proposal review package |
+| Schema-touching | add `technical-design.md` + migration/rollback notes |
+| Security-sensitive | add `threat-model.md` + proposal review package |
+| Deployment-impacting | add `release.md` workflow handoff + run-report |
 
-See Low/Medium/High risk paths above.
-
-## Risk Assessment
-- Must be performed at architecture stage and revisited after implementation.
-- Use `.ai/policies/risk-classification.md`.
-- Include `security` review when any of the following apply:
-  - authentication or authorization exists,
-  - sensitive data handling exists,
-  - public APIs exist,
-  - file uploads exist,
-  - payment functionality exists,
-  - risk classification is Medium or higher.
-
-## Approval Requirements
-- Apply `.ai/policies/approval-levels.md` and `.ai/policies/runtime-safety.md`.
-- Level 1 actions require approval; Level 2 actions require explicit user command.
-
-## Handoff Requirements
-- Project-manager -> Product-spec: planning scope, milestones, constraints, blockers, and proposal-readiness status.
-- Product-Spec -> Architect: scoped requirements, acceptance criteria, assumptions, dependencies.
-- Architect -> Stack: spec link, ADR, risk class, required gates.
-- Architect -> Security (conditional): threat surfaces, trust boundaries, data classification.
-- Stack -> QA: changed modules, tests added, known risks, DoD status.
-- Security -> QA/Code-review (conditional): findings with severity and remediation guidance.
-- QA -> Code-review: defect list (severity/priority), gate status.
-- Code-review -> DevOps/Release: approval state, residual risk, required release controls.
+## Decision Gates Summary
+- **Auto (L0):** Tiny/Small implementation steps; non-destructive ops; planning summaries.
+- **Recommendation (L1):** Medium tradeoff choices; dependency/migration in shared envs; Phase 4 for Medium.
+- **Approval (L2):** Major Phase 1 proposal; production deploy; destructive ops; Phase 4 for Major.
 
 ## Exit Criteria
-- All required gates passed.
-- Definition of Done satisfied.
-- No unresolved high/critical defects or findings.
+- Acceptance criteria met.
+- Quality Gate passed; no unresolved high/critical defects.
+- Required artifacts present in repository.
+- Phase 4 decision recorded.
+- PR opened by `pr-manager` with docs updated.

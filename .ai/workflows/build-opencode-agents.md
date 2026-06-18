@@ -1,7 +1,7 @@
 # Build OpenCode Agents Workflow
 
 ## Purpose
-Define an OpenCode-specific workflow for generating and validating markdown runtime adapters in `.opencode/agents/*.md` from canonical `.ai/agents/*` role contracts.
+Define the OpenCode-specific workflow for generating and validating markdown runtime adapters in `.opencode/agents/*.md` from canonical runtime role contracts.
 
 This workflow is a contract only. It does not generate files by itself.
 
@@ -63,7 +63,7 @@ Then run:
 - `build opencode agents`
 
 ## Override Rule (Unsafe / Diagnostic Only)
-Generation inside framework source repository is allowed only when user explicitly states:
+Generation inside the framework source repository is allowed only when the user explicitly states:
 - `override: generate opencode agents in source repo`
 
 Without that exact override intent, framework-source generation remains blocked.
@@ -71,8 +71,15 @@ Without that exact override intent, framework-source generation remains blocked.
 ## Invocation Rule
 - The committed command entrypoint `.opencode/commands/build-opencode-agents.md` is sufficient user intent.
 - In consumer/test repositories, execute generation immediately (no explicit path confirmation, no extra user confirmation).
-- In source framework repository, apply mandatory refusal guard unless explicit unsafe override is provided.
-- Do not invoke OpenCode customization/plugin flows (for example `customize-opencode`) for this workflow.
+- In the source framework repository, apply the mandatory refusal guard unless an explicit unsafe override is provided.
+- Do not invoke OpenCode customization/plugin flows for this workflow.
+
+## Canonical and Adapter Clarifications
+- `AGENTS.md` and `.ai/*` remain canonical.
+- `.opencode/agents/*.md` are generated OpenCode runtime adapters only.
+- Canonical adapter sources are `.ai/agents/runtime/*.md` (exactly 16 files).
+- `.ai/agents/personas/*.md` are NEVER adapter sources. They are inheritance-only skill docs loaded on demand by matching runtime agents.
+- `.ai/execution/adapter-role-mapping.md` is the authoritative 16-role list.
 
 ## Required Loaded Contracts
 1. `AGENTS.md`
@@ -81,43 +88,45 @@ Without that exact override intent, framework-source generation remains blocked.
 4. `.ai/execution/adapter-role-mapping.md`
 5. `.ai/execution/adapter-drift-validation.md`
 6. `.ai/runtimes/opencode/adapter-schema.md`
-7. relevant canonical `.ai/agents/*` files
+7. `.ai/runtimes/opencode/agent-mapping.md`
+8. `.ai/policies/approval-levels.md`
+9. `.ai/policies/quality-gates.md`
+10. `.ai/policies/risk-classification.md`
+11. The 16 canonical role source files from `.ai/agents/runtime/*.md`
+12. Persona files at `.ai/agents/personas/*.md` (used only to describe inheritance, not as adapter sources)
 
-## Default Output Set
-Generate orchestration-level adapters:
-- `project-manager`
-- `product-spec`
-- `architect`
-- `backend`
-- `frontend`
-- `tester`
-- `reviewer`
-- `documentation`
+## Canonical Output Set (16)
+Generate exactly 16 adapters at `.opencode/agents/<role>.md`, with filenames matching the canonical runtime filenames:
+`backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`.
 
-Optional only by explicit request/policy:
-- `security`
-- `devops`
-- `database` (if canonical role exists)
+`project-manager` is generated with `mode: primary`. The other 15 are `mode: subagent`.
 
-Do not generate runtime-native framework specialist adapters by default.
+Build workflow MUST refuse to generate any adapter whose name is not in this list. Build workflow MUST NOT generate adapters from `.ai/agents/personas/*`.
+
+## Persona Inheritance Documentation
+For the three inheriting roles, the generated adapter's body must describe how the agent loads persona files on demand when task detection matches a stack:
+
+- `backend-developer`: load `.ai/agents/personas/{laravel,fastapi,node-express,python}.md` on demand when the matching backend stack is detected.
+- `frontend-developer`: load `.ai/agents/personas/{react,vue}.md` on demand when the matching frontend framework is detected.
+- `web-designer`: load `.ai/agents/personas/{react,vue}.md` on demand when the rendered web surface uses the matching JS framework.
+
+Persona files are NEVER copied into the adapter body and are NEVER emitted as `.opencode/agents/*.md`.
 
 ## Output Paths
-- `.opencode/agents/*.md`
+- `.opencode/agents/<role>.md` (16 files)
 - `.ai/reports/opencode-adapter-run-report.md`
 
 ## Allowed Outputs Only
 Allowed outputs for this workflow:
-- `.opencode/agents/*.md`
+- `.opencode/agents/<role>.md`
 - `.ai/reports/opencode-adapter-run-report.md`
 
 Forbidden outputs/artifacts:
 - `node_modules/`
-- `package.json`
-- `package-lock.json`
+- `package.json`, `package-lock.json`
 - `pnpm-lock.yaml`
 - `yarn.lock`
-- `bun.lockb`
-- `bun.lock`
+- `bun.lockb`, `bun.lock`
 - any plugin installation artifacts
 - any dependency installation artifacts
 
@@ -128,70 +137,81 @@ Forbidden outputs/artifacts:
 
 ## Adapter Generation Rules
 Each generated adapter must:
-1. begin with markdown frontmatter as the first content in file:
+1. Begin with markdown frontmatter as the first content in the file:
    - `description`
-   - `mode`
-2. include metadata comments after frontmatter:
+   - `mode` (`primary` for `project-manager`, `subagent` for the other 15)
+2. Include metadata comments immediately after frontmatter:
    - `generated-by: build-opencode-agents`
-   - `generated-at`
-   - `canonical-source`
-   - `canonical-source-fingerprint`
+   - `generated-at` (UTC ISO-8601)
+   - `canonical-source` (`.ai/agents/runtime/<name>.md`)
+   - `canonical-source-fingerprint` (`sha256:<hex>`)
    - `schema-contract: .ai/runtimes/opencode/adapter-schema.md`
-3. include canonical-first body after metadata:
+3. Include canonical-first body after metadata:
    - canonical source pointer
    - not-source-of-truth statement
    - canonical conflict rule
    - role identity
    - delegation triggers
    - ownership boundaries
-   - deliverables and required artifacts
+   - deliverables and required artifacts (per `.ai/execution/artifact-conventions.md`)
    - delegation contract
+   - persona inheritance directive (only for `backend-developer`, `frontend-developer`, `web-designer`)
+   - references to `.ai/policies/approval-levels.md`, `.ai/policies/quality-gates.md`, `.ai/policies/risk-classification.md`, `.ai/policies/definition-of-done.md`, `.ai/policies/secrets-management.md`
 
-Runtime-facing alias mapping:
-- `tester` -> canonical `.ai/agents/qa.md`
-- `reviewer` -> canonical `.ai/agents/code-review.md`
-- `documentation` -> canonical `.ai/agents/docs.md`
+## Approval and Gate Model
+Generated adapters must reference the 3-gate model defined in `.ai/policies/approval-levels.md`:
+- **Auto**: runtime proceeds without human input.
+- **Recommendation**: present options, default to safe path, log decision.
+- **Approval**: halt and require explicit user approval before proceeding.
 
 ## Validation Steps
-0. source-repo guard check:
+0. Source-repo guard check:
    - detect strong source indicators only
    - fail generation unless explicit override phrase is present
    - confirm refusal message + consumer/test instructions are returned when blocked
-1. canonical source existence check
-2. metadata presence/format check
-3. frontmatter-position check:
-   - first line is `---`
-   - no comments/content before frontmatter
-4. metadata-position check:
-   - metadata block appears after frontmatter
-5. fingerprint drift check
-6. frontmatter field check (`description`, `mode`)
-7. canonical-first statement check
-8. no-full-duplication check
-9. output-set scope check against orchestration-level strategy
-10. forbidden-artifact absence check:
-   - `test ! -d node_modules`
-   - `test ! -f package.json`
-   - `test ! -f package-lock.json`
-   - `test ! -f pnpm-lock.yaml`
-   - `test ! -f yarn.lock`
-   - `test ! -f bun.lockb`
-   - `test ! -f bun.lock`
-11. plugin/dependency-installation check:
-   - no plugin/dependency installation commands executed
-12. callable-worker validation:
-   - generated workers identify ownership,
-   - generated workers define delegation triggers,
-   - generated workers define required deliverables/artifacts,
-   - generated workers state that parent/main must delegate matching work when they are available
+1. Role-set integrity: exactly 16 outputs, names match `adapter-role-mapping.md`.
+2. No outputs derived from `.ai/agents/personas/*`.
+3. Canonical source existence check for each adapter (`.ai/agents/runtime/<name>.md`).
+4. Metadata presence/format check.
+5. Frontmatter-position check (first line is `---`).
+6. Metadata-position check (metadata block appears after frontmatter).
+7. Fingerprint drift check.
+8. Frontmatter field check (`description`, `mode`).
+9. `mode: primary` only on `project-manager`; all others `mode: subagent`.
+10. Canonical-first statement check.
+11. No full canonical-role duplication.
+12. Persona inheritance directive present for `backend-developer`, `frontend-developer`, `web-designer`.
+13. Forbidden-artifact absence check:
+    - `test ! -d node_modules`
+    - `test ! -f package.json`
+    - `test ! -f package-lock.json`
+    - `test ! -f pnpm-lock.yaml`
+    - `test ! -f yarn.lock`
+    - `test ! -f bun.lockb`
+    - `test ! -f bun.lock`
+14. Plugin/dependency-installation check: no plugin/dependency installation commands executed.
+15. Callable-worker validation:
+    - generated workers identify ownership
+    - generated workers define delegation triggers
+    - generated workers define required deliverables/artifacts
+    - generated workers state that parent/main must delegate matching work when they are available
+
+## Rejection Conditions
+Reject generation when any apply:
+- adapter name not in canonical 16-role set
+- attempt to generate an adapter from `.ai/agents/personas/*`
+- missing canonical source at `.ai/agents/runtime/<name>.md`
+- missing/invalid frontmatter or metadata
+- full canonical-role duplication
+- source-repo guard triggered without explicit override
+- any forbidden artifact created during run
 
 ## Report Persistence Rule
 Every `build-opencode-agents` run must write:
 - `.ai/reports/opencode-adapter-run-report.md`
 
 ## Regeneration Invocation
-Use runtime command/prompt:
-- `Run .ai/workflows/build-opencode-agents.md and generate .opencode/agents/*.md from canonical .ai/agents/* using .ai/runtimes/opencode/adapter-schema.md, then write .ai/reports/opencode-adapter-run-report.md.`
+- `Run .ai/workflows/build-opencode-agents.md and generate the 16 adapters at .opencode/agents/*.md from canonical .ai/agents/runtime/* using .ai/execution/adapter-role-mapping.md and .ai/runtimes/opencode/adapter-schema.md, then write .ai/reports/opencode-adapter-run-report.md.`
 
 Framework-source safety note:
 - In the `ai-agents` source repository, this invocation must refuse by default unless explicit unsafe override is provided.
