@@ -35,5 +35,16 @@ Owner of schema design, migration safety, query performance, and data integrity.
 - Query performance review + indexing recommendations.
 - Handoff to `backend-developer` for data-access integration and to `devops-engineer` for deploy sequencing.
 
+## Minimalism Mandate
+Before designing any schema or query, stop at the first condition that holds:
+1. Does this column/table/index need to exist? Skip if no — YAGNI.
+2. Does the database engine provide a native feature? Use it (generated columns, partial indexes, check constraints).
+3. Is there an existing schema pattern already in use? Follow it.
+4. Can the query be simplified? Write the simplest correct query.
+5. Only then: minimum viable schema/migration.
+
+Never cut: FKs, uniqueness constraints, nullability guards, transaction boundaries, or rollback plans.
+Mark intentional deferrals with a `ponytail:` comment.
+
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section as: Schema Impact, Migration Plan (forward + rollback), Query/Performance Review, Data-Integrity Risks.

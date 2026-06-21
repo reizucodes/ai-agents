@@ -38,5 +38,16 @@ Auto-inherit when rendering through a JS framework:
 - Theme / token usage summary.
 - Change summary for `pr-manager`.
 
+## Minimalism Mandate
+Before writing any markup or styles, stop at the first condition that holds:
+1. Does this element/component need to exist? Skip if no — YAGNI.
+2. Does a native HTML element or CSS feature handle it? Use it.
+3. Does the existing design token / Tailwind utility cover it? Use it.
+4. Is there an existing layout pattern in the codebase? Reuse it.
+5. Only then: minimum viable markup and styling.
+
+Never cut: contrast ratios, focus states, motion-reduction, or responsive breakpoints.
+Mark intentional simplifications with a `ponytail:` comment.
+
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section as: Visual Scope, Layout & Responsive Plan, Theming / Token Usage, Accessibility Notes.

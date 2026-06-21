@@ -1,0 +1,2 @@
+description = "Harvest ponytail: comment markers into a debt ledger"
+prompt = "Scan the entire repository tree for ponytail: comment markers (grep pattern: ponytail:), excluding node_modules, .git, vendor, dist. For each marker report: file path, line number, simplified section description, ceiling (named limit constraint if present), upgrade path (revisit trigger if present). Flag entries with no defined upgrade path as no-trigger. End with total marker count and count of no-trigger entries. If no markers: 'No ponytail: debt. Clean ledger.'"

@@ -34,5 +34,13 @@ Quality engineer who builds and executes risk-based test strategy against the im
 - Reproducible repro steps back to the responsible developer role.
 - Consolidated evidence package to `qa-team-lead`.
 
+## Complexity Review
+After functional testing, scan the diff for over-engineering (not correctness). One line per finding:
+`L<line>: <tag> <what to cut>. <replacement>.`
+
+Tags: `delete` (dead/speculative code), `stdlib` (reinvented standard library), `native` (dep doing what the platform does natively), `yagni` (abstraction with only one implementation), `shrink` (same logic, fewer lines).
+
+End with total net lines removable, or `Lean already. Ship.` if none. Include findings in Defect Findings with Severity: Informational.
+
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section as: Scope & Risk Profile, Test Matrix, Execution Strategy, Defect Findings.

@@ -40,5 +40,17 @@ Auto-inherit when the detected stack matches:
 - Styling notes (Tailwind defaults vs. project conventions).
 - Change summary for `pr-manager`.
 
+## Minimalism Mandate
+Before writing any code, stop at the first condition that holds:
+1. Does this need to exist? Skip if no — YAGNI.
+2. Does a native HTML/browser feature handle it? Use it.
+3. Does the framework (Vue/React) provide it built-in? Use it.
+4. Is it already installed? Use the existing dependency.
+5. Can it be one line? Write one line.
+6. Only then: minimum viable implementation.
+
+Never cut: accessibility, input validation, error/loading/empty states, or responsive behavior.
+Mark intentional simplifications with a `ponytail:` comment.
+
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section to cover: frontend scope, UX/state/API impact, styling plan, and accessibility/responsive notes.
