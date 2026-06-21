@@ -28,14 +28,16 @@ INDEX.md
 CLAUDE.md
 opencode.json
 .ai/
+.claude/
+.codex/
 .opencode/
 examples/
 ```
 
 The framework `README.md` may be replaced with project-specific documentation.
 
-### Option 2: Install Into an Existing Repository
-Use this when integrating the framework into an already-existing codebase.
+### Option 2: One-Stop Runtime Installation
+Use this when you want the full runtime payload in an existing repository: Claude, Codex, OpenCode, shared contracts, runtime command entrypoints, and examples.
 
 Preview first:
 
@@ -75,7 +77,19 @@ rsync -avh \
 
 Always run the dry-run command first. `.ai` and `examples` intentionally do not use trailing slashes (in `rsync`, a trailing slash copies directory contents; no trailing slash copies the directory itself).
 
-`CLAUDE.md` is the Claude Code runtime entrypoint. `AGENTS.md` is the canonical instruction source. `.ai/*` is the canonical workflow / agent / runtime library.
+Included in the one-stop payload:
+- `AGENTS.md` is the canonical instruction source.
+- `CLAUDE.md` is the Claude Code runtime entrypoint.
+- `opencode.json` is the OpenCode runtime configuration entrypoint.
+- `.ai/*` is the canonical workflow / agent / runtime library.
+- `.claude/commands/*`, `.codex/commands/*`, and `.opencode/commands/*` are committed runtime command entrypoints.
+
+Generated later, not copied by default:
+- `.claude/agents/*.md`
+- `.codex/agents/*.toml`
+- `.opencode/agents/*.md`
+
+Use the runtime-specific install snippets below only when you intentionally want a narrower payload.
 
 ### Claude Code Runtime Installation
 
