@@ -9,6 +9,31 @@ Define runtime routing shapes. See `.ai/execution/task-classification.md` for cl
 - Execution mode is runtime-facing routing metadata, not the primary control surface.
 - Every code-changing run persists `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
+## Exception Modes (Pre-Preflight)
+
+Check these two conditions before classification and delegation preflight on every prompt. When either applies, the standard routing contract does not run.
+
+### Exception A: Framework-Native Context
+**Condition:** The runtime working directory is the ai-agents framework repo itself.  
+**Detection:** File `.ai/.framework-root` exists at the repo root. This sentinel is committed only in the ai-agents source repo and must not be present in consumer projects.  
+**Behavior:** Main session acts directly. Delegation model suspended. Native subagents (search, read, grep) are still permitted. The 16-role PM → specialist routing does not apply.  
+**Rationale:** The ai-agents repo is the canonical source. Routing framework development through the framework's own delegation contract is circular.
+
+### Exception B: Build-Bootstrap Operations
+**Condition:** The invoked operation is a build-agents bootstrap command.  
+**Detection:** Prompt matches any of the following exactly or as a leading phrase:
+- `build claude agents`
+- `build codex agents`
+- `build opencode agents`
+
+Or the invoked workflow file is one of:
+- `.ai/workflows/build-claude-agents.md`
+- `.ai/workflows/build-codex-agents.md`
+- `.ai/workflows/build-opencode-agents.md`
+
+**Behavior:** Main session executes the build workflow directly. Delegation preflight skipped. Adapter presence not checked.  
+**Rationale:** Build-agents workflows produce the adapter files the delegation contract requires. Applying delegation preflight to the operation that creates its own prerequisites is self-defeating.
+
 ## Execution Mode Input
 Accepted values: `auto` (default), `sequential`, `targeted`, `delegated`.
 

@@ -10,6 +10,14 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - This bootstrap is derivative runtime guidance.
 - If this file conflicts with canonical `.ai/*` contracts, follow canonical contracts.
 
+## Pre-Preflight Exception Check
+Before classification or delegation preflight, check these two conditions. When either applies, skip the routing contract below entirely.
+
+- **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root. → Main session acts directly. Delegation suspended. Native subagents allowed.
+- **Exception B — Build-Bootstrap Operation:** Prompt matches `build claude agents`, `build codex agents`, or `build opencode agents` (exactly or as leading phrase); or invokes `.ai/workflows/build-<runtime>-agents.md`. → Main session executes build workflow directly. Delegation preflight and adapter presence check skipped.
+
+See `.ai/execution/modes.md` for full exception definitions.
+
 ## Prompt Routing Contract (Unconditional)
 Every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).

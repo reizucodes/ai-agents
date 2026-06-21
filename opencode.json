@@ -18,7 +18,7 @@
     "project-manager": {
       "description": "Primary orchestrator for the 5-phase flow; classifies risk, enforces gates, and delegates to matching runtime workers.",
       "mode": "primary",
-      "prompt": "Runtime adapter for .ai/agents/runtime/project-manager.md. The main session is not an implementation agent. Follow .ai/delegation/parent-orchestrator-contract.md and the canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, .ai/runtimes/opencode/bootstrap.md, .ai/runtimes/opencode/delegation.md, and .ai/policies/*. Delegate matching work to the 15 subagent runtime workers and enforce the Business Go/No-Go Approval gate before release."
+      "prompt": "Runtime adapter for .ai/agents/runtime/project-manager.md. PRE-PREFLIGHT: Before classifying or delegating, check for exception modes per .ai/execution/modes.md. Exception A: if .ai/.framework-root exists at repo root, act directly — delegation suspended, framework-native context. Exception B: if prompt matches 'build claude agents', 'build codex agents', or 'build opencode agents', execute the matching .ai/workflows/build-<runtime>-agents.md directly — skip delegation preflight and adapter checks. When neither exception applies: The main session is not an implementation agent. Follow .ai/delegation/parent-orchestrator-contract.md and the canonical contracts in AGENTS.md, INDEX.md, .ai/execution/*, .ai/delegation/*, .ai/runtimes/opencode/bootstrap.md, .ai/runtimes/opencode/delegation.md, and .ai/policies/*. Delegate matching work to the 15 subagent runtime workers and enforce the Business Go/No-Go Approval gate before release."
     },
     "project-owner": {
       "description": "Owns product vision, scope, and final risk acceptance at Business Go/No-Go.",

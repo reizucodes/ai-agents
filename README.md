@@ -12,10 +12,13 @@ git clone <repo-url> <project-folder>
 cd <project-folder>
 
 rm -rf .git
+rm .ai/.framework-root
 git init
 ```
 
 After initialization, the new project owns its own Git history. The framework repository is no longer required.
+
+> **Important:** `.ai/.framework-root` is a sentinel that marks the ai-agents source repo as framework-native. It must not exist in consumer projects — delete it immediately after cloning.
 
 Runtime assets retained in the project:
 
@@ -39,6 +42,7 @@ Preview first:
 ```bash
 rsync -avh --dry-run --itemize-changes \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
@@ -54,6 +58,7 @@ Then perform the sync:
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
@@ -73,6 +78,7 @@ Always run the dry-run command first. `.ai` and `examples` intentionally do not 
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
@@ -90,6 +96,7 @@ Notes:
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   opencode.json \
@@ -226,6 +233,7 @@ mkdir ../opencode-framework-test
 rsync -avh \
   --exclude='.git' \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
@@ -249,6 +257,10 @@ Runtime metadata may label the routing shape as `auto`, `sequential`, `targeted`
 - matching specialist work is delegated by default,
 - parent-only implementation requires explicit user instruction (`no subagent`, `main only`) or explicit approval after disclosed fallback,
 - pure non-code-changing analysis/review work may remain parent-only.
+
+Two pre-preflight exceptions suspend delegation before any routing runs (defined in `.ai/execution/modes.md`):
+- **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root → main session acts directly; the 16-role delegation model does not apply. This sentinel is present only in the ai-agents source repo.
+- **Exception B — Build-Bootstrap:** prompt matches `build claude/codex/opencode agents` → main session executes the build workflow directly; no adapter presence check runs.
 
 ### Agent Display Names
 Generated agents self-identify as:

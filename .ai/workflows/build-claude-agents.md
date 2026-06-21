@@ -9,6 +9,18 @@ This workflow is a contract only. It does not generate files by itself. It defin
 - Applies only when the user explicitly requests Claude adapter generation/validation work.
 - Does not apply to normal feature, bugfix, refactor, review, or documentation tasks.
 
+## Source-Repository Guard (Mandatory)
+Before generating anything, check whether execution is happening in the ai-agents framework source repo.
+
+**Primary detection:** `.ai/.framework-root` exists at repo root → this is the framework source repo.
+
+If framework source is detected, stop and refuse generation by default. Do not create `.claude/agents/*` or `.ai/reports/claude-adapter-run-report.md`.
+
+Required refusal response:
+"Refusing to generate .claude/agents/* in the ai-agents source repository. Import the framework into a consumer project first, then run build-claude-agents there."
+
+**Override (unsafe/diagnostic only):** Generation inside the framework source repo is allowed only when the user explicitly states `override: generate claude agents in source repo`. Without that exact override intent, generation remains blocked.
+
 ## Canonical and Adapter Clarifications
 - `AGENTS.md` and `.ai/*` remain canonical.
 - `.claude/agents/*.md` are generated Claude runtime adapters only.
@@ -128,6 +140,7 @@ Adapters must not invent additional gate types or bypass the approval-levels con
 
 ## Rejection Conditions
 Reject generation/validation when any apply:
+- `.ai/.framework-root` present at repo root without explicit override phrase
 - adapter name not in canonical 16-role set
 - attempt to generate an adapter from `.ai/agents/personas/*`
 - missing canonical source at `.ai/agents/runtime/<name>.md`

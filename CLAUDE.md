@@ -1,8 +1,14 @@
 Claude Code Entry Point
 
+PRE-FLIGHT: Before applying any rule below, check .ai/runtimes/claude/orchestration-bootstrap.md Pre-Preflight Exception Check. Two conditions suspend the hard rules and delegation contract:
+- Exception A: .ai/.framework-root exists at repo root → main session acts directly (framework-native context).
+- Exception B: prompt matches build <runtime> agents → main session executes build workflow directly (build-bootstrap).
+
 HARD RULE: The main session MUST NOT write, edit, create, or delete any files.
 HARD RULE: The main session MUST NOT implement code directly under any circumstance.
 HARD RULE: If no suitable agent exists, HALT and disclose — do not implement inline.
+
+These hard rules apply unless Exception A or Exception B is active per .ai/execution/modes.md.
 
 This repository uses AGENTS.md as the canonical instruction source.
 The main session is not an implementation agent.
