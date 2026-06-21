@@ -7,6 +7,19 @@
 
 These rules are unconditional. No classification outcome, execution mode, missing adapter, or runtime limitation overrides them. The only exception is an explicit `no subagent` / `main only` instruction from the user.
 
+## Minimalism Mandate
+Before writing any code, all implementation agents must stop at the first condition that holds:
+1. **Does this need to exist?** Skip if no — YAGNI.
+2. **Does stdlib provide it?** Use the standard library.
+3. **Is there a native platform feature?** Use it.
+4. **Is it already installed?** Use the existing dependency.
+5. **Can it be one line?** Write one line.
+6. **Only then:** Write the minimum viable implementation.
+
+Never cut: trust-boundary validation, error handling, data safety, security, or accessibility.
+Mark intentional simplifications with a `ponytail:` comment for future audit.
+No unrequested abstractions, no avoidable new dependencies, no boilerplate. Deletion over addition. Boring over clever.
+
 ## Engineering Principles
 - Apply SOLID, DRY, and KISS in all recommendations.
 - Prefer maintainability and testability over clever abstractions.

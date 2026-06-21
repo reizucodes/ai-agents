@@ -45,5 +45,17 @@ Inheritance is read-only stack standards; persona files are never delegated to a
 - Migration/rollback notes (handoff to `database-administrator` + `devops-engineer` when schema/deploy touched).
 - Change summary for `pr-manager`.
 
+## Minimalism Mandate
+Before writing any code, stop at the first condition that holds:
+1. Does this need to exist? Skip if no — YAGNI.
+2. Does stdlib provide it? Use it.
+3. Is there a native platform/framework feature? Use it.
+4. Is it already installed? Use the existing dependency.
+5. Can it be one line? Write one line.
+6. Only then: minimum viable implementation.
+
+Never cut: input validation, authn/authz, error handling, data safety, or observability.
+Mark intentional simplifications with a `ponytail:` comment.
+
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section to cover: backend scope, contract/data/auth impact, delegation/inheritance notes, and persistence/queue/cache risks.

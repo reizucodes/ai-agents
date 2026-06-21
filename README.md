@@ -270,6 +270,23 @@ Examples:
 - Adapter drift validation (`.ai/execution/adapter-drift-validation.md`) applies to all three runtimes.
 - Generated adapters under `.claude/agents/*`, `.codex/agents/*`, `.opencode/agents/*` are derived from `.ai/agents/runtime/*` only.
 
+## Minimalism (Ponytail)
+
+This framework embeds the [ponytail](https://github.com/DietrichGebert/ponytail) minimalism philosophy natively — no plugin install required.
+
+Before writing any code, all implementation agents apply this decision ladder:
+
+1. Does this need to exist? — skip if no (YAGNI)
+2. Does stdlib provide it? — use it
+3. Is there a native platform/framework feature? — use it
+4. Is it already installed? — use the existing dependency
+5. Can it be one line? — write one line
+6. Only then: minimum viable implementation
+
+Non-negotiables that are never cut: validation, auth, error handling, data safety, security, accessibility.
+
+Mark intentional simplifications with a `ponytail:` comment. Use `/ponytail-review` to scan a diff, `/ponytail-audit` to scan the whole repo, and `/ponytail-debt` to harvest all `ponytail:` markers into a ledger. These commands are available natively in Claude, OpenCode, and Codex runtimes.
+
 ## Workflow Philosophy
 Scale process according to risk:
 - Tiny / Small work runs on the fast path with no required artifacts.
