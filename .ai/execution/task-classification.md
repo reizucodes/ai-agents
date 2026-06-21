@@ -44,8 +44,8 @@ When to delegate vs. main-only.
 
 | Situation | Decision |
 |---|---|
-| Non-code-changing Q&A / search / explanation | Main-only allowed |
-| Pure review/analysis, no artifact output | Main-only allowed; `pr-manager` optional |
+| Non-code-changing Q&A / search / explanation | Main session spawns `project-manager` for triage and response |
+| Pure review/analysis, no artifact output | Main session spawns `project-manager`; `pr-manager` optional for review-generating tasks |
 | Code-changing Tiny single-surface | Main session spawns one matching specialist directly |
 | Code-changing Tiny multi-surface | Main session spawns two disjoint specialists directly (no PM) |
 | Code-changing Small (any surface) | Main session spawns `project-manager`; PM makes all targeting decisions for specialists |
@@ -75,7 +75,7 @@ Downgrade only when evidence confirms reduced scope: narrowed requirements, remo
 - `project-manager` may be skipped for Tiny work only — main session spawns the specialist directly. PM is always spawned for Small and above.
 - `project-owner` may be skipped for Tiny/Small when requirements are explicit and risk is Low.
 - `dev-team-lead` may be skipped when no boundary, data contract, or architecture decision is required.
-- `documentation-writer` may be skipped for Tiny work; code-changing runs still produce the run report (written by parent/main if no doc role is invoked).
+- `documentation-writer` may be skipped for Tiny work; when skipped, the run report requirement is waived. If a run report is required, it must be written by a delegated agent — main session must not write files.
 
 ## Planning Reuse Rule (Follow-Ups)
 Do not rerun `project-manager` / `project-owner` / `dev-team-lead` for Tiny/Small follow-ups unless scope, acceptance criteria, architecture, or workflow changes significantly, or the user explicitly requests re-planning.

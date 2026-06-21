@@ -90,16 +90,16 @@ Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, age
 - Canonical runtime roles: `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`. Contracts live in `.ai/agents/runtime/*`.
 
 ## Prompt Routing Contract (Unconditional)
-Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+Every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
 3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. For Small work PM runs a lightweight council (PM + `dev-team-lead`) and makes all targeting decisions for specialist delegation — the main session does not target specialists for Small work. Main session does not sequence council members, does not plan beyond classification, and does not implement.
 4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
 
 This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of a generated adapter file does not permit inline implementation; it requires disclosure and a halt.
 
 - When a suitable specialist exists, delegation is required. Direct implementation by parent/main when a matching runtime role exists is a delegation regression.
-- Parent-only implementation is allowed only when the user explicitly says `no subagent` or `main only`, or when the task is pure non-code-changing analysis.
+- Parent-only implementation is allowed only when the user explicitly says `no subagent` or `main only`.
 - Planning completion is not implementation approval. When the Business Go/No-Go gate applies, implementation must not start until required artifacts exist, `project-manager` presents a consolidated proposal review package using `.ai/templates/proposal-review-package.md`, and the user gives explicit approval.
 - The three decision-gate types are defined in `.ai/policies/approval-levels.md`:
   - **Auto** — runtime proceeds, no human input.
