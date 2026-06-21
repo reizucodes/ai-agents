@@ -9,16 +9,16 @@ Runtime-facing orchestration guidance for the Claude main session.
 - If any conflict exists, canonical `.ai/*` wins.
 
 ## Prompt Routing Contract (Unconditional)
-Every prompt that is not pure analysis or Q&A follows this routing contract exactly:
+Every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, or the single matching specialist for Tiny single-surface work. Main session stops here.
+2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
 3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
 4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
 
 ## Classification Rule
 - Classify each task before execution using `.ai/execution/task-classification.md`.
 - The main session is not an implementation agent.
-- Delegation is unconditional for all non-analysis work — adapter presence is not a prerequisite for the rule; adapter absence requires disclosure and halt, not inline fallback.
+- Delegation is unconditional for all work — adapter presence is not a prerequisite for the rule; adapter absence requires disclosure and halt, not inline fallback.
 - Main session may perform orchestration preflight only (classification and initial spawn). Main session does not sequence council members or implement.
 
 ## Worker Availability Rule
@@ -57,7 +57,7 @@ Tiny/Small tasks may collapse Planning Council to `project-manager` only; otherw
 
 ## Audit Rule
 - Code-changing runs requiring artifacts (per `.ai/execution/artifact-conventions.md` and `.ai/policies/risk-classification.md`) must persist `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
-- If `documentation-writer` is skipped for Tiny/Small efficiency, main session writes the run report when required.
+- If `documentation-writer` is skipped for Tiny work, the run report requirement is waived. If a run report is required, it must be written by a delegated agent (`documentation-writer` or `doc-team-lead`) — the main session must not write files under any circumstance.
 - Run report agent participation must distinguish:
   - parent session orchestration work,
   - delegated child agents actually spawned/invoked.
