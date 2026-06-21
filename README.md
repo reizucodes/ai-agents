@@ -48,6 +48,8 @@ rsync -avh --dry-run --itemize-changes \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   /path/to/existing-project/
@@ -64,6 +66,8 @@ rsync -avh \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   /path/to/existing-project/
@@ -83,13 +87,34 @@ rsync -avh \
   INDEX.md \
   CLAUDE.md \
   .ai \
+  .claude \
   examples \
   ../your-project/
 ```
 
 Notes:
+- `.claude/commands/*.md` are committed runtime entrypoints, including the native ponytail commands.
 - `.claude/agents/*.md` is not installed by default.
 - Claude adapters are generated later through `build-claude-agents` (16 adapters).
+
+### Codex Runtime Installation
+
+```bash
+rsync -avh \
+  --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
+  AGENTS.md \
+  INDEX.md \
+  .ai \
+  .codex \
+  examples \
+  ../your-project/
+```
+
+Notes:
+- `.codex/commands/*.toml` are committed runtime entrypoints, including the native ponytail commands.
+- `.codex/agents/*.toml` is not installed by default.
+- Codex adapters are generated later through `build-codex-agents` (16 adapters).
 
 ### OpenCode Runtime Installation
 
@@ -206,6 +231,7 @@ Persona files under `.ai/agents/personas/*` are never generated as adapters; run
 
 Repository default state:
 - ships with `AGENTS.md`, `INDEX.md`, `CLAUDE.md`, `opencode.json`, and runtime contracts under `.ai/runtimes/{claude,codex,opencode}/*`
+- ships with committed runtime command entrypoints under `.claude/commands/*`, `.codex/commands/*`, and `.opencode/commands/*`
 - does not ship with `.claude/agents/*`, `.codex/agents/*`, or `.opencode/agents/*`
 
 Generated adapters are derivative artifacts. Canonical sources remain `.ai/agents/runtime/*`.
@@ -239,6 +265,8 @@ rsync -avh \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   ../opencode-framework-test/
