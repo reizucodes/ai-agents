@@ -26,6 +26,8 @@ See `.ai/execution/artifact-conventions.md` for the full preflight output templa
 
 | Scenario | Expected Classification/Decision | Required Roles | Fallback Rule |
 |---|---|---|---|
+| Framework-native context (`.ai/.framework-root` at root) | Exception A applies before preflight; `main_runtime_allowed: true`, delegation suspended | none | Main session acts directly; native subagents allowed; 16-role routing does not apply |
+| Build-bootstrap operation (`build claude/codex/opencode agents`) | Exception B applies before preflight; `main_runtime_allowed: true`, delegation suspended | none | Main session executes build workflow directly; adapter presence not checked |
 | Frontend Tiny code change | `targeted_required: true`, `delegated_allowed: false` unless scope/risk escalates | `frontend-developer` (with `personas/vue` or `personas/react` inherited when stack matches) | Missing required adapter requires fallback disclosure and approval where targeted was required/requested |
 | Backend Tiny code change | `targeted_required: true`, `delegated_allowed: false` unless scope/risk escalates | `backend-developer` (with `personas/fastapi`, `personas/laravel`, `personas/node-express`, or `personas/python` inherited when stack matches) | Missing required adapter requires fallback disclosure and approval where targeted was required/requested |
 | Test-only code change | `targeted_required: true`, `delegated_allowed: false` unless scope/risk escalates | `qa-specialist` | Missing `qa-specialist` adapter requires fallback disclosure and approval |
