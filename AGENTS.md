@@ -5,7 +5,9 @@
 - **HARD RULE**: The main session MUST NOT implement code directly under any circumstance.
 - **HARD RULE**: If no suitable agent exists, HALT and disclose — do not implement inline.
 
-These rules are unconditional. No classification outcome, execution mode, missing adapter, or runtime limitation overrides them. The only exception is an explicit `no subagent` / `main only` instruction from the user.
+These rules are unconditional with two exceptions:
+- Explicit `no subagent` / `main only` instruction from the user.
+- Exception A (framework-native context): `.ai/.framework-root` exists at repo root — main session acts directly on framework source. See Pre-Preflight Exceptions below.
 
 ## Minimalism Mandate
 Before writing any code, all implementation agents must stop at the first condition that holds:
@@ -102,8 +104,13 @@ Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, age
 - The main session is not an implementation agent. `project-manager` is the primary orchestrator; the other 15 canonical roles run as subagents.
 - Canonical runtime roles: `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`. Contracts live in `.ai/agents/runtime/*`.
 
+## Pre-Preflight Exceptions
+Two conditions suspend the routing contract and hard rules before classification runs. Check these first on every prompt (full definitions in `.ai/execution/modes.md`):
+- **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root → main session acts directly; delegation suspended; native subagents allowed.
+- **Exception B — Build-Bootstrap:** prompt matches `build claude agents`, `build codex agents`, or `build opencode agents` → main session executes the matching build workflow directly; no delegation preflight; no adapter presence check.
+
 ## Prompt Routing Contract (Unconditional)
-Every prompt follows this routing contract exactly:
+When neither exception above applies, every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
 2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
 3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. For Small work PM runs a lightweight council (PM + `dev-team-lead`) and makes all targeting decisions for specialist delegation — the main session does not target specialists for Small work. Main session does not sequence council members, does not plan beyond classification, and does not implement.

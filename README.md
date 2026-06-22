@@ -12,10 +12,13 @@ git clone <repo-url> <project-folder>
 cd <project-folder>
 
 rm -rf .git
+rm .ai/.framework-root
 git init
 ```
 
 After initialization, the new project owns its own Git history. The framework repository is no longer required.
+
+> **Important:** `.ai/.framework-root` is a sentinel that marks the ai-agents source repo as framework-native. It must not exist in consumer projects — delete it immediately after cloning.
 
 Runtime assets retained in the project:
 
@@ -25,25 +28,30 @@ INDEX.md
 CLAUDE.md
 opencode.json
 .ai/
+.claude/
+.codex/
 .opencode/
 examples/
 ```
 
 The framework `README.md` may be replaced with project-specific documentation.
 
-### Option 2: Install Into an Existing Repository
-Use this when integrating the framework into an already-existing codebase.
+### Option 2: One-Stop Runtime Installation
+Use this when you want the full runtime payload in an existing repository: Claude, Codex, OpenCode, shared contracts, runtime command entrypoints, and examples.
 
 Preview first:
 
 ```bash
 rsync -avh --dry-run --itemize-changes \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   /path/to/existing-project/
@@ -54,11 +62,14 @@ Then perform the sync:
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   /path/to/existing-project/
@@ -66,30 +77,65 @@ rsync -avh \
 
 Always run the dry-run command first. `.ai` and `examples` intentionally do not use trailing slashes (in `rsync`, a trailing slash copies directory contents; no trailing slash copies the directory itself).
 
-`CLAUDE.md` is the Claude Code runtime entrypoint. `AGENTS.md` is the canonical instruction source. `.ai/*` is the canonical workflow / agent / runtime library.
+Included in the one-stop payload:
+- `AGENTS.md` is the canonical instruction source.
+- `CLAUDE.md` is the Claude Code runtime entrypoint.
+- `opencode.json` is the OpenCode runtime configuration entrypoint.
+- `.ai/*` is the canonical workflow / agent / runtime library.
+- `.claude/commands/*`, `.codex/commands/*`, and `.opencode/commands/*` are committed runtime command entrypoints.
+
+Generated later, not copied by default:
+- `.claude/agents/*.md`
+- `.codex/agents/*.toml`
+- `.opencode/agents/*.md`
+
+Use the runtime-specific install snippets below only when you intentionally want a narrower payload.
 
 ### Claude Code Runtime Installation
 
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
   .ai \
+  .claude \
   examples \
   ../your-project/
 ```
 
 Notes:
+- `.claude/commands/*.md` are committed runtime entrypoints, including the native ponytail commands.
 - `.claude/agents/*.md` is not installed by default.
 - Claude adapters are generated later through `build-claude-agents` (16 adapters).
+
+### Codex Runtime Installation
+
+```bash
+rsync -avh \
+  --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
+  AGENTS.md \
+  INDEX.md \
+  .ai \
+  .codex \
+  examples \
+  ../your-project/
+```
+
+Notes:
+- `.codex/commands/*.toml` are committed runtime entrypoints, including the native ponytail commands.
+- `.codex/agents/*.toml` is not installed by default.
+- Codex adapters are generated later through `build-codex-agents` (16 adapters).
 
 ### OpenCode Runtime Installation
 
 ```bash
 rsync -avh \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   opencode.json \
@@ -199,6 +245,7 @@ Persona files under `.ai/agents/personas/*` are never generated as adapters; run
 
 Repository default state:
 - ships with `AGENTS.md`, `INDEX.md`, `CLAUDE.md`, `opencode.json`, and runtime contracts under `.ai/runtimes/{claude,codex,opencode}/*`
+- ships with committed runtime command entrypoints under `.claude/commands/*`, `.codex/commands/*`, and `.opencode/commands/*`
 - does not ship with `.claude/agents/*`, `.codex/agents/*`, or `.opencode/agents/*`
 
 Generated adapters are derivative artifacts. Canonical sources remain `.ai/agents/runtime/*`.
@@ -226,11 +273,14 @@ mkdir ../opencode-framework-test
 rsync -avh \
   --exclude='.git' \
   --exclude='.DS_Store' \
+  --exclude='.ai/.framework-root' \
   AGENTS.md \
   INDEX.md \
   CLAUDE.md \
   opencode.json \
   .ai \
+  .claude \
+  .codex \
   .opencode \
   examples \
   ../opencode-framework-test/
@@ -249,6 +299,10 @@ Runtime metadata may label the routing shape as `auto`, `sequential`, `targeted`
 - matching specialist work is delegated by default,
 - parent-only implementation requires explicit user instruction (`no subagent`, `main only`) or explicit approval after disclosed fallback,
 - pure non-code-changing analysis/review work may remain parent-only.
+
+Two pre-preflight exceptions suspend delegation before any routing runs (defined in `.ai/execution/modes.md`):
+- **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root → main session acts directly; the 16-role delegation model does not apply. This sentinel is present only in the ai-agents source repo.
+- **Exception B — Build-Bootstrap:** prompt matches `build claude/codex/opencode agents` → main session executes the build workflow directly; no adapter presence check runs.
 
 ### Agent Display Names
 Generated agents self-identify as:

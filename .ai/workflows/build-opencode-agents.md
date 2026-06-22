@@ -13,13 +13,12 @@ This workflow is a contract only. It does not generate files by itself.
 ## Source-Repository Guard (Mandatory)
 Before generating anything, determine whether execution is happening in the `ai-agents` framework source repository.
 
-Treat repository as framework source only when one or more strong indicators are true:
+**Primary detection:** `.ai/.framework-root` exists at repo root → this is the framework source repo. This is the definitive check.
+
+Supplementary indicators (use only when sentinel is absent and ambiguity exists):
 - `README.md` identifies repository as the reusable AI agent library/framework source
 - current repository directory name is `ai-agents`
 - git remote URL clearly points to the `ai-agents` framework repository
-- optional explicit source marker exists:
-  - `.ai/framework-source.md`, or
-  - `.ai/source-repository.md`
 
 Do not use these alone as source-repository indicators:
 - `.ai/runtimes/claude/`
@@ -166,7 +165,8 @@ Generated adapters must reference the 3-gate model defined in `.ai/policies/appr
 
 ## Validation Steps
 0. Source-repo guard check:
-   - detect strong source indicators only
+   - check `.ai/.framework-root` at repo root first (definitive)
+   - fall back to supplementary indicators only when sentinel is absent
    - fail generation unless explicit override phrase is present
    - confirm refusal message + consumer/test instructions are returned when blocked
 1. Role-set integrity: exactly 16 outputs, names match `adapter-role-mapping.md`.
@@ -198,6 +198,7 @@ Generated adapters must reference the 3-gate model defined in `.ai/policies/appr
 
 ## Rejection Conditions
 Reject generation when any apply:
+- `.ai/.framework-root` present at repo root without explicit override phrase
 - adapter name not in canonical 16-role set
 - attempt to generate an adapter from `.ai/agents/personas/*`
 - missing canonical source at `.ai/agents/runtime/<name>.md`

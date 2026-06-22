@@ -44,6 +44,8 @@ When to delegate vs. main-only.
 
 | Situation | Decision |
 |---|---|
+| Framework-native context (`.ai/.framework-root` at root) | Exception A — main session acts directly; delegation suspended; native subagents allowed |
+| Build-bootstrap operation (`build claude/codex/opencode agents`) | Exception B — main session executes build workflow directly; no adapter check; delegation preflight skipped |
 | Non-code-changing Q&A / search / explanation | Main session spawns `project-manager` for triage and response |
 | Pure review/analysis, no artifact output | Main session spawns `project-manager`; `pr-manager` optional for review-generating tasks |
 | Code-changing Tiny single-surface | Main session spawns one matching specialist directly |
