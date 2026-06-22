@@ -8,35 +8,11 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - `.ai/agents/personas/*.md` are inheritable skill/persona docs, not child role definitions.
 - Child contracts must not redefine canonical policy constraints.
 
-## Canonical Runtime Roles (16)
-- `backend-developer`
-- `cybersecurity-analyst`
-- `database-administrator`
-- `dev-team-lead`
-- `devops-engineer`
-- `doc-team-lead`
-- `documentation-writer`
-- `frontend-developer`
-- `junior-project-manager`
-- `pr-manager`
-- `project-manager`
-- `project-owner`
-- `qa-specialist`
-- `qa-team-lead`
-- `ui-ux-designer`
-- `web-designer`
+## Canonical Runtime Roles
+See `.ai/execution/adapter-role-mapping.md` for the canonical 16-role set.
 
 ## Baseline Delegated Role Mapping
-Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`. Examples:
-- `backend-developer` child → `.ai/agents/runtime/backend-developer.md`
-- `frontend-developer` child → `.ai/agents/runtime/frontend-developer.md`
-- `qa-specialist` child → `.ai/agents/runtime/qa-specialist.md`
-- `qa-team-lead` child → `.ai/agents/runtime/qa-team-lead.md`
-- `pr-manager` child → `.ai/agents/runtime/pr-manager.md`
-- `documentation-writer` child → `.ai/agents/runtime/documentation-writer.md`
-- `dev-team-lead` child → `.ai/agents/runtime/dev-team-lead.md`
-- `project-manager` child → `.ai/agents/runtime/project-manager.md`
-- `project-owner` child → `.ai/agents/runtime/project-owner.md`
+Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`.
 
 ## Persona Inheritance
 When a runtime worker operates on a codebase that matches a persona (e.g. `backend-developer` on a Laravel project), the worker inherits the relevant `.ai/agents/personas/<stack>.md` content. Persona files are not spawnable child roles; they augment the runtime worker's prompt only when task detection matches.

@@ -9,12 +9,6 @@ Add OpenCode as a peer runtime adapter that consumes canonical instructions from
 - `.opencode/agents/*` are generated runtime artifacts for consumer projects.
 - If adapter assets conflict with canonical files, canonical files win.
 
-## Findings From Existing Runtime Patterns
-- Runtime adapters are derivative integration layers, not parallel architecture.
-- Claude/Codex keep orchestration in runtime main session and map canonical roles into runtime-native agent artifacts.
-- Runtime docs emphasize mapping, drift avoidance, and governance preservation.
-- Workflow execution and delegation rules are preserved from canonical `.ai/execution/*`, `.ai/delegation/*`, and `.ai/policies/*`.
-
 ## OpenCode Integration Surface
 - Root config: `opencode.json`
 - Runtime mapping docs: `.ai/runtimes/opencode/*`
