@@ -7,6 +7,8 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - `.ai/agents/runtime/*.md` is the canonical runtime worker source (16 fixed roles).
 - `.ai/agents/personas/*.md` are inheritable skill/persona docs, not child role definitions.
 - Child contracts must not redefine canonical policy constraints.
+- Delegated child agents are not the `main session`; parent-only prohibitions from `AGENTS.md`, runtime bootstraps, and orchestrator contracts do not block assigned child-role work.
+- All 16 canonical generated workers may execute the work defined by their own role contract within assigned scope and runtime permissions. They are not limited to read-only analysis unless their role contract or parent handoff makes them so.
 
 ## Canonical Runtime Roles (16)
 - `backend-developer`
@@ -61,6 +63,7 @@ When a runtime worker operates on a codebase that matches a persona (e.g. `backe
 
 ## Child Scope Rules
 - Each child receives explicit goals, scope boundaries, ownership, and handoff requirements.
+- A child may modify files, run validation, write artifacts, or perform other role-appropriate actions when those actions are needed to complete its assigned scope and comply with `.ai/policies/approval-levels.md` plus any other applicable policy gates.
 - Implementation children must not ask the user directly; requirement questions escalate through parent and `project-owner` / `junior-project-manager`.
 - Children should avoid changing files outside assigned ownership.
 - Children must report assumptions, risks, and incomplete checks.
