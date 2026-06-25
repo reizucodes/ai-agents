@@ -101,7 +101,7 @@ Tiny/Small work collapses Planning Council to `project-manager` only and skips r
 Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, agent participation, and artifact requirements by change size.
 
 ## Orchestration Baseline
-- The main session is not an implementation agent. `project-manager` is the primary orchestrator; the other 15 canonical roles run as subagents.
+- The main session is not an implementation agent. It is the sole spawner and integrator: it classifies, spawns subagents, and sequences them per `project-manager`'s plan. `project-manager` is the primary *planner* — it decides who/when and returns a Spawn Plan, but spawns no one (subagents cannot spawn subagents). The other 15 canonical roles run as subagents spawned by the main session.
 - Canonical runtime roles: `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`. Contracts live in `.ai/agents/runtime/*`.
 
 ## Pre-Preflight Exceptions
@@ -112,9 +112,10 @@ Two conditions suspend the routing contract and hard rules before classification
 ## Prompt Routing Contract (Unconditional)
 When neither exception above applies, every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
-3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. For Small work PM runs a lightweight council (PM + `dev-team-lead`) and makes all targeting decisions for specialist delegation — the main session does not target specialists for Small work. Main session does not sequence council members, does not plan beyond classification, and does not implement.
-4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+2. **Tiny work** — main session spawns the matching specialist(s) directly (single specialist for single-surface; two disjoint specialists for multi-surface). No `project-manager` round-trip.
+3. **Small/Medium/Major work, Q&A, or analysis** — main session spawns `project-manager` for planning only. PM classifies, convenes the Planning Council on paper, sequences all phases, and enforces gates, then **returns a Spawn Plan to the main session** (see `project-manager` contract Output Format). PM does not spawn anyone — subagents cannot spawn subagents on supported runtimes.
+4. **Main session executes the Spawn Plan** — the main session is the sole spawner. It spawns each specialist PM named, as a real subagent, in PM's sequence, honoring approval gates between phases. For Medium/Major work it MUST re-invoke `project-manager` at each phase boundary (gate, blocked handoff, scope change) so PM performs its coordination, gate enforcement, and artifact verification and emits the next Spawn Plan increment — PM owns cross-phase coordination across the run, one phase-slice per invocation. Main does not re-plan, re-sequence, enforce gates on its own, or implement; it spawns what PM specified and routes phase boundaries back to PM.
+5. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
 
 This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of a generated adapter file does not permit inline implementation; it requires disclosure and a halt.
 

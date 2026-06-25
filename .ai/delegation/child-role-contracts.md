@@ -41,6 +41,10 @@ When a runtime worker operates on a codebase that matches a persona (e.g. `backe
 - Children should avoid changing files outside assigned ownership.
 - Children must report assumptions, risks, and incomplete checks.
 
+## Spawning Authority
+- The main session is the sole spawner of child agents. `project-manager` plans the sequence and returns a Spawn Plan; it does not spawn anyone (subagents cannot spawn subagents on supported runtimes).
+- The main session spawns each role in PM's Spawn Plan, in order, honoring gates between phases. It may re-consult `project-manager` between phases for the next batch.
+
 ## Non-goals
 - This file does not create or spawn child agents.
 - This file does not define runtime adapter formats.
