@@ -35,6 +35,8 @@
     - frontmatter includes both `description` and `mode`
     - `mode: primary` only on `project-manager`; all others `mode: subagent`
     - generated metadata block exists after frontmatter and includes canonical references (`canonical-source: .ai/agents/runtime/<name>.md`)
+    - each generated subagent body states it is not the main session and may execute role-defined work within assigned scope and policy gates
+    - each generated subagent body instructs the worker to read `.ai/agents/runtime/<role>.md` before performing role work
 13. Verify persona inheritance directives are present in inheriting adapters:
     - `backend-developer.md` references `.ai/agents/personas/{laravel,fastapi,node-express,python}.md`
     - `frontend-developer.md` references `.ai/agents/personas/{react,vue}.md`
@@ -70,6 +72,8 @@
   - `head -1 /path/to/consumer-project/.opencode/agents/backend-developer.md | rg '^---$'`
   - `awk 'NR==1,/^---$/{print}' /path/to/consumer-project/.opencode/agents/backend-developer.md`
   - `grep 'canonical-source:' /path/to/consumer-project/.opencode/agents/*.md`
+  - `rg 'not the main session' /path/to/consumer-project/.opencode/agents/*.md`
+  - `rg 'Before performing role work, read and follow \\.ai/agents/runtime/' /path/to/consumer-project/.opencode/agents/*.md`
   - `test ! -d node_modules`
   - `test ! -f package.json`
   - `test ! -f package-lock.json`

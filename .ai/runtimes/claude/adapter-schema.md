@@ -56,6 +56,9 @@ Adapter body must include:
 - generated adapter notice
 - canonical source pointer
 - canonical conflict rule
+- explicit statement that the worker is a delegated child agent, not the main session
+- explicit instruction to read `.ai/agents/runtime/<role>.md` before performing role work
+- explicit statement that role-defined work is allowed within assigned scope and policy gates
 - short Claude-specific role summary
 - concise responsibilities
 - boundaries
@@ -81,6 +84,9 @@ Body constraints:
 7. Generated metadata is present and drift-checkable.
 8. Canonical conflict rule is present.
 9. File path is under `.claude/agents/`.
+10. Body states the child is not the main session.
+11. Body requires reading `.ai/agents/runtime/<role>.md` before role work.
+12. Body states that role-defined work is allowed within assigned scope and policy gates.
 
 ## Persona Inheritance
 For `backend-developer`, `frontend-developer`, and `web-designer`, the adapter body must include a directive that the agent loads `.ai/agents/personas/<stack>.md` on demand when the matching stack is detected:
@@ -103,13 +109,18 @@ tools:
 
 Generated Claude Code subagent adapter.
 
+You are a delegated child agent, not the main session.
+
 Canonical source:
 .ai/agents/runtime/backend-developer.md
 
 Follow the canonical role contract before performing role work.
+Before performing role work, read and follow `.ai/agents/runtime/backend-developer.md`.
 
 This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
+
+You may execute the work your role and assigned scope require, subject to `.ai/policies/approval-levels.md` and other applicable policies.
 
 ## Role Summary
 Backend implementation specialist for API, service, repository, and persistence work under approved technical-approach boundaries from `dev-team-lead`.
