@@ -103,7 +103,10 @@ Tiny/Small work collapses Planning Council to `project-manager` only and skips r
 Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, agent participation, and artifact requirements by change size.
 
 ## Orchestration Baseline
-- The main session is not an implementation agent. `project-manager` is the primary orchestrator; the other 15 canonical roles run as subagents.
+- The root (primary) agent is the sole spawner and integrator. A leaf subagent never spawns another subagent. Spawning authority therefore depends on which agent is the root on a given runtime:
+  - **Claude / Codex:** the root is a generic main session; `project-manager` runs as a leaf subagent. PM is the primary *planner* — it decides who/when and returns a Spawn Plan, but spawns no one. The main session spawns each role PM names.
+  - **OpenCode:** `project-manager` is the root/primary agent (`opencode.json` `default_agent: project-manager`). PM is itself the "main session" here, so it spawns the 15 subagent roles directly — no Spawn-Plan round-trip is needed.
+- The unifying rule: the root agent classifies, spawns, sequences, and integrates; PM owns planning/coordination/gates regardless of whether it is the root. The other 15 canonical roles always run as subagents.
 - Canonical runtime roles: `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`. Contracts live in `.ai/agents/runtime/*`.
 
 ## Pre-Preflight Exceptions
@@ -114,9 +117,10 @@ Two conditions suspend the routing contract and hard rules before classification
 ## Prompt Routing Contract (Unconditional)
 When neither exception above applies, every prompt follows this routing contract exactly:
 1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
-3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. For Small work PM runs a lightweight council (PM + `dev-team-lead`) and makes all targeting decisions for specialist delegation — the main session does not target specialists for Small work. Main session does not sequence council members, does not plan beyond classification, and does not implement.
-4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
+2. **Tiny work** — main session spawns the matching specialist(s) directly (single specialist for single-surface; two disjoint specialists for multi-surface). No `project-manager` round-trip.
+3. **Small/Medium/Major work, Q&A, or analysis** — engage `project-manager` for planning. PM classifies, convenes the Planning Council on paper, sequences all phases, enforces gates, and produces a Spawn Plan (see `project-manager` contract Output Format). Who spawns it follows § Orchestration Baseline: on Claude/Codex the main session spawns PM, which returns the plan; on OpenCode PM is the root and spawns directly.
+4. **The root agent executes the Spawn Plan** — spawns each specialist in PM's sequence as a real subagent, honoring approval gates between phases. On Claude/Codex the main session MUST re-invoke `project-manager` at each phase boundary (gate, blocked handoff, scope change) so PM coordinates, enforces gates, and emits the next Spawn Plan increment — one phase-slice per invocation. A non-PM root spawns what PM specified and routes phase boundaries back to PM.
+5. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
 
 This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of a generated adapter file does not permit inline implementation; it requires disclosure and a halt.
 

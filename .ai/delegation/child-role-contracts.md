@@ -10,35 +10,11 @@ Map canonical role contracts to delegated child responsibilities during delegate
 - Delegated child agents are not the `main session`; parent-only prohibitions from `AGENTS.md`, runtime bootstraps, and orchestrator contracts do not block assigned child-role work.
 - All 16 canonical generated workers may execute the work defined by their own role contract within assigned scope and runtime permissions. They are not limited to read-only analysis unless their role contract or parent handoff makes them so.
 
-## Canonical Runtime Roles (16)
-- `backend-developer`
-- `cybersecurity-analyst`
-- `database-administrator`
-- `dev-team-lead`
-- `devops-engineer`
-- `doc-team-lead`
-- `documentation-writer`
-- `frontend-developer`
-- `junior-project-manager`
-- `pr-manager`
-- `project-manager`
-- `project-owner`
-- `qa-specialist`
-- `qa-team-lead`
-- `ui-ux-designer`
-- `web-designer`
+## Canonical Runtime Roles
+See `.ai/execution/adapter-role-mapping.md` for the canonical 16-role set.
 
 ## Baseline Delegated Role Mapping
-Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`. Examples:
-- `backend-developer` child → `.ai/agents/runtime/backend-developer.md`
-- `frontend-developer` child → `.ai/agents/runtime/frontend-developer.md`
-- `qa-specialist` child → `.ai/agents/runtime/qa-specialist.md`
-- `qa-team-lead` child → `.ai/agents/runtime/qa-team-lead.md`
-- `pr-manager` child → `.ai/agents/runtime/pr-manager.md`
-- `documentation-writer` child → `.ai/agents/runtime/documentation-writer.md`
-- `dev-team-lead` child → `.ai/agents/runtime/dev-team-lead.md`
-- `project-manager` child → `.ai/agents/runtime/project-manager.md`
-- `project-owner` child → `.ai/agents/runtime/project-owner.md`
+Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`.
 
 ## Persona Inheritance
 When a runtime worker operates on a codebase that matches a persona (e.g. `backend-developer` on a Laravel project), the worker inherits the relevant `.ai/agents/personas/<stack>.md` content. Persona files are not spawnable child roles; they augment the runtime worker's prompt only when task detection matches.
@@ -67,6 +43,9 @@ When a runtime worker operates on a codebase that matches a persona (e.g. `backe
 - Implementation children must not ask the user directly; requirement questions escalate through parent and `project-owner` / `junior-project-manager`.
 - Children should avoid changing files outside assigned ownership.
 - Children must report assumptions, risks, and incomplete checks.
+
+## Spawning Authority
+- The root (primary) agent is the sole spawner of child agents; a leaf subagent never spawns. PM owns the plan, sequence, and gates; the other 15 roles run only as subagents. Per-runtime spawning split (Claude/Codex main session vs. OpenCode PM-as-root): see `AGENTS.md` § Orchestration Baseline.
 
 ## Non-goals
 - This file does not create or spawn child agents.
