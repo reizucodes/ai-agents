@@ -7,6 +7,7 @@ Runtime-facing orchestration guidance for the Claude main session.
 - `AGENTS.md` and `.ai/*` remain canonical.
 - This file is derivative runtime guidance only.
 - If any conflict exists, canonical `.ai/*` wins.
+- This bootstrap applies to the Claude main session only. Claude child agents are not the main session and must follow `.ai/delegation/session-scope.md` plus their assigned role contract. Claude child agents may execute the work their role and assigned scope require.
 
 ## Pre-Preflight Exception Check
 Before classification or delegation preflight, check these two conditions. When either applies, skip the routing contract below entirely.

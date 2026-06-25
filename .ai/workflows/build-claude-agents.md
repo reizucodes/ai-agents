@@ -91,8 +91,11 @@ For each of the 16 canonical roles listed in `adapter-role-mapping.md`:
    - scoped `tools` per `.ai/runtimes/claude/tool-mapping.md`
 4. Generate adapter body:
    - generated adapter notice
+   - explicit child-scope guard: worker is not the main session
    - canonical source pointer (`.ai/agents/runtime/<name>.md`)
+   - explicit instruction to read `.ai/agents/runtime/<name>.md` before performing role work
    - canonical conflict rule
+   - explicit statement that role-defined work is allowed within assigned scope and policy gates
    - role summary, responsibilities, boundaries, escalation, deliverables
    - delegation contract (worker owns delegated scope, does not silently return ownership)
    - persona inheritance directive (only for `backend-developer`, `frontend-developer`, `web-designer`)
@@ -119,6 +122,9 @@ Adapters must not invent additional gate types or bypass the approval-levels con
 - Generated subagents must be immediately callable as the default specialist workers when present.
 - Generated subagents must state that parent/main must delegate matching work to them.
 - Generated subagents must state that they own the delegated implementation scope and must not silently return implementation ownership to parent/main.
+- Generated subagents must state that they are delegated child agents, not the main session.
+- Generated subagents must require reading `.ai/agents/runtime/<role>.md` before role work.
+- Generated subagents must state that role-defined work is allowed within assigned scope and policy gates.
 - Do not generate pointer-only adapters.
 - Do not duplicate the full canonical role contract.
 - Keep descriptions concise and delegation-oriented.
@@ -137,6 +143,9 @@ Adapters must not invent additional gate types or bypass the approval-levels con
 11. No full canonical-role duplication.
 12. Persona inheritance directive present for `backend-developer`, `frontend-developer`, `web-designer`.
 13. Claude orchestration bootstrap presence/content validation.
+14. Child-scope guard present: adapter says it is not the main session.
+15. Canonical pre-read directive present.
+16. Role-defined-work authorization present and policy-gated.
 
 ## Rejection Conditions
 Reject generation/validation when any apply:

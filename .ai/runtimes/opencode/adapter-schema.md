@@ -44,11 +44,16 @@ Generated adapters must include:
 2. canonical role contract path
 3. not-source-of-truth statement
 4. canonical-conflict rule
+5. explicit statement that the worker is a delegated child agent, not the main session
+6. explicit instruction to read `.ai/agents/runtime/<role>.md` before performing role work
+7. explicit statement that role-defined work is allowed within assigned scope and policy gates
 
 Required pattern:
 - "Before performing role work, read and follow the canonical role contract"
 - "This adapter is not the source of truth"
 - "If this adapter conflicts with the canonical role contract, follow the canonical role contract"
+- "You are a delegated child agent, not the main session"
+- "You may execute the work your role and assigned scope require, subject to `.ai/policies/approval-levels.md` and other applicable policies"
 
 ## Generation Scope Rule
 The default generated OpenCode adapter set is the canonical 16-role set defined in `.ai/execution/adapter-role-mapping.md`:
@@ -96,3 +101,6 @@ Persona files are never copied into the adapter body and never generated as `.op
 12. no full canonical-role duplication
 13. persona inheritance directive present for `backend-developer`, `frontend-developer`, `web-designer`
 14. names map to canonical runtime roles only
+15. body states the child is not the main session
+16. body requires reading `.ai/agents/runtime/<role>.md` before role work
+17. body states that role-defined work is allowed within assigned scope and policy gates

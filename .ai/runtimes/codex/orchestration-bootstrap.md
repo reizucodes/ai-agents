@@ -9,6 +9,7 @@ This file is derived from canonical `.ai/*` contracts and exists to make routing
 - `.ai/*` remains canonical.
 - This bootstrap is derivative runtime guidance.
 - If this file conflicts with canonical `.ai/*` contracts, follow canonical contracts.
+- This bootstrap applies to the Codex main session only. Codex child agents are not the main session and must follow `.ai/delegation/session-scope.md` plus their assigned role contract. Codex child agents may execute the work their role and assigned scope require.
 
 ## Pre-Preflight Exception Check
 Before classification or delegation preflight, check these two conditions. When either applies, skip the routing contract below entirely.
