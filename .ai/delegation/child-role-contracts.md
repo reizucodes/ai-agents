@@ -42,8 +42,7 @@ When a runtime worker operates on a codebase that matches a persona (e.g. `backe
 - Children must report assumptions, risks, and incomplete checks.
 
 ## Spawning Authority
-- The main session is the sole spawner of child agents. `project-manager` plans the sequence and returns a Spawn Plan; it does not spawn anyone (subagents cannot spawn subagents on supported runtimes).
-- The main session spawns each role in PM's Spawn Plan, in order, honoring gates between phases. It may re-consult `project-manager` between phases for the next batch.
+- The root (primary) agent is the sole spawner of child agents; a leaf subagent never spawns. PM owns the plan, sequence, and gates; the other 15 roles run only as subagents. Per-runtime spawning split (Claude/Codex main session vs. OpenCode PM-as-root): see `AGENTS.md` § Orchestration Baseline.
 
 ## Non-goals
 - This file does not create or spawn child agents.

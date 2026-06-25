@@ -40,7 +40,7 @@ Bootstrap files to load when present:
 
 Startup guidance:
 - For runtimes that do not auto-load `AGENTS.md` (Claude Code, Cursor, Cline, Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
-- The main session is not an implementation agent. It is the sole spawner: `project-manager` is the primary *planner* and returns a Spawn Plan, but the main session spawns every subagent (subagents cannot spawn subagents).
+- The root (primary) agent is the sole spawner; a leaf subagent never spawns. PM owns planning/coordination; the other 15 roles run as subagents. Per-runtime spawning split: see `AGENTS.md` § Orchestration Baseline.
 - When a suitable specialist exists, delegation is required by default; the user does not need to ask for it.
 - If runtime subagent capability or required workers are unavailable, disclose the limitation and obtain explicit approval before sequential role simulation fallback, unless the user explicitly says `no subagent` or `main only`.
 - Execution mode is runtime metadata only — it never determines delegation or auto-spawns agents.
