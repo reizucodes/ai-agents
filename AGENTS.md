@@ -1,6 +1,8 @@
 # AI Agents Root Instructions
 
 ## Hard Rules
+Scope note: `main session` / `parent/main` means the root orchestrator runtime only. Delegated child agents and runtime subagents are not the main session. They follow their assigned canonical role contract and may perform the implementation, file operations, documentation, testing, or review work their role and assigned scope require, subject to runtime permissions and explicit parent handoff boundaries.
+
 - **HARD RULE**: The main session MUST NOT write, edit, create, or delete any files.
 - **HARD RULE**: The main session MUST NOT implement code directly under any circumstance.
 - **HARD RULE**: If no suitable agent exists, HALT and disclose — do not implement inline.

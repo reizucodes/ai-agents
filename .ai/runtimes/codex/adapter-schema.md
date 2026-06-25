@@ -53,11 +53,16 @@ Generated adapters must use this pattern:
 developer_instructions = """
 This is a generated Codex adapter.
 
+You are a delegated child agent, not the main session.
+
 Before performing role work, read and follow the canonical role contract:
 .ai/agents/runtime/<role>.md
 
 This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
+
+You may execute the work your role and assigned scope require, subject to
+.ai/policies/approval-levels.md and other applicable policies.
 
 <short runtime-specific role summary, including delegation contract, ownership boundaries,
 deliverables, and (for backend-developer, frontend-developer, web-designer) persona inheritance directive>
@@ -75,6 +80,8 @@ Persona files are never copied into the adapter and never generated as `.codex/a
 Rules:
 - Keep runtime-specific role summary short and scoped.
 - Do not duplicate full canonical role contracts.
+- Runtime-specific summary must explicitly state that the worker is not the main session.
+- Runtime-specific summary must explicitly authorize role-defined work within assigned scope and policy gates.
 - Runtime-specific summary should include display/self-identification rule:
   - use `<nickname> [<canonical-role>]`,
   - if runtime nickname is different, self-identify as `<runtime-nickname-or-configured-nickname> [<canonical-role>]`.
@@ -93,6 +100,9 @@ Preferred:
 - `name` must be lowercase kebab-case and stable.
 - `description` must be concise and role-specific.
 - `developer_instructions` must follow canonical-first pattern.
+- `developer_instructions` must require the child to read `.ai/agents/runtime/<role>.md` before role work.
+- `developer_instructions` must state the child is not the main session.
+- `developer_instructions` must state that role-defined work is permitted within assigned scope and policy gates.
 - Metadata comments must include required generation/drift markers.
 
 ## Name and Nickname Collision Rules

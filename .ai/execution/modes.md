@@ -6,6 +6,7 @@ Define runtime routing shapes. See `.ai/execution/task-classification.md` for cl
 ## Core Rules
 - This instruction framework is not a runtime; markdown files do not spawn agents.
 - The main session is not an implementation agent. When a suitable specialist exists, delegation is required.
+- `main session` rules are scoped to the root orchestrator only; delegated children follow `.ai/delegation/session-scope.md` and their role contract.
 - Execution mode is runtime-facing routing metadata, not the primary control surface.
 - Every code-changing run persists `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
