@@ -19,6 +19,7 @@ Load in this order:
 
 ## Scope
 This bootstrap is for normal OpenCode startup only.
+It applies to the OpenCode main session only. Delegated OpenCode subagents are not the main session and must follow `.ai/delegation/session-scope.md` plus their assigned role contract. OpenCode subagents may execute the work their role and assigned scope require.
 
 ## Pre-Preflight Exception Check
 See `AGENTS.md § Pre-Preflight Exceptions`.

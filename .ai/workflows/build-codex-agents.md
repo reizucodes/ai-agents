@@ -121,11 +121,16 @@ When generation is requested:
 developer_instructions = """
 This is a generated Codex adapter.
 
+You are a delegated child agent, not the main session.
+
 Before performing role work, read and follow the canonical role contract:
 .ai/agents/runtime/<role>.md
 
 This adapter is not the source of truth.
 If this adapter conflicts with the canonical role contract, follow the canonical role contract.
+
+You may execute the work your role and assigned scope require, subject to
+.ai/policies/approval-levels.md and other applicable policies.
 
 <short runtime-specific role summary, including delegation contract, ownership boundaries, deliverables,
 and (for backend-developer, frontend-developer, web-designer) persona inheritance directive>
@@ -134,6 +139,7 @@ and (for backend-developer, frontend-developer, web-designer) persona inheritanc
 
 Runtime-specific summary requirements (keep concise):
 - Role identity: worker states who it is and what it owns.
+- Child scope guard: worker states it is not the main session and may perform role-defined work within assigned scope and policy gates.
 - Delegation triggers: worker states when parent/main must call it.
 - Ownership boundaries: worker states what it may change and what it must not change.
 - Deliverables: worker states required outputs and artifacts per `.ai/execution/artifact-conventions.md`.
