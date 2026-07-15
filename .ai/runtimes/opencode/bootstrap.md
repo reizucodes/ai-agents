@@ -22,27 +22,15 @@ This bootstrap is for normal OpenCode startup only.
 It applies to the OpenCode main session only. Delegated OpenCode subagents are not the main session and must follow `.ai/delegation/session-scope.md` plus their assigned role contract. OpenCode subagents may execute the work their role and assigned scope require.
 
 ## Pre-Preflight Exception Check
-Before classification or delegation preflight, check these two conditions. When either applies, skip the routing contract below entirely.
+See `AGENTS.md § Pre-Preflight Exceptions`.
 
-- **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root. → Main session acts directly. Delegation suspended. Native subagents allowed.
-- **Exception B — Build-Bootstrap Operation:** Prompt matches `build claude agents`, `build codex agents`, or `build opencode agents` (exactly or as leading phrase); or invokes `.ai/workflows/build-<runtime>-agents.md`. → Main session executes build workflow directly. Delegation preflight and adapter presence check skipped.
+## Prompt Routing Contract
+See `AGENTS.md § Prompt Routing Contract`.
 
-See `.ai/execution/modes.md` for full exception definitions.
+OpenCode-specific: `opencode.json` `default_agent: project-manager` enforces routing — every prompt routes to PM automatically.
 
-## Prompt Routing Contract (Unconditional)
-Every prompt follows this routing contract exactly:
-1. **Classify** — main session classifies the task (size, risk, code-changing or not).
-2. **Spawn** — main session spawns `project-manager` for Small/Medium/Major work, Q&A, or analysis; or the matching specialist(s) directly for Tiny work (single specialist for single-surface; two disjoint specialists for multi-surface). Main session stops here.
-3. **PM owns everything after** — `project-manager` convenes the Planning Council, decides which agents to spawn, sequences all phases, and enforces gates. Main session does not sequence council members, does not plan beyond classification, and does not implement.
-4. **If the required adapter is absent** — main session discloses the missing adapter by name, halts, and awaits explicit user instruction (`no subagent` / `main only`). Main session never implements inline as a silent fallback.
-
-Main-session rule:
-- The main session is not an implementation agent.
-- Delegation is unconditional for all work — adapter absence requires disclosure and halt, not inline fallback.
-- The primary OpenCode agent (`project-manager`) must remain orchestration-only.
-- `opencode.json` `default_agent: project-manager` enforces this for OpenCode — every prompt routes to PM automatically.
-
-Do not load OpenCode adapter/build contracts during normal startup:
+## Adapter/Build Files — Do Not Load on Normal Startup
+Load the following only for adapter generation/validation/review tasks:
 - `.ai/runtimes/opencode/adapter.md`
 - `.ai/runtimes/opencode/adapter-schema.md`
 - `.ai/runtimes/opencode/agent-mapping.md`
@@ -50,5 +38,3 @@ Do not load OpenCode adapter/build contracts during normal startup:
 - `.ai/runtimes/opencode/command-mapping.md`
 - `.ai/runtimes/opencode/validation.md`
 - `.ai/workflows/build-opencode-agents.md`
-
-Load those files only for adapter generation/validation/review tasks.
