@@ -204,7 +204,3 @@ Example structure:
 ├── technical-debt.md
 └── confidence-gates.md
 ```
-
-## Examples
-Use `examples/*/README.md` for scenario references that show collaboration patterns by stack, not complete generated implementation artifacts.
-

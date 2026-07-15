@@ -25,7 +25,6 @@ Do not use these alone as source-repository indicators:
 - `.ai/runtimes/codex/`
 - `.ai/runtimes/opencode/`
 - `.ai/workflows/build-opencode-agents.md`
-- `examples/`
 
 If framework source is detected, stop and refuse generation by default.
 Do not create:
@@ -49,7 +48,6 @@ rsync -avh \
   opencode.json \
   .ai \
   .opencode \
-  examples \
   ../opencode-framework-test/
 ```
 

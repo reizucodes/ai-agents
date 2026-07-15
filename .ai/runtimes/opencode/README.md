@@ -32,7 +32,7 @@ Add OpenCode as a peer runtime adapter that consumes canonical instructions from
   - refuse generation in `ai-agents` source repo by default,
   - allow only when user explicitly states `override: generate opencode agents in source repo` (unsafe/diagnostic-only).
 - Source-repo detection uses strong indicators (framework README identity, repo directory name `ai-agents`, framework git remote, optional source marker file).
-- Presence of framework assets in consumer repos (`.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`, `examples/`) is not a source-repo indicator.
+- Presence of framework assets in consumer repos (`.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`) is not a source-repo indicator.
 
 ## Documentation Sources
 - Rules: https://opencode.ai/docs/rules/
