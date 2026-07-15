@@ -11,6 +11,7 @@ HARD RULE: If no suitable agent exists, HALT and disclose — do not implement i
 These hard rules apply unless Exception A or Exception B is active per .ai/execution/modes.md.
 
 This repository uses AGENTS.md as the canonical instruction source.
+Main-session-only rules apply only to the root Claude session. Delegated Claude workers are not the main session and should follow `.ai/delegation/session-scope.md` plus their assigned `.ai/agents/runtime/<role>.md` contract. They may execute the work their role and assigned scope require.
 The main session is not an implementation agent.
 Delegation is unconditional. The main session classifies, spawns, and orchestrates — nothing else.
 

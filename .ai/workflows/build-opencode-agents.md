@@ -146,9 +146,12 @@ Each generated adapter must:
    - `canonical-source-fingerprint` (`sha256:<hex>`)
    - `schema-contract: .ai/runtimes/opencode/adapter-schema.md`
 3. Include canonical-first body after metadata:
+   - explicit child-scope guard: worker is not the main session
    - canonical source pointer
+   - explicit instruction to read `.ai/agents/runtime/<name>.md` before performing role work
    - not-source-of-truth statement
    - canonical conflict rule
+   - explicit statement that role-defined work is allowed within assigned scope and policy gates
    - role identity
    - delegation triggers
    - ownership boundaries
@@ -162,6 +165,11 @@ Generated adapters must reference the 3-gate model defined in `.ai/policies/appr
 - **Auto**: runtime proceeds without human input.
 - **Recommendation**: present options, default to safe path, log decision.
 - **Approval**: halt and require explicit user approval before proceeding.
+
+Generated adapters must also:
+- state that they are delegated child agents, not the main session
+- require reading `.ai/agents/runtime/<role>.md` before role work
+- state that role-defined work is allowed within assigned scope and policy gates
 
 ## Validation Steps
 0. Source-repo guard check:
@@ -195,6 +203,9 @@ Generated adapters must reference the 3-gate model defined in `.ai/policies/appr
     - generated workers define delegation triggers
     - generated workers define required deliverables/artifacts
     - generated workers state that parent/main must delegate matching work when they are available
+    - generated workers state that they are not the main session
+    - generated workers instruct the worker to read `.ai/agents/runtime/<role>.md` before role work
+    - generated workers state that role-defined work is allowed within assigned scope and policy gates
 
 ## Rejection Conditions
 Reject generation when any apply:

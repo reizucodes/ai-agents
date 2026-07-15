@@ -40,6 +40,7 @@ Bootstrap files to load when present:
 
 Startup guidance:
 - For runtimes that do not auto-load `AGENTS.md` (Claude Code, Cursor, Cline, Roo Code), explicitly prompt the runtime to read `AGENTS.md` and `INDEX.md` before execution.
+- Treat `main session` / `parent/main` rules as parent-only. Delegated child agents and runtime subagents instead follow `.ai/delegation/session-scope.md` and their assigned `.ai/agents/runtime/<role>.md` contract, and may execute the work those contracts define within assigned scope and runtime permissions.
 - The main session is not an implementation agent. `project-manager` is the primary orchestrator; all other canonical roles run as subagents.
 - When a suitable specialist exists, delegation is required by default; the user does not need to ask for it.
 - If runtime subagent capability or required workers are unavailable, disclose the limitation and obtain explicit approval before sequential role simulation fallback, unless the user explicitly says `no subagent` or `main only`.
@@ -207,6 +208,3 @@ Example structure:
 ## Examples
 Use `examples/*/README.md` for scenario references that show collaboration patterns by stack, not complete generated implementation artifacts.
 
-## Future Extensions (Optional)
-- `./.ai/skills/`: extract shared guidance only when duplication appears across three or more locations.
-- `./.ai/hooks/`: automate only repeatable, high-frequency manual tasks with reliable triggers.

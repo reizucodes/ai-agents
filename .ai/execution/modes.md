@@ -6,6 +6,7 @@ Define runtime routing shapes. See `.ai/execution/task-classification.md` for cl
 ## Core Rules
 - This instruction framework is not a runtime; markdown files do not spawn agents.
 - The main session is not an implementation agent. When a suitable specialist exists, delegation is required.
+- `main session` rules are scoped to the root orchestrator only; delegated children follow `.ai/delegation/session-scope.md` and their role contract.
 - Execution mode is runtime-facing routing metadata, not the primary control surface.
 - Every code-changing run persists `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
 
@@ -68,9 +69,6 @@ Spawn only the minimal relevant specialist(s).
 - **When**: classified work needs one or more specialists; full Medium/Major planning is unnecessary or already complete; runtime subagents + role adapters available.
 - **Who participates**: parent/main as orchestrator + the targeted specialist(s) only.
 - **Notes**: parent does not silently collapse specialist work into itself. Tiny/Small targeted runs do not require `SPEC_APPROVED` / `ARCHITECTURE_READY` unless risk/scope escalates.
-
-### Mode D: Autonomous (Future)
-Not implemented. Any future autonomous runtime must be explicitly versioned and policy-gated. Automatic targeted/delegated selection by the parent within Mode A/B/C is already supported and is not Mode D.
 
 ## Mode Selection Priority
 1. Prefer delegation-first routing by default.
