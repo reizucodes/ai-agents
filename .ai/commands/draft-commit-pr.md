@@ -6,6 +6,8 @@ Single source of truth for drafting a Conventional Commit message, a PR title, a
 
 Inspect only STAGED changes (`git diff --staged --stat` then `git diff --staged`). If nothing is staged, report "No staged changes." and stop.
 
+Determine new vs. modification: for each staged path run `git log --oneline -1 -- <path>`. Paths with no prior history are additions; paths with history are modifications. Pick the type from this — a genuinely new capability → `feat`; reworking existing code → `refactor`/`fix`/`chore`; docs-only → `docs`. Use the verb "add" only for genuinely new files.
+
 ### 1. Commit message — Conventional Commits
 `<type>[optional scope]: <description>`
 - type ∈ feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert
