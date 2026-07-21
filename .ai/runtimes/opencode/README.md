@@ -9,12 +9,6 @@ Add OpenCode as a peer runtime adapter that consumes canonical instructions from
 - `.opencode/agents/*` are generated runtime artifacts for consumer projects.
 - If adapter assets conflict with canonical files, canonical files win.
 
-## Findings From Existing Runtime Patterns
-- Runtime adapters are derivative integration layers, not parallel architecture.
-- Claude/Codex keep orchestration in runtime main session and map canonical roles into runtime-native agent artifacts.
-- Runtime docs emphasize mapping, drift avoidance, and governance preservation.
-- Workflow execution and delegation rules are preserved from canonical `.ai/execution/*`, `.ai/delegation/*`, and `.ai/policies/*`.
-
 ## OpenCode Integration Surface
 - Root config: `opencode.json`
 - Runtime mapping docs: `.ai/runtimes/opencode/*`
@@ -38,7 +32,7 @@ Add OpenCode as a peer runtime adapter that consumes canonical instructions from
   - refuse generation in `ai-agents` source repo by default,
   - allow only when user explicitly states `override: generate opencode agents in source repo` (unsafe/diagnostic-only).
 - Source-repo detection uses strong indicators (framework README identity, repo directory name `ai-agents`, framework git remote, optional source marker file).
-- Presence of framework assets in consumer repos (`.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`, `examples/`) is not a source-repo indicator.
+- Presence of framework assets in consumer repos (`.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`) is not a source-repo indicator.
 
 ## Documentation Sources
 - Rules: https://opencode.ai/docs/rules/

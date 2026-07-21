@@ -4,23 +4,7 @@
 Capture routing regressions that must remain unambiguous across `INDEX.md`, `.ai/execution/*`, `.ai/delegation/*`, and runtime bootstrap/generation contracts.
 
 ## Required Decision Fields
-Every targeted/delegated routing preflight must include:
-- `runtime_spawn_supported`
-- `execution_mode_input`
-- `classification`
-- `required_roles`
-- `available_adapters`
-- `missing_adapters`
-- `delegation_decision`
-- `fallback_action`
-
-`delegation_decision` must include:
-- `main_runtime_allowed`
-- `targeted_required`
-- `delegated_allowed`
-- `fallback_requires_approval`
-
-See `.ai/execution/artifact-conventions.md` for the full preflight output template.
+See `.ai/execution/artifact-conventions.md § Preflight Output Template` for required fields and structure.
 
 ## Regression Scenarios
 

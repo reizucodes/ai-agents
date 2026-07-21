@@ -204,10 +204,3 @@ Example structure:
 ├── technical-debt.md
 └── confidence-gates.md
 ```
-
-## Examples
-Use `examples/*/README.md` for scenario references that show collaboration patterns by stack, not complete generated implementation artifacts.
-
-## Future Extensions (Optional)
-- `./.ai/skills/`: extract shared guidance only when duplication appears across three or more locations.
-- `./.ai/hooks/`: automate only repeatable, high-frequency manual tasks with reliable triggers.

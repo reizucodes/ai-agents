@@ -70,9 +70,6 @@ Spawn only the minimal relevant specialist(s).
 - **Who participates**: parent/main as orchestrator + the targeted specialist(s) only.
 - **Notes**: parent does not silently collapse specialist work into itself. Tiny/Small targeted runs do not require `SPEC_APPROVED` / `ARCHITECTURE_READY` unless risk/scope escalates.
 
-### Mode D: Autonomous (Future)
-Not implemented. Any future autonomous runtime must be explicitly versioned and policy-gated. Automatic targeted/delegated selection by the parent within Mode A/B/C is already supported and is not Mode D.
-
 ## Mode Selection Priority
 1. Prefer delegation-first routing by default.
 2. Classify before selecting planning depth and delegation.

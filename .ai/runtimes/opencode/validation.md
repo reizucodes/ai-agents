@@ -11,7 +11,7 @@
    - fail if generation proceeds in source repository without explicit override
    - allow source-repo generation only when user explicitly provides unsafe override phrase
    - source detection uses strong indicators only (framework README identity, repo name `ai-agents`, framework git remote, optional marker file)
-   - presence of `.ai/runtimes/*`, `.ai/workflows/build-opencode-agents.md`, and `examples/` alone must not trigger source-repo refusal
+   - presence of `.ai/runtimes/*` and `.ai/workflows/build-opencode-agents.md` alone must not trigger source-repo refusal
 5. Verify consumer/test repository behavior:
    - invoking `build opencode agents` via `.opencode/commands/build-opencode-agents.md` executes generation immediately
    - no explicit path confirmation prompt
