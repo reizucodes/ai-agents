@@ -31,13 +31,12 @@ opencode.json
 .claude/
 .codex/
 .opencode/
-examples/
 ```
 
 The framework `README.md` may be replaced with project-specific documentation.
 
 ### Option 2: One-Stop Runtime Installation
-Use this when you want the full runtime payload in an existing repository: Claude, Codex, OpenCode, shared contracts, runtime command entrypoints, and examples.
+Use this when you want the full runtime payload in an existing repository: Claude, Codex, OpenCode, shared contracts, and runtime command entrypoints.
 
 Preview first:
 
@@ -53,7 +52,6 @@ rsync -avh --dry-run --itemize-changes \
   .claude \
   .codex \
   .opencode \
-  examples \
   /path/to/existing-project/
 ```
 
@@ -71,11 +69,10 @@ rsync -avh \
   .claude \
   .codex \
   .opencode \
-  examples \
   /path/to/existing-project/
 ```
 
-Always run the dry-run command first. `.ai` and `examples` intentionally do not use trailing slashes (in `rsync`, a trailing slash copies directory contents; no trailing slash copies the directory itself).
+Always run the dry-run command first. `.ai` intentionally does not use a trailing slash (in `rsync`, a trailing slash copies directory contents; no trailing slash copies the directory itself).
 
 Included in the one-stop payload:
 - `AGENTS.md` is the canonical instruction source.
@@ -102,7 +99,6 @@ rsync -avh \
   CLAUDE.md \
   .ai \
   .claude \
-  examples \
   ../your-project/
 ```
 
@@ -121,7 +117,6 @@ rsync -avh \
   INDEX.md \
   .ai \
   .codex \
-  examples \
   ../your-project/
 ```
 
@@ -141,7 +136,6 @@ rsync -avh \
   opencode.json \
   .ai \
   .opencode \
-  examples \
   ../your-project/
 ```
 
@@ -170,7 +164,6 @@ Existing source code, Git history, CI/CD, and project documentation remain untou
 2. The main session walks the 5-phase flow (Planning Council → Implementation → QA → Business Go/No-Go → Commit/PR) and delegates per phase.
 3. Run a workflow from `.ai/workflows/` (feature, bugfix, refactor, release).
 4. Use templates from `.ai/templates/` for required artifacts.
-5. Use `examples/` as reference scenarios.
 
 ## Available Commands
 | Command | Purpose |
@@ -282,7 +275,6 @@ rsync -avh \
   .claude \
   .codex \
   .opencode \
-  examples \
   ../opencode-framework-test/
 ```
 
