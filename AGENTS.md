@@ -112,7 +112,7 @@ Use `INDEX.md` as the primary entrypoint for selecting templates, workflows, age
 ## Pre-Preflight Exceptions
 Two conditions suspend the routing contract and hard rules before classification runs. Check these first on every prompt (full definitions in `.ai/execution/modes.md`):
 - **Exception A — Framework-Native Context:** `.ai/.framework-root` exists at repo root → main session acts directly; delegation suspended; native subagents allowed.
-- **Exception B — Build-Bootstrap:** prompt matches `build claude agents`, `build codex agents`, or `build opencode agents` → main session executes the matching build workflow directly; no delegation preflight; no adapter presence check.
+- **Exception B — Build-Bootstrap:** prompt matches `build claude agents`, `build codex agents`, or `build opencode agents`, OR the invoked entrypoint is the `build-claude-agents` / `build-codex-agents` skill or the `.opencode/commands/build-opencode-agents.md` command → main session executes the matching build workflow directly; no delegation preflight; no adapter presence check.
 
 ## Prompt Routing Contract (Unconditional)
 When neither exception above applies, every prompt follows this routing contract exactly:
