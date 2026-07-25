@@ -1,31 +1,13 @@
 ---
-description: Build OpenCode markdown agent adapters from canonical .ai/agents contracts.
+description: Build the 16 OpenCode markdown agent adapters (.opencode/agents/*.md) from canonical .ai runtime role contracts. Natural invocation "build opencode agents".
 ---
 
-Run canonical workflow:
-- `.ai/workflows/build-opencode-agents.md`
+Follow the canonical workflow `.ai/workflows/build-opencode-agents.md`. Do not duplicate its logic here — read and execute it.
 
-Use canonical sources:
-- `AGENTS.md`
-- `INDEX.md`
-- `.ai/agents/*.md`
-- `.ai/runtimes/opencode/adapter-schema.md`
+Exception B (build-bootstrap) applies: the main session executes this workflow directly, with no delegation preflight and no adapter-presence check (see `.ai/execution/modes.md`).
 
-Allowed outputs:
-- `.opencode/agents/*.md`
-- `.ai/reports/opencode-adapter-run-report.md`
+Source-repository guard is mandatory and enforced by the workflow: if `.ai/.framework-root` exists at repo root, refuse generation by default and return the required refusal message + consumer/test flow unless the user gives the exact override `override: generate opencode agents in source repo`.
 
-Forbidden outputs:
-- `node_modules/`
-- `package.json`
-- `package-lock.json`
-- `pnpm-lock.yaml`
-- `yarn.lock`
-- `bun.lock`
-- `bun.lockb`
-- plugin installation
-- dependency installation
+This command is startup-safe: no generated-agent frontmatter, no plugin or dependency setup. Never run package managers (`npm`, `pnpm`, `yarn`, `bun`) or create dependency/lockfile artifacts.
 
-This command is startup-safe:
-- no generated-agent frontmatter requirements
-- no plugin or dependency setup actions
+Generate exactly the 16 canonical adapters at `.opencode/agents/<role>.md` per `.ai/execution/adapter-role-mapping.md`, using `.ai/runtimes/opencode/adapter-schema.md`. Never generate adapters from `.ai/agents/personas/*`. Write the run report to `.ai/reports/opencode-adapter-run-report.md`.
