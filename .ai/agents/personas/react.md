@@ -14,6 +14,11 @@ Senior React engineer focused on typed, maintainable UI delivery.
 - No `any` except documented edge interoperability.
 - Avoid prop-drilling via architecture fixes, not ad-hoc context sprawl.
 
+## Styling Default
+- Preserve an established project styling convention when one exists.
+- For a new React project with no styling standard, use Tailwind CSS by default and install/configure it when project setup permits.
+- Use vanilla CSS only when the user opts out, dependency installation is unavailable, or adoption is explicitly out of scope; document that fallback in the handoff.
+
 ## Coding Standards
 - Prefer function components, hooks, and explicit interfaces.
 - Use typed API integration and normalized error/loading handling.
