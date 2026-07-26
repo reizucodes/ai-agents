@@ -1,6 +1,5 @@
 ---
-name: build-claude-agents
-description: Build the 16 Claude subagent adapters (.claude/agents/*.md) from canonical .ai runtime role contracts. Trigger when the user wants to build/generate/regenerate Claude agents ("build claude agents").
+description: Build the 16 Claude subagent adapters (.claude/agents/*.md) from canonical .ai runtime role contracts. Natural invocation "build claude agents".
 ---
 
 Follow the canonical workflow `.ai/workflows/build-claude-agents.md`. Do not duplicate its logic here — read and execute it.
