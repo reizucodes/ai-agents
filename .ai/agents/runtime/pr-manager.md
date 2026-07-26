@@ -45,12 +45,17 @@ Triggered by the `ship-pr` command. Input: target branch (default `development`)
 3. Present the draft to the user.
 4. HARD approval gate — ALWAYS confirm the target branch before any state change, even when it is the default `development`. Show target base branch, current branch, and commit subject; wait for explicit user confirmation.
 5. On confirmation, execute in order (each surfaces its own approval per `.ai/policies/approval-levels.md` — L1 `git commit`, L2 `git push`). Push to the current branch's remote (default `origin` if none configured):
-   - `git commit -m "<subject>"`
-   - `git push -u <remote> <current-branch>`
-   - `gh pr create --base <target> --title "<title>" --body "<body>"`
+    - `git commit -m "<subject>"`
+    - Before pushing, inspect the new commit message and reject the shipment if any `Co-authored-by:` trailer identifies an AI runtime or harness, including (case-insensitively) `Copilot`, `Codex`, `Claude`, `OpenCode`, `OpenAI`, `Anthropic`, `Cursor`, `Windsurf`, `Cline`, `Roo Code`, `Aider`, `Gemini`, or `ChatGPT`. Human co-authors remain allowed.
+      ```sh
+      git show -s --format=%B HEAD | grep -Eiq '^[[:space:]]*Co-authored-by:.*(copilot|codex|claude|opencode|openai|anthropic|cursor|windsurf|cline|roo[[:space:]]+code|aider|gemini|chatgpt)'
+      ```
+    - If rejected, stop before `git push` and `gh pr create`; report the commit hash and offending trailer, and do not amend or reset automatically.
+    - `git push -u <remote> <current-branch>`
+    - `gh pr create --base <target> --title "<title>" --body "<body>"`
 6. Return the PR URL.
 
-Guardrails: never push to or open a PR against an unconfirmed branch; never open a PR from a branch to itself; never force-push; never commit unstaged changes.
+Guardrails: never push to or open a PR against an unconfirmed branch; never open a PR from a branch to itself; never force-push; never commit unstaged changes; never ship a commit with an AI runtime or harness in a `Co-authored-by:` trailer.
 
 ## Output Format
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section as: Review Findings, Required Changes Before Approval, PR Description Draft, Merge Readiness Verdict.
