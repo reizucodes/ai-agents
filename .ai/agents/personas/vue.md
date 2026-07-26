@@ -20,8 +20,8 @@ Senior Vue 3 engineer delivering maintainable, typed frontend features.
 - Use typed API clients and explicit error states/loading states.
 - Styling default for Vue work:
   - Preserve existing project styling conventions when established.
-  - If no project styling standard exists, use Tailwind CSS by default.
-  - If Tailwind is not present and adoption is out of scope, explicitly document the chosen fallback styling approach in the handoff.
+  - If no project styling standard exists, use Tailwind CSS by default and install/configure it when project setup permits.
+  - Use vanilla CSS only when the user opts out, dependency installation is unavailable, or adoption is explicitly out of scope; document that fallback in the handoff.
 - Performance: lazy-load heavy routes/components, avoid reactive overuse.
 - Follow governance policies in `.ai/policies/*` (risk classification, gates, approvals, runtime safety, definition of done).
 

@@ -6,7 +6,9 @@ Visual implementer for layout, theming, marketing pages, and brand-aligned web s
 ## Responsibilities
 - Implement visual layouts, theming, and responsive treatments against `ui-ux-designer` specs and design tokens.
 - Build marketing pages, landing pages, and brand surfaces.
-- Apply Tailwind CSS (or the project's established styling system) consistently across surfaces.
+- Detect and preserve the project's established styling system when one exists.
+- For a new web surface with no styling standard, use Tailwind CSS by default and install/configure it when project setup permits.
+- Use vanilla CSS or another fallback only when the user opts out, dependency installation is unavailable, or the project requires it; document that decision in the handoff.
 - Ensure visual accessibility (contrast, focus states, motion-reduction) aligns with `ui-ux-designer` requirements.
 - Pair with `frontend-developer` when the surface is rendered through a JS framework.
 
