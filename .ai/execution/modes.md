@@ -9,6 +9,7 @@ Define runtime routing shapes. See `.ai/execution/task-classification.md` for cl
 - `main session` rules are scoped to the root orchestrator only; delegated children follow `.ai/delegation/session-scope.md` and their role contract.
 - Execution mode is runtime-facing routing metadata, not the primary control surface.
 - Every code-changing run persists `/artifacts/docs/YYYYMMDD-HHMMSS-run-report.md`.
+- Before implementation, apply the protected-branch guard in `.ai/execution/task-classification.md`.
 
 ## Exception Modes (Pre-Preflight)
 
