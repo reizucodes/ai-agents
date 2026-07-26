@@ -14,6 +14,7 @@ Determine new vs. modification: for each staged path run `git log --oneline -1 -
 - scope optional, derived from the touched area
 - description: imperative mood, lowercase, ≤72 chars, no trailing period
 - single-line subject only — do NOT add a body
+- Do not add `Co-authored-by:` trailers. Human co-authors are permitted only when explicitly supplied by the user; AI runtime or harness co-authors are forbidden by the `ship-pr` guard.
 
 ### 2. PR title
 Same Conventional Commit format as the commit subject.
