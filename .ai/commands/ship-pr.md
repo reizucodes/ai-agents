@@ -18,12 +18,18 @@ The main session MUST delegate to the `pr-manager` agent (`.ai/agents/runtime/pr
 3. Present the draft.
 4. HARD approval gate — ALWAYS confirm the target branch before any state change, even when it is the default `development`. Show: target base branch, current branch, commit subject. Wait for explicit user confirmation.
 5. On confirmation, execute in order (each state-changing git/gh call surfaces its own approval prompt per `.ai/policies/approval-levels.md` — L1 commit, L2 push). Push to the current branch's remote (default `origin` if none configured):
-   - `git commit -m "<subject>"`
-   - `git push -u <remote> <current-branch>`
-   - `gh pr create --base <target> --title "<title>" --body "<body>"`
+    - `git commit -m "<subject>"`
+    - Inspect the new commit message before pushing. Reject the shipment if any `Co-authored-by:` trailer identifies an AI runtime or harness, including (case-insensitively) `Copilot`, `Codex`, `Claude`, `OpenCode`, `OpenAI`, `Anthropic`, `Cursor`, `Windsurf`, `Cline`, `Roo Code`, `Aider`, `Gemini`, or `ChatGPT`. Human co-authors remain allowed.
+      ```sh
+      git show -s --format=%B HEAD | grep -Eiq '^[[:space:]]*Co-authored-by:.*(copilot|codex|claude|opencode|openai|anthropic|cursor|windsurf|cline|roo[[:space:]]+code|aider|gemini|chatgpt)'
+      ```
+    - If the guard rejects the commit, stop before `git push` and `gh pr create`; report the commit hash and offending trailer, and do not amend or reset automatically.
+    - `git push -u <remote> <current-branch>`
+    - `gh pr create --base <target> --title "<title>" --body "<body>"`
 6. Return the PR URL.
 
 ## Guardrails
 - Never push to or open a PR against a branch the user has not confirmed in step 4.
 - Never open a PR from a branch to itself (see step 2).
 - Never force-push. Never commit unstaged changes.
+- Never ship a commit with an AI runtime or harness listed in a `Co-authored-by:` trailer.

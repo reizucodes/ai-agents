@@ -8,6 +8,12 @@ Every follow-up task is reclassified before execution.
 - Follow-ups inherit feature context, not previous delegation decisions.
 - Delegation is decided from current classification + risk.
 
+## Protected Branch Guard
+
+After classification and before implementation, block code-changing feature, fix, hotfix, refactor, or similar work on `main`, `master`, `development`, or `develop` (case-insensitive).
+
+Report the branch and change type, suggest `feat/<slug>`, `fix/<slug>`, `hotfix/<slug>`, or `refactor/<slug>`, and get explicit confirmation before creating or switching branches. Use a user-provided name when supplied; never switch silently. If the protected branch has uncommitted changes, ask whether to preserve or stash them first. Read-only analysis, review, merge, and explicit release operations are exempt.
+
 ## Classification Criteria
 Evaluate all dimensions:
 - **Scope breadth** — files/modules/surfaces touched.

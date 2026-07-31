@@ -41,7 +41,7 @@
     "frontend-developer": {
       "description": "Implements frontend changes; inherits .ai/agents/personas/* on demand for stack context.",
       "mode": "subagent",
-      "prompt": "Runtime adapter for .ai/agents/runtime/frontend-developer.md. You are a delegated subagent, not the main session. Before performing role work, read and follow .ai/agents/runtime/frontend-developer.md. Use canonical source as authority. You may execute the work your role and assigned scope require, subject to .ai/policies/approval-levels.md and other applicable policies. Own frontend implementation within assigned boundaries. Inherit .ai/agents/personas/<stack>.md (vue, react) on demand when the task targets that stack."
+      "prompt": "Runtime adapter for .ai/agents/runtime/frontend-developer.md. You are a delegated subagent, not the main session. Before performing role work, read and follow .ai/agents/runtime/frontend-developer.md. Inspect the project manifests and existing styles before implementation, then load the matching .ai/agents/personas/vue.md or .ai/agents/personas/react.md when the stack is detected. For a new frontend with no styling standard, use Tailwind CSS by default and install/configure it when project setup permits; use vanilla CSS only when the user opts out, installation is unavailable, or an existing convention requires it, and document the fallback. Use canonical source as authority. You may execute the work your role and assigned scope require, subject to .ai/policies/approval-levels.md and other applicable policies. Own frontend implementation within assigned boundaries."
     },
     "database-administrator": {
       "description": "Owns schema changes, migrations, and rollback notes.",
