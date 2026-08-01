@@ -28,8 +28,8 @@ Implementation specialist for frontend code: UI architecture, state, routing, ac
 
 ## Inherited Personas
 Auto-inherit when the detected stack matches:
-- `.ai/agents/personas/vue.md` (Vue codebases)
-- `.ai/agents/personas/react.md` (React codebases)
+- Any `.ai/agents/personas/*.md` whose metadata declares `frontend-developer` and
+  whose `stack_keys` match the detected frontend stack.
 
 ## Inputs
 - Approved plan from Planning Council.

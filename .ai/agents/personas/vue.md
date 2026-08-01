@@ -1,3 +1,9 @@
+---
+persona: vue
+stack_keys: [vue, vuejs]
+runtime_roles: [frontend-developer, web-designer]
+---
+
 > **Persona reference** — This is a stack/skill persona inherited on demand by runtime agents (see `.ai/agents/runtime/*.md`). It is NOT a runtime adapter source. Build workflows do not generate adapter files from this directory.
 
 # Vue Agent
@@ -24,6 +30,15 @@ Senior Vue 3 engineer delivering maintainable, typed frontend features.
   - Use vanilla CSS only when the user opts out, dependency installation is unavailable, or adoption is explicitly out of scope; document that fallback in the handoff.
 - Performance: lazy-load heavy routes/components, avoid reactive overuse.
 - Follow governance policies in `.ai/policies/*` (risk classification, gates, approvals, runtime safety, definition of done).
+
+## Hard Styling Gate
+- For a new Vue project with no established styling system, Tailwind CSS is required
+  by default.
+- The worker must install and configure Tailwind when dependency setup is available.
+- “Tailwind is not already installed” or “this is a small/one-page app” is not a valid
+  deviation.
+- Vanilla CSS requires an explicit user opt-out, an unavailable installation path, or
+  explicitly out-of-scope adoption, plus documented approval before implementation.
 
 ## Expected Output Format
 Use the global response wrapper from `AGENTS.md` as the canonical structure.

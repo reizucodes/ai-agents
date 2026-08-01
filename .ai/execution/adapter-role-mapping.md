@@ -38,23 +38,10 @@ This file is the single canonical source of the 16-role list used by all runtime
 
 ## Persona Inheritance (Not Adapter Sources)
 
-The following persona files at `.ai/agents/personas/*.md` are NEVER generated as runtime adapters. They are loaded on demand by matching runtime agents when task detection identifies the stack in the consumer project.
-
-| Persona File | Inheriting Runtime Roles | Inheritance Trigger |
-|---|---|---|
-| `personas/laravel.md` | `backend-developer` | Laravel/PHP backend detected |
-| `personas/fastapi.md` | `backend-developer` | FastAPI/Python web backend detected |
-| `personas/node-express.md` | `backend-developer` | Node/Express backend detected |
-| `personas/python.md` | `backend-developer` | Generic Python backend detected |
-| `personas/react.md` | `frontend-developer`, `web-designer` | React frontend or React-rendered web surface detected |
-| `personas/vue.md` | `frontend-developer`, `web-designer` | Vue frontend or Vue-rendered web surface detected |
-
-Persona inheritance rules:
-- `backend-developer` may inherit `laravel`, `fastapi`, `node-express`, or `python` based on the detected backend stack.
-- `frontend-developer` may inherit `vue` or `react` based on detected frontend framework.
-- `web-designer` may inherit `vue` or `react` when the marketing/web surface renders through a JS framework.
-- Multiple personas may apply if the project spans multiple stacks; the runtime agent loads only the personas matched by its current task.
-- Build workflows MUST NOT emit `.claude/agents/laravel.md`, `.codex/agents/vue.toml`, or any other adapter file derived from a persona file.
+Every readable `.ai/agents/personas/*.md` file is discovered from its self-declared
+metadata and is NEVER generated as a runtime adapter. Multiple personas may apply if
+the project spans multiple stacks; the runtime agent loads only personas matched by
+its current task. Build workflows MUST NOT emit adapters derived from persona files.
 
 ## Mapping Constraints
 - Adapter names must match the canonical runtime filename exactly (kebab-case, `.md` stripped).

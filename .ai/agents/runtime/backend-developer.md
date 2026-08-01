@@ -27,10 +27,8 @@ Implementation specialist for backend code: APIs, services, persistence, auth, j
 
 ## Inherited Personas
 Auto-inherit when the detected stack matches:
-- `.ai/agents/personas/laravel.md` (Laravel/PHP codebases)
-- `.ai/agents/personas/fastapi.md` (FastAPI codebases)
-- `.ai/agents/personas/node-express.md` (Node/Express codebases)
-- `.ai/agents/personas/python.md` (generic Python services)
+- Any `.ai/agents/personas/*.md` whose metadata declares `backend-developer` and
+  whose `stack_keys` match the detected backend stack.
 
 Inheritance is read-only stack standards; persona files are never delegated to as standalone workers.
 

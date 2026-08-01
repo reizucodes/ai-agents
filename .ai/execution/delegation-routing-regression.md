@@ -35,7 +35,17 @@ Medium/Major delegated implementation roles must wait for:
 Tiny/Small targeted runs do not require `SPEC_APPROVED` or `ARCHITECTURE_READY` unless risk, scope, ambiguity, contract changes, architecture changes, or explicit user request escalates the task.
 
 ## Persona Inheritance Regression
-Stack personas (`vue`, `react`, `laravel`, `fastapi`, `node-express`, `python`) are **not** spawnable child roles. They live in `.ai/agents/personas/` and are injected into the prompt of the matching runtime worker (`frontend-developer` or `backend-developer`) when task detection identifies the stack. If a runtime worker adapter is missing:
+Stack personas are **not** spawnable child roles. Every persona file under
+`.ai/agents/personas/` is injected into the prompt of its matching runtime worker
+when task detection identifies the stack. If a runtime worker adapter is missing:
 - disclose the missing canonical worker,
 - request approval before sequential role simulation,
 - never claim delegation unless a child was actually spawned/invoked.
+
+Persona regression validation follows `.ai/execution/persona-contract-compliance.md`.
+Consumer-project cases must verify dynamic persona resolution, packet propagation,
+child acknowledgement, and blocking on missing acknowledgement. Styling cases must
+verify the new-project default, existing-system preservation, explicit user choice,
+and approved reporting when installation is unavailable. New Vue and React projects
+without an established styling system must both fail the gate if they choose vanilla
+CSS without an approved exception.

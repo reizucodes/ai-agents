@@ -32,18 +32,32 @@ Define what the parent/main session OWNS, what it MUST NOT do, and the handoff/m
 - Complete a code-changing run without producing the run report.
 
 ## Handoff Requirements (Parent → Child)
+Before spawning a role, the parent resolves any matching persona using
+`.ai/execution/persona-contract-compliance.md` and includes the resulting persona
+packet in the handoff. This resolution is harness-agnostic; runtime adapters only
+carry the packet.
+
+The parent records the persona gate state. A matched persona must reach
+`PERSONA_RESOLVED` before the child is spawned and `PERSONA_ACKNOWLEDGED` before the
+child may edit files. A missing acknowledgement blocks implementation.
+
 Each child handoff includes:
 - canonical role + display label (format: `<display-name> [<canonical-role>]`, e.g. `Marcus [frontend-developer]`),
 - explicit goals + acceptance criteria,
 - ownership scope (files/modules/interfaces),
 - forbidden paths,
 - expected artifacts and output location,
+- resolved persona packet and compliance summary from
+  `.ai/execution/persona-contract-compliance.md`, including gate state, deviations,
+  and approval status; pass the same packet to every downstream planning, design,
+  implementation, and QA role,
 - handoff inputs from prior phases.
 
 ## Merge-Back Rules (Child → Parent)
 Each child returns:
 - changed files,
 - contract-impact summary,
+- persona compliance summary from `.ai/execution/persona-contract-compliance.md`,
 - tests executed or pending,
 - known risks/assumptions,
 - artifact paths produced.
