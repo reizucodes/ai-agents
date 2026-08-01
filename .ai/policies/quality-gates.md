@@ -40,6 +40,15 @@ Planning notes exist in chat but required proposal files are missing. Proposal g
 - Documentation updated.
 - No compilation/build errors.
 - No failing required tests.
+- For stack-matched work, persona acknowledgement and the six-category contract
+  compliance checklist are complete.
+- The parent handoff contains the resolved persona packet, or explicitly records
+  `Persona: none`.
+- The canonical compliance checklist has evidence for all applicable conventions.
+- Every deviation from a persona/runtime rule has explicit approval; an unapproved
+  deviation blocks the gate.
+- For a matched hard-gate convention, absence of an existing setup does not count as
+  an exception. The worker must prove the approved exception before implementation.
 
 ### Failure Behavior
 Return implementation deficiencies and block QA handoff until resolved.
@@ -53,6 +62,9 @@ Feature compiles locally but integration tests fail on validation edge case. Gat
 - `cybersecurity-analyst` review complete when risk is Medium+ or auth/data boundaries changed.
 - Critical defects resolved.
 - Acceptance criteria satisfied.
+- QA/review compares the implementation against the loaded persona and runtime
+  contract and records contradictions as contract defects, even when tests pass.
+- No unapproved persona/runtime contradictions remain.
 
 ### Failure Behavior
 Block merge/release progression.

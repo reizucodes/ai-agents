@@ -27,8 +27,8 @@ Visual implementer for layout, theming, marketing pages, and brand-aligned web s
 
 ## Inherited Personas
 Auto-inherit when rendering through a JS framework:
-- `.ai/agents/personas/vue.md`
-- `.ai/agents/personas/react.md`
+- Any `.ai/agents/personas/*.md` whose metadata declares `web-designer` and whose
+  `stack_keys` match the rendering framework.
 
 ## Inputs
 - UX specs, flows, and design tokens from `ui-ux-designer`.

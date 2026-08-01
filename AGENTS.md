@@ -7,6 +7,44 @@ Scope note: `main session` / `parent/main` means the root orchestrator runtime o
 - **HARD RULE**: The main session MUST NOT implement code directly under any circumstance.
 - **HARD RULE**: If no suitable agent exists, HALT and disclose — do not implement inline.
 
+## Persona Gate
+Before routing or spawning implementation work, load
+`.ai/execution/persona-contract-compliance.md`. Resolve any matching persona under
+`.ai/agents/personas/`, include its packet in every downstream handoff, and require
+child acknowledgement before edits. A missing packet or acknowledgement is a hard
+stop for implementation. This rule is harness-agnostic and applies to every runtime.
+
+## Persona Injection Rule
+Persona resolution is conditional on the planned work, but when triggered it occurs
+before the first planning or implementation/design role that can constrain stack,
+styling, state, or dependency choices.
+
+Trigger condition: the Tiny direct-spawn set or the Medium+/PM Spawn Plan contains
+any of the following roles:
+`{dev-team-lead, frontend-developer, backend-developer, web-designer,
+ui-ux-designer}`. The planning/design roles are included because their outputs can
+constrain a downstream persona-mapped implementation role; `ui-ux-designer` is not
+itself a persona runtime role.
+
+On trigger, before spawning the first role in that set for the run:
+
+1. Detect the stack signal from the prompt, repository state, or existing project
+   conventions.
+2. Resolve the matching persona under `.ai/agents/personas/` according to
+   `.ai/execution/persona-contract-compliance.md`. Exactly one compatible match is
+   required; an ambiguous match is `PERSONA_UNRESOLVED` and a missing match records
+   `Persona: none`.
+3. Read the resolved persona and build its packet before spawning that role. Carry
+   the same packet and gate state through every downstream handoff.
+
+No trigger means no persona check is added: Q&A, documentation-only work, and runs
+whose planned roles contain none of the listed roles do not perform stack-persona
+resolution solely because this rule exists.
+
+A planning or design output produced without the required persona injection is a
+compliance defect. It must be reworked or treated as an explicit, user-approved
+deviation before implementation proceeds.
+
 These rules are unconditional with two exceptions:
 - Explicit `no subagent` / `main only` instruction from the user.
 - Exception A (framework-native context): `.ai/.framework-root` exists at repo root — main session acts directly on framework source. See Pre-Preflight Exceptions below.
@@ -135,8 +173,9 @@ This contract applies on all runtimes (Claude, Codex, OpenCode). The absence of 
 - Parent/main must not claim delegation when execution was sequential role simulation.
 
 ## Persona Inheritance
-- `.ai/agents/personas/*` (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) are skill/stack docs, not runtime workers.
-- `backend-developer`, `frontend-developer`, and `web-designer` inherit the matching persona on demand when the task targets that stack. Personas are never spawned as separate agents and never generated as runtime adapters.
+- `.ai/agents/personas/*.md` are self-describing skill/stack docs, not runtime workers.
+- The parent discovers persona metadata and passes the matching persona to its declared
+  runtime role. Personas are never spawned separately or generated as runtime adapters.
 
 ## Security and Product Discovery
 - Engage `project-owner` (vision/scope) and `junior-project-manager` (requirements clarification) during Planning Council when requirements are unclear or incomplete.

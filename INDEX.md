@@ -13,7 +13,8 @@ Preferred initialization order:
 7. Relevant policies, then the relevant workflow
 8. Target codebase inspection as needed
 
-`.ai/agents/personas/*` (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) are NOT loaded at startup. They are inherited on demand by `backend-developer`, `frontend-developer`, or `web-designer` when the task targets that stack.
+`.ai/agents/personas/*.md` are NOT loaded at startup. They are discovered from
+self-declared metadata and inherited on demand by their compatible runtime role.
 
 Adapter-contract routing rule (skip on normal startup, load only when explicitly building/validating adapters):
 - `.ai/execution/runtime-adapter-contract.md`
@@ -54,6 +55,7 @@ Loaded on normal startup:
 - `.ai/execution/task-classification.md` (absorbs delegation eligibility and confidence-gate rule)
 - `.ai/execution/artifact-conventions.md` (Artifact Requirement Matrix)
 - `.ai/execution/delegation-routing-regression.md`
+- `.ai/execution/persona-contract-compliance.md`
 - `.ai/delegation/parent-orchestrator-contract.md`
 - `.ai/delegation/child-role-contracts.md`
 - `.ai/delegation/ownership-boundaries.md`
@@ -69,7 +71,9 @@ Sixteen named workers, all under `.ai/agents/runtime/`:
 
 `backend-developer`, `cybersecurity-analyst`, `database-administrator`, `dev-team-lead`, `devops-engineer`, `doc-team-lead`, `documentation-writer`, `frontend-developer`, `junior-project-manager`, `pr-manager`, `project-manager`, `project-owner`, `qa-specialist`, `qa-team-lead`, `ui-ux-designer`, `web-designer`.
 
-`project-manager` runs as `primary`; the other 15 run as `subagent`. Stack knowledge (`laravel`, `fastapi`, `node-express`, `python`, `vue`, `react`) lives in `.ai/agents/personas/*` and is inherited on demand by `backend-developer`, `frontend-developer`, or `web-designer` — never spawned as its own worker.
+`project-manager` runs as `primary`; the other 15 run as `subagent`. Stack knowledge
+lives in `.ai/agents/personas/*.md`, is inherited on demand by the metadata-declared
+compatible runtime role, and is never spawned as its own worker.
 
 ## Quick Start Matrix
 Artifact requirements come from `.ai/execution/artifact-conventions.md`.

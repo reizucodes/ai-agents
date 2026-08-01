@@ -43,3 +43,13 @@ PM owns coordination across all 5 phases. As the root agent (OpenCode) it stays 
 Follow the global 6-section response wrapper defined in `AGENTS.md`. Specialize the Implementation Details section as: Classification and Risk, Planning Phases and Milestones, Handoff Plan, Gate Checklist.
 
 The **Handoffs / Next Agent Inputs** section must contain the **Spawn Plan** the main session executes: an ordered list of agents to spawn, each as `{ order, role, phase, scope, gate-before-spawn, handoff-inputs }`. List only real canonical runtime roles. Mark which entries may run in parallel (disjoint ownership) vs. strictly sequential. The main session spawns exactly this list, in this order, honoring each `gate-before-spawn`; it does not add, drop, or re-sequence roles.
+
+Each Spawn Plan must also include, alongside the size/risk classification:
+
+`Persona resolved: <path under .ai/agents/personas/ or none>`
+
+This field is mandatory whenever the Spawn Plan contains `dev-team-lead`,
+`frontend-developer`, `backend-developer`, `web-designer`, or `ui-ux-designer`.
+The field records the result of the Persona Injection Rule in `AGENTS.md`, including
+`Persona: none` when no compatible persona exists. A Spawn Plan that omits the field
+when triggered is invalid and must not be executed by the main session.
