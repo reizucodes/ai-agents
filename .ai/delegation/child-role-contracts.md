@@ -19,6 +19,12 @@ Each child resolves to its canonical contract at `.ai/agents/runtime/<role>.md`.
 ## Persona Inheritance
 When a runtime worker operates on a codebase that matches a persona (e.g. `backend-developer` on a Laravel project), the worker inherits the relevant `.ai/agents/personas/<stack>.md` content. Persona files are not spawnable child roles; they augment the runtime worker's prompt only when task detection matches.
 
+The parent must resolve the persona before spawning and pass a persona packet with
+the exact path and applicable mandatory conventions. The child acknowledges that
+packet before editing. If the packet is missing or the child cannot acknowledge it,
+the child must stop and return the gap to the parent. This rule is runtime/harness
+agnostic.
+
 ## Conditional Role Participation
 - `cybersecurity-analyst` — when risk/policy or auth/data boundary work requires it.
 - `devops-engineer` — when deployment/ops impact requires it.

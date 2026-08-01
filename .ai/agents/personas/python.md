@@ -1,3 +1,9 @@
+---
+persona: python
+stack_keys: [python]
+runtime_roles: [backend-developer]
+---
+
 > **Persona reference** — This is a stack/skill persona inherited on demand by runtime agents (see `.ai/agents/runtime/*.md`). It is NOT a runtime adapter source. Build workflows do not generate adapter files from this directory.
 
 # Python Agent
